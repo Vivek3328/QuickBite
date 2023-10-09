@@ -3,7 +3,7 @@
 function App() {
   return (
     <div className="App">
-     hello quickbite
+     hello moto
     </div>
   );
 }
