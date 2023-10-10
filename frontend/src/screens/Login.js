@@ -7,13 +7,19 @@ export default function Login() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const handleSubmit = (e)=>{
+    e.preventDefault();
+    
+  }
+
   return (
     <div className="container">
 
       <div className="card login-card input-field">
         <h2>QuickBite</h2>
        
-        <form>
+        <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label htmlFor="exampleInputEmail1">Email address :</label>
             <input
