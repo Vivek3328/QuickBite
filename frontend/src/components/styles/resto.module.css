@@ -10,10 +10,13 @@
     position: absolute;
     left: 24%;
     top: 70%;
+    
 }
 
 .signupbtn{
     position: absolute;
+    width: auto;
+    height: auto;
     left: 53%;
     top: 70%;
 }
@@ -28,4 +31,5 @@
 .revert{
     width: 100%;
     text-align: center;
+    padding-bottom: 2%;
 }
