@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const SignupRestaurantSchema = new Schema({
+const RestaurantSchema = new Schema({
     
     id: {
         type: Number,
@@ -22,4 +22,4 @@ const SignupRestaurantSchema = new Schema({
     }  
 });
 
-module.export= mongoose.model("SignupRestaurant",SignupRestaurantSchema);
+module.export= mongoose.model("Restaurant",RestaurantSchema);
