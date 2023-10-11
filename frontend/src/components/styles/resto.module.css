@@ -1,0 +1,31 @@
+.restoScreen{
+    background-image: url("../../assets/images/Login_bg.webp");
+    background-repeat: no-repeat;
+    background-size:cover;
+    position: relative;
+     height: 86vh;
+    }
+
+.loginbtn{
+    position: absolute;
+    left: 24%;
+    top: 70%;
+}
+
+.signupbtn{
+    position: absolute;
+    left: 53%;
+    top: 70%;
+}
+
+.logo{
+    position: absolute;
+    color: aliceblue;
+    font: italic bold 1.2em "Fira Sans", sans-serif;
+    left: 15%;
+    top: 4%;
+}
+.revert{
+    width: 100%;
+    text-align: center;
+}
