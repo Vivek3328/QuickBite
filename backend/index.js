@@ -9,7 +9,7 @@ const port = 5000
 app.use(express.json())
 
 // app.use('/api/loginRest',require('./routes/loginReast'))
-app.use('/api/signupRest',require('./routes/signupRest'))
+app.use('/api/ownerauth',require('./routes/OwnerAuth'))
 app.use('/api/userauth', require('./routes/UserAuth'))
 
   
