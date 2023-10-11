@@ -6,8 +6,8 @@ connectTomongo();
 const app = express()
 const port = 5000
 
-
-app.use('/api/loginRest',require(('./routes/loginRest')))
+app.use(express.json())
+// app.use('/api/loginRest',require(('./routes/loginRest')))
 app.use('/api/signupRest',require(('./routes/signupRest')))
   
   app.listen(port, () => {

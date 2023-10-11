@@ -1,12 +1,6 @@
 const mongoose = require("mongoose");
-
+const { Schema } = mongoose;
 const RestaurantSchema = new Schema({
-    
-    id: {
-        type: Number,
-        required: true,
-        unique: true,
-    },
     name:{
         type: String,
         required: true,
@@ -15,11 +9,17 @@ const RestaurantSchema = new Schema({
         type: String,
         required: true,
         unique: true,
-      },
-    pass: {
-        type: Array,
+    },
+    password: {
+        type: String,
         required: true,
-    }  
-});
+    }, 
+    date: {
+        type: Date,
+        default: Date.now
+    }
 
-module.export= mongoose.model("Restaurant",RestaurantSchema);
+});
+const Owner = mongoose.model("owner",RestaurantSchema);
+// Owner.createIndexes();
+module.exports= Owner;
