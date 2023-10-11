@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import {
     Modal,
     ModalOverlay,
@@ -15,7 +15,8 @@ import {
 
 import styles from "./styles/resto.module.css"
 
-export default function RestaurantSignup() {
+export default function RestaurantSignup({authType}) {
+    const navigate = useNavigate()
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [fullName, setFullName] = useState("");
     const [email, setEmail] = useState("");
@@ -24,21 +25,35 @@ export default function RestaurantSignup() {
         e.preventDefault();
 
     }
+    if(authType==="signup"){
+        if(!isOpen){
+            onOpen();
+        }
+    }
+    else{
+        if(isOpen){
+            onClose()
+        }
+    }
     return (
         <div className={styles.signupbtn}>
-            <Button onClick={onOpen}>Register your restaurant</Button>
+            <Button ><Link to="/Resto?authType=signup">Register your restaurant</Link></Button>
 
-            <Modal isOpen={isOpen} onClose={onClose}>
+            <Modal  isOpen={isOpen} onClose={()=>{
+                onClose();
+                navigate("/Resto")
+            }}>
                 <ModalOverlay />
                 <ModalContent>
                     <ModalHeader>SignUp</ModalHeader>
-                    <ModalCloseButton />
+                    <ModalCloseButton  />
                     <ModalBody>
                         <form onSubmit={handleSubmit}>
                             <div className="form-group">
                                 <input
                                     type="text" placeholder="Name"
                                     value={fullName}
+                                    autoFocus
                                     autoComplete="username"
                                     onChange={(event) => setFullName(event.target.value)}
 
@@ -76,7 +91,7 @@ export default function RestaurantSignup() {
                     </ModalFooter>
                     <div className={styles.revert}>
                         <h6>
-                            <Link to="/">Already have an account ?</Link>
+                            <Link to="/Resto?authType=login">Already have an account ?</Link>
                         </h6>
                     </div>
                 </ModalContent>
