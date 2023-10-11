@@ -4,7 +4,7 @@ const Owner = require("../models/OwnerModel");
 const { body, validationResult } = require("express-validator");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-// const fetchuser = require("../Middleware/fetchuser");
+const fetchowner = require("../Middleware/fetchowner");
 const JWT_SECRET = "Iamfine";
 
 //ROUTE-1 : Register user using POST:"/api/ownerauth/registerowner"
@@ -55,6 +55,10 @@ router.post("/registerowner",
 
 
 
+
+
+
+
 //Route-2: Login of Owner using POST:"/api/ownerauth/loginowner"
 router.post("/loginowner",
     [
@@ -95,18 +99,21 @@ router.post("/loginowner",
     })
 
 
-//Route-2: loggedin Owner Detail using POST:"/api/ownerauth/getowner"  
-// router.post("/getowner",
-//     [
-//         body("email", "Enter a valid Email").isEmail(),
-//         body("password", "Password cannot be empty").exists(),
-//     ],
-//     async (req, res) => {
-//         try {
-            
-//         } catch (error) {
-//             console.error(error.message);
-//             res.status(500).send("Internal server error occured");
-//         }
-//     })      
+
+
+
+
+
+
+//Route-3: Get loggedin Owner Detail using POST:"/api/ownerauth/getowner"  
+router.post("/getowner", fetchowner ,async (req, res) => {
+        try {
+            const ownerId = req.owner.id;
+            const owner= await Owner.findById(ownerId).select("-password")
+            res.send(owner)
+        } catch (error) {
+            console.error(error.message);
+            res.status(500).send("Internal server error occured");
+        }
+    })      
 module.exports = router;
