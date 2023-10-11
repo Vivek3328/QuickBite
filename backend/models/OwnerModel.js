@@ -14,7 +14,20 @@ const ownerSchema = new Schema({
       password:{
             type:String,
             required:true
-      }
+      },
+      address:{
+            type:String,
+            required:true
+      },
+      restaurantType:{
+            type:"veg" | "non-veg",
+            required:true
+      },
+      pincode:{
+            type:Number,
+            required:true
+      },
+      
 })
 
 const Owner = mongoose.model('owner',ownerSchema);
