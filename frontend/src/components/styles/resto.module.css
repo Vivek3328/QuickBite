@@ -33,3 +33,47 @@
     text-align: center;
     padding-bottom: 2%;
 }
+
+
+h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  label {
+    font-weight: bold;
+  }
+  
+  input[type="text"],
+  input[type="password"],
+  textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  button {
+    background-color:#fff ;
+    color: #007bff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+  }
+  
+  /* button:hover {
+    background-color: #0056b3;
+  } */
+  .submitContainer{
+      width: 100%;
+      text-align: center;
+      padding-top: 1.5rem;
+  }
