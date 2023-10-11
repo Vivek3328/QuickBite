@@ -10,7 +10,6 @@ router.post('/',(req, res) => {
     //     return res.status(400).json({ errors: errors.array() });
     // }
     // Restaurant.create({
-    //     // id: req.body.id,
     //     name: req.body.name,
     //     email: req.body.email,
     //     password: req.body.password,
