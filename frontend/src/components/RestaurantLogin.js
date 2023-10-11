@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import {
     Modal,
     ModalOverlay,
@@ -16,9 +16,19 @@ import {
 import styles from "./styles/resto.module.css"
 
 
-export default function RestaurantLogin() {
+export default function RestaurantLogin({authType}) {
+    const navigate = useNavigate()
     const { isOpen, onOpen, onClose } = useDisclosure()
-
+    if(authType==="login"){
+        if(!isOpen){
+            onOpen();
+        }
+    }
+    else{
+        if(isOpen){
+            onClose();
+        }
+    }
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -30,13 +40,16 @@ export default function RestaurantLogin() {
 
     return (
         <div className={styles.loginbtn}>
-            <Button onClick={onOpen}>Login to view your existing Restaurant</Button>
+            <Button><Link to="/resto?authType=login" >Login to view your existing Restaurant</Link></Button>
 
-            <Modal isOpen={isOpen} onClose={onClose}>
+            <Modal isOpen={isOpen} onClose={()=>{
+                onClose();
+                navigate("/Resto")
+            }}>
                 <ModalOverlay />
                 <ModalContent>
                     <ModalHeader> Login</ModalHeader>
-                    <ModalCloseButton />
+                    <ModalCloseButton onClick={()=>navigate("/Resto")} />
                     <ModalBody>
                         <form onSubmit={handleSubmit}>
                             <div className="form-group">
@@ -44,6 +57,7 @@ export default function RestaurantLogin() {
                                 <input
                                     type="text" placeholder="Email"
                                     value={email}
+                                    autoFocus
                                     autoComplete="username"
                                     onChange={(event) => setEmail(event.target.value)}
 
@@ -77,7 +91,7 @@ export default function RestaurantLogin() {
                     </ModalFooter>
                     <div className={styles.revert}>
                         <h6>
-                            <Link to="/">Don't have an account ?</Link>
+                            <Link to="/resto?authType=signup">Don't have an account ?</Link>
                         </h6>
                     </div>
 

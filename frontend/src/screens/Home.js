@@ -15,7 +15,7 @@ export default function home() {
             <button className={styles.btn}>Sign UP</button> */}
                 <Login></Login>
                 <Signup></Signup>
-                <Link className={styles.btn} to="/Resto">Add Restaurant</Link>
+                <div className={styles.addRestoBtn} ><Link className={styles.btn} to="/Resto">Add Restaurant</Link></div>
             </div>
             <div className={styles.homeScreen} >
                 <div className={styles.logo}>
