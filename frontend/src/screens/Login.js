@@ -1,7 +1,6 @@
 import React from 'react'
 import { useState } from 'react';
 import { Link } from "react-router-dom";
-import './Login.css'
 
 export default function Login() {
 
@@ -12,7 +11,7 @@ export default function Login() {
     e.preventDefault();
     
   }
-
+  
   return (
     <div className="container">
 
@@ -21,7 +20,7 @@ export default function Login() {
        
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label htmlFor="exampleInputEmail1">Email address :</label>
+            {/* <label htmlFor="exampleInputEmail1">Email address :</label> */}
             <input
             type="text" placeholder="Email"
             value={email}     
@@ -31,7 +30,7 @@ export default function Login() {
           />            
           </div>
           <div className="form-group">
-            <label htmlFor="exampleInputPassword1">Password :</label>
+            {/* <label htmlFor="exampleInputPassword1">Password :</label> */}
             <input
             type="password" placeholder="Password"
             autoComplete="current-password"
@@ -40,7 +39,7 @@ export default function Login() {
           />
           </div>
           
-          <button type="submit" className="btn btn-dark">Submit</button>
+          <button type="submit"  className="btn btn-dark">Submit</button>
         </form>
         {/* <button className="btn waves-effect waves-light btn #d32f2f red darken-1">Login</button> */}
         <h6>

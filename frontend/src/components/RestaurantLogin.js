@@ -19,17 +19,6 @@ import styles from "./styles/resto.module.css"
 export default function RestaurantLogin() {
     const { isOpen, onOpen, onClose } = useDisclosure()
 
-    // const onClose = () => {
-
-    // }
-
-    // const onOpen = () => {
-
-    // }
-
-    // const isOpen = ()=>{
-
-    // }
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");

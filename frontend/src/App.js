@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Signup from "./screens/Signup";
 import Login from "./screens/Login";
 import Resto from "./screens/Resto";
+import AddRestaurant from "./screens/AddRestaurant";
 
 function App() {
   return (
@@ -15,7 +16,7 @@ function App() {
       <Route exact path="/login" element={ <Login/>}/>
       <Route exact path="/resto" element={<Resto/>}/>
       <Route exact path="/home" element={<Navbar/>}/>
-      <Route exact path="/addReataurant" element={<Navbar/>}/>
+      <Route exact path="/addReataurant" element={<AddRestaurant/>}/>
       
       </Routes>
     </BrowserRouter>
