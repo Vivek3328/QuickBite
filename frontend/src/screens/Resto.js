@@ -2,6 +2,7 @@ import React from 'react'
 import RestaurantLogin from '../components/RestaurantLogin'
 import styles from "../components/styles/resto.module.css"
 import RestaurantSignup from '../components/RestaurantSignup'
+// import Login from './Login'
 
 export default function Resto() {
   return (
@@ -9,8 +10,9 @@ export default function Resto() {
         <div className={styles.logo}>
           <h2>QuickBite</h2>
         </div>
-      <RestaurantLogin/>
-      <RestaurantSignup/>
+        {/* <Login></Login> */}
+          <RestaurantLogin/>
+          <RestaurantSignup/>
       </div>
         
   )
