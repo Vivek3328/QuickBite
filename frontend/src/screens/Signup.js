@@ -1,5 +1,5 @@
 import React,  { useState } from 'react'
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styles from "../screens/styles/home.module.css"
 
 import {
@@ -16,7 +16,9 @@ import {
 } from '@chakra-ui/react'
 
 
-export default function Signup() {
+export default function Signup({userAuthType}) {
+    const navigate = useNavigate()
+
   const { isOpen, onOpen, onClose } = useDisclosure();
     const [fullName, setFullName] = useState("");
     const [email, setEmail] = useState("");
@@ -25,11 +27,25 @@ export default function Signup() {
         e.preventDefault();
 
     }
+    if (userAuthType === "signup") {
+        if (!isOpen) {
+            onOpen();
+        }
+    }
+    else {
+        if (isOpen) {
+            onClose()
+        }
+    }
+
   return (
     <div className={styles.signupbtn}>
-    <div onClick={onOpen}>Register</div>
+    <Link  to="/?userAuthType=signup">Register</Link>
 
-    <Modal isOpen={isOpen} onClose={onClose}>
+<Modal isOpen={isOpen} onClose={() => {
+    onClose();
+    navigate("/")
+}}>
         <ModalOverlay />
         <ModalContent>
             <ModalHeader>SignUp</ModalHeader>
@@ -77,7 +93,7 @@ export default function Signup() {
             </ModalFooter>
             <div className={styles.revert}>
                 <h6>
-                    <Link to="/">Already have an account ?</Link>
+                <Link to="/?userAuthType=login">Already have an account ?</Link>
                 </h6>
             </div>
         </ModalContent>
