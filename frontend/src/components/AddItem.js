@@ -23,17 +23,47 @@ export default function AddItem() {
             <Modal isOpen={isOpen} onClose={onClose}>
                 <ModalOverlay />
                 <ModalContent>
-                    <ModalHeader>Modal Title</ModalHeader>
+                    <ModalHeader>Add Item</ModalHeader>
                     <ModalCloseButton />
                     <ModalBody>
-                        hiii
+                        <form>
+                        <div>
+                                <input
+                                    type="text"
+                                    placeholder='Item Name'
+                                    id="name"
+                                    name="name"
+                                />
+                            </div>
+                            <div>
+                                <input
+                                    type="text"
+                                    placeholder='Description'
+                                    id="desc"
+                                    name="desc"
+                                />
+                            </div>
+                            <div>
+                                <input
+                                    type="number"
+                                    placeholder='Price'
+                                    id="price"
+                                    name="price"
+                                />
+                            </div>
+                            <div className="mb-1">
+                                Image <span className="font-css top"></span>
+                                <div className="">
+                                    <input type="file" id="file-input" name="ImageStyle" accept="image/*" />
+                                </div>
+                            </div>
+                        </form>
                     </ModalBody>
 
                     <ModalFooter>
-                        <Button colorScheme='blue' mr={3} onClick={onClose}>
-                            Close
+                        <Button colorScheme='blue' mr={3} >
+                            Submit
                         </Button>
-                        <Button variant='ghost'>Secondary Action</Button>
                     </ModalFooter>
                 </ModalContent>
             </Modal>

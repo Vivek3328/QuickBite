@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Resto from "./screens/Resto";
 import Home from "./screens/Home";
 import RestaurantHome from "./screens/RestaurantHome";
+import RestaurantOrder from "./screens/RestaurantOrder";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
           <Route exact path="/resto" element={<Resto />} />
           <Route exact path="/home" element={<Navbar />} />
           <Route exact path="/RestaurantHome" element={<RestaurantHome />} />
+          <Route exact path="/RestaurantOrders" element={<RestaurantOrder/>} />
         </Routes>
       </BrowserRouter>
     </>
