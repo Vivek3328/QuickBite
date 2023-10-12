@@ -13,8 +13,8 @@ export default function home() {
             <div className={styles.btns}>
                 {/* <button className={styles.btn}>Login</button>
             <button className={styles.btn}>Sign UP</button> */}
-                <Login></Login>
-                <Signup></Signup>
+                <Login/>
+                <Signup/>
                 <div className={styles.addRestoBtn} ><Link className={styles.btn} to="/Resto">Add Restaurant</Link></div>
             </div>
             <div className={styles.homeScreen} >
