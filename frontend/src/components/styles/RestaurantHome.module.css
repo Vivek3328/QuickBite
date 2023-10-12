@@ -25,12 +25,3 @@
 .card{
     margin-top: 70px;
 }
-
-.orders{
-    position: absolute;
-    font-family:cursive;
-    font-size: large;
-    left: 73%;
-    font-weight: 550 !important;
-    top: 18%;
-}
