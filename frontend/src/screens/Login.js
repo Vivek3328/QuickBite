@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import {
   Modal,
   ModalOverlay,
@@ -13,20 +13,9 @@ import {
 
 } from '@chakra-ui/react'
 import styles from "../screens/styles/home.module.css"
-export default function Login({userAuthType}) {
+export default function Login() {
 
-    const navigate = useNavigate()
-    const { isOpen, onOpen, onClose } = useDisclosure()
-    if(userAuthType==="login"){
-        if(!isOpen){
-            onOpen();
-        }
-    }
-    else{
-        if(isOpen){
-            onClose();
-        }
-    }
+  const { isOpen, onOpen, onClose } = useDisclosure()
 
 
   const [email, setEmail] = useState("");
@@ -38,19 +27,13 @@ export default function Login({userAuthType}) {
   }
   return (
     <div className={styles.loginbtn}>
-            {/* <div  onClick={onOpen}>Login</div> */}
-            <Link to="/?userAuthType=login"> Login</Link>
-            {/* <Button><Link to="/resto?authType=login" >Login to view your existing Restaurant</Link></Button> */}
+            <div onClick={onOpen}>Login</div>
 
-            <Modal isOpen={isOpen} onClose={()=>{
-                onClose();
-                navigate("/")
-            }}>
+            <Modal isOpen={isOpen} onClose={onClose}>
                 <ModalOverlay />
                 <ModalContent>
                     <ModalHeader> Login</ModalHeader>
-                    <ModalCloseButton onClick={()=>navigate("/")} />
-
+                    <ModalCloseButton />
                     <ModalBody>
                         <form onSubmit={handleSubmit}>
                             <div className="form-group">
@@ -91,8 +74,7 @@ export default function Login({userAuthType}) {
                     </ModalFooter>
                     <div className={styles.revert}>
                         <h6>
-                        <Link to="/?userAuthType=signup">Don't have an account ?</Link>
-                            {/* <Link to="/">Don't have an account ?</Link> */}
+                            <Link to="/">Don't have an account ?</Link>
                         </h6>
                     </div>
 
