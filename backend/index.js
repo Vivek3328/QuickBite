@@ -11,6 +11,7 @@ app.use(express.json())
 // app.use('/api/loginRest',require('./routes/loginReast'))
 app.use('/api/ownerauth',require('./routes/OwnerAuth'))
 app.use('/api/userauth', require('./routes/UserAuth'))
+app.use('/api/menuitemauth', require('./routes/MenuItemAuth'))
 
   
   app.listen(port, () => {

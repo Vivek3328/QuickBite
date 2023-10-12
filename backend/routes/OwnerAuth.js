@@ -34,6 +34,7 @@ router.post("/registerowner",
                 name: req.body.name,
                 password: secpass,
                 email: req.body.email,
+                address: req.body.password
             });
             //we return token instead of id
             const data = {
@@ -51,13 +52,6 @@ router.post("/registerowner",
         }
     }
 )
-
-
-
-
-
-
-
 
 //Route-2: Login of Owner using POST:"/api/ownerauth/loginowner"
 router.post("/loginowner",
@@ -97,13 +91,6 @@ router.post("/loginowner",
             res.status(500).send("Internal server error occured");
         }
     })
-
-
-
-
-
-
-
 
 //Route-3: Get loggedin Owner Detail using POST:"/api/ownerauth/getowner"  
 router.post("/getowner", fetchowner ,async (req, res) => {
