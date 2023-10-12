@@ -29,12 +29,15 @@ export default function RestoCard() {
                                 Rs. 200 for one
                             </Text>
                         </div>
-                        <Button  variant='ghost' colorScheme='blue'>
+
+                    </Stack>
+                    <div style={{display:'flex',  justifyContent: 'end'}} >
+                    <Button variant='outline' colorScheme='green' pl='5'  >
                        Order Now
                     </Button>
-                    </Stack>
+                    </div>
                 </CardBody>
-               
+
             </Card>
         </div>
     )

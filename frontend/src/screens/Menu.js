@@ -8,21 +8,21 @@ export default function Menu() {
           <Navbar/>
           <div className="container">
 
-            <div className="row my-3" style={{padding:'10px'}}>
+            <div className="row my-3 item-center" style={{padding:'10px', justifyContent:'center'}}>
 
-               <div className="col-md-12 "style={{padding:'10px'}} >
+               <div className="col-md-8"style={{padding:'10px'}} >
                   <MenuCard/>
               </div>
-               <div className="col-md-12 "style={{padding:'10px'}} >
+               <div className="col-md-8 "style={{padding:'10px'}} >
                   <MenuCard/>
               </div>
-               <div className="col-md-12 "style={{padding:'10px'}} >
+               <div className="col-md-8 "style={{padding:'10px'}} >
                   <MenuCard/>
               </div>
-               <div className="col-md-12 "style={{padding:'10px'}} >
+               <div className="col-md-8 "style={{padding:'10px'}} >
                   <MenuCard/>
               </div>
-               <div className="col-md-12 "style={{padding:'10px'}} >
+               <div className="col-md-8 "style={{padding:'10px'}} >
                   <MenuCard/>
               </div>
  
