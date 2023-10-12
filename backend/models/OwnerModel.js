@@ -19,10 +19,11 @@ const ownerSchema = new Schema({
             type:String,
             required:true
       },
-      // restaurantType:{
-      //       // type:"veg" | "non-veg",
-      //       required:true
-      // },
+      restaurantType:{
+            type : String,
+            enum : [ 'veg' , 'non-veg' ],
+            required:true
+      }
       // pincode:{
       //       // type:Number,
       //       required:true

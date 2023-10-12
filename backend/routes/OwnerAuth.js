@@ -13,6 +13,7 @@ router.post("/registerowner",
         body("email", "Enter a valid Email").isEmail(),
         body("name", "Enter a valid name").isLength({ min: 5 }),
         body("password", "Enter a valid password").isLength({ min: 6 }),
+        body("restaurantType","Enter Either Veg or Nonveg").isIn(['veg', 'non-veg'])
     ],
     async (req, res) => {
         console.log(req.body);
@@ -34,7 +35,8 @@ router.post("/registerowner",
                 name: req.body.name,
                 password: secpass,
                 email: req.body.email,
-                address: req.body.password
+                address: req.body.password,
+                restaurantType : req.body.restaurantType
             });
             //we return token instead of id
             const data = {
