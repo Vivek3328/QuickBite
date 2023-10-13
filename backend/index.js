@@ -1,9 +1,13 @@
 const express = require( "express")
 const connectTomongo = require( "./db")
+const cors = require('cors');
 connectTomongo();
 
+const app = express();
 
-const app = express()
+// Enable CORS for all routes
+app.use(cors());
+
 const port = 5000
 
 app.use(express.json())

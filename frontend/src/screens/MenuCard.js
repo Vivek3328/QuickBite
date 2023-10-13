@@ -22,7 +22,17 @@ export default function MenuCard() {
 
                 <Stack>
                     <CardBody>
-                        <Heading size='md'>Margherita Pizza (personal Giant Slice (22.5 Cm))</Heading>
+                        <div style={{ display: 'flex'}}>
+                        <Heading size='md'>Margherita Pizza (personal Giant Slice (22.5 Cm))
+                            <Image
+                              maxW={{ base: '100%', sm: '40px' }}
+                              src='https://img.icons8.com/?size=96&id=61083&format=png'
+                              alt='Veg'
+                              borderRadius='3xl'
+                              p='2'
+                             />
+                        </Heading>
+                        </div>
                         <Heading py='1' size='sm'>
                             Price : 250 Rs.
                         </Heading>
@@ -32,19 +42,19 @@ export default function MenuCard() {
                     </CardBody>
 
                     <CardFooter>
-                        <div style={{display:'flex', justifyContent:'center', marginRight:'27px'}}>
-                        <Select placeholder='Select Quantity'>
-                            <option value='1'> 1</option>
-                            <option value='2'> 2</option>
-                            <option value='3'> 3</option>
-                            <option value='4'> 4</option>
-                            <option value='5'> 5</option>
-                        </Select>
+                        <div style={{ display: 'flex', justifyContent: 'center', marginRight: '27px' }}>
+                            <Select placeholder='Select Quantity'>
+                                <option value='1'> 1</option>
+                                <option value='2'> 2</option>
+                                <option value='3'> 3</option>
+                                <option value='4'> 4</option>
+                                <option value='5'> 5</option>
+                            </Select>
                         </div>
                         <Button variant='outline' colorScheme='green' pl='5' >
                             Add to Cart
                         </Button>
-                       
+
                     </CardFooter>
                 </Stack>
             </Card>

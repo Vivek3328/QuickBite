@@ -71,10 +71,12 @@ router.post("/loginuser",
             // Check whether user with this email exist already
             let user = await User.findOne({ email: req.body.email });
             if (!user) {
+                
                 return res.status(400).json({ error: "Please, Try to login with correct credential" });
             }
             const pswdcompare = await bcrypt.compare(req.body.password, user.password);
             if(!pswdcompare){
+                // console.log( "Please, Try to login with correct credential" )
                 return res.status(400).json({ error: "Please, Try to login with correct credential" });
             }
             //we return token instead of id
