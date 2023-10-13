@@ -9,7 +9,7 @@
 .loginbtn{
     position: absolute;
     left: 24%;
-    top: 70%;
+    top: 55%;
     
 }
 
@@ -18,14 +18,24 @@
     width: auto;
     height: auto;
     left: 53%;
-    top: 70%;
+    top: 55%;
 }
 
 .logo{
     position: absolute;
     color: aliceblue;
     font: italic bold 1.2em "Fira Sans", sans-serif;
+    font-size:x-large;
     left: 15%;
+    top: 4%;
+}
+
+.log{
+    position: absolute;
+    color: aliceblue;
+    font: italic bold 1.2em "Fira Sans", sans-serif;
+    font-size:x-large;
+    left: 35%;
     top: 4%;
 }
 .revert{
@@ -33,13 +43,6 @@
     text-align: center;
     padding-bottom: 2%;
 }
-
-
-h2 {
-    font-size: 24px;
-    margin-bottom: 20px;
-    text-align: center;
-  }
   
   form {
     display: flex;
@@ -51,6 +54,7 @@ h2 {
   }
   
   input[type="text"],
+  input[type="email"],
   input[type="password"],
   textarea {
     width: 100%;

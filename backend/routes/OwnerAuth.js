@@ -48,49 +48,13 @@ const Storage = multer.diskStorage({
 
 // Route to register a new owner
 router.post("/registerowner",upload.single('Image'),controller.registerowner);
-
-
-//   router.post("/registerowner", upload.single('testImage'), checkEmailUnique, async (req, res) => {
-//     try {
-//       const salt = await bcrypt.genSalt(10);
-//       const secpass = await bcrypt.hash(req.body.password, salt);
-  
-//         owner = await Owner.create({
-//           name: req.body.name,
-//           email: req.body.email,
-//           password: secpass,
-//           address: req.body.address,
-//           pincode: req.body.pincode,
-//           image: {
-//             data: req.file.filename,
-//             contentType: 'image/png',
-//      } });
-
-//       //we return token instead of id
-//       const data = {
-//         owner: {
-//           id: owner.id,
-//         },
-//       };
-//       const authtoken = jwt.sign(data, JWT_SECRET);
-//       console.log(authtoken);
-//       // res.json({ authtoken });
-//       res.json(owner);
-//     } catch (error) {
-//       console.error(error.message);
-//       res.status(500).send('Error occur');
-//     }
-//   });
   
 
 
-// //Route-2: Login of Owner using POST:"/api/ownerauth/loginowner"
+//Route-2: Login of Owner using POST:"/api/ownerauth/loginowner"
 router.post("/loginowner",async (req, res) => {
-
         const {email,password} = req.body;
-        // let e=`"nitish2@email.com"`;
         let owner= await Owner.findOne({email:email});
-        console.log(owner);
         try{
             console.log(owner,email)
             if(!owner){
@@ -118,37 +82,4 @@ router.post("/loginowner",async (req, res) => {
         }
     }
 );
-
-
-
-
-
-
-// //Route-3: Get loggedin Owner Detail using POST:"/api/ownerauth/getowner"  
-// router.post("/getowner", fetchowner ,async (req, res) => {
-//         try {
-//             const ownerId = req.owner.id;
-//             const owner= await Owner.findById(ownerId).select("-password")
-//             res.send(owner)
-//         } catch (error) {
-//             console.error(error.message);
-//             res.status(500).send("Internal server error occured");
-//         }
-//     }
-// );
-    
-    
-
-
-
-
-// //Router 4: get image using POST:"api/ownerauth/image"  
-
-
-
-
-
-
-
-
 module.exports = router;

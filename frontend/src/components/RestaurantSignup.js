@@ -19,9 +19,9 @@ import styles from "./styles/resto.module.css"
 export default function RestaurantSignup({ authType }) {
     const navigate = useNavigate()
     const { isOpen, onOpen, onClose } = useDisclosure();
-    const [fullName, setFullName] = useState("");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
+    // const [fullName, setFullName] = useState("");
+    // const [email, setEmail] = useState("");
+    // const [password, setPassword] = useState("");
     if (authType === "signup") {
         if (!isOpen) {
             onOpen();
@@ -50,6 +50,7 @@ export default function RestaurantSignup({ authType }) {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        console.log(e.target.address.value)
         // Handle form submission here, e.g., send the data to an API or perform any necessary actions.
         console.log('Form submitted with data:', formData);
     };
@@ -68,9 +69,9 @@ export default function RestaurantSignup({ authType }) {
                     <ModalBody>
                         <form onSubmit={handleSubmit} action="uploads" method="post" enctype="multipart/form-data">
                             <div>
-                                <label htmlFor="name">Restaurant Name:</label>
                                 <input
                                     type="text"
+                                    placeholder='Restaurant Name'
                                     id="name"
                                     name="name"
                                     value={formData.name}
@@ -79,20 +80,42 @@ export default function RestaurantSignup({ authType }) {
                                 />
                             </div>
                             <div>
-                                <label htmlFor="address">Complete Address:</label>
+                                <input
+                                    type="email"
+                                    placeholder='Enter your Email'
+                                    id="email"
+                                    name="email"
+                                    value={formData.email}
+                                    onChange={handleChange}
+                                    required
+                                />
+                            </div>
+                            <div>
+                                <input
+                                    type="password"
+                                    placeholder='Create Password'
+                                    id="password"
+                                    name="password"
+                                    value={formData.password}
+                                    onChange={handleChange}
+                                    required
+                                />
+                            </div>
+                            <div>
                                 <textarea
                                     id="address"
                                     name="address"
+                                    placeholder='Complete Address'
                                     value={formData.address}
                                     onChange={handleChange}
                                     required
                                 />
                             </div>
                             <div>
-                                <label htmlFor="pincode">Pincode:</label>
                                 <input
                                     type="text"
                                     id="pincode"
+                                    placeholder='Pincode'
                                     name="pincode"
                                     value={formData.pincode}
                                     onChange={handleChange}
@@ -100,10 +123,10 @@ export default function RestaurantSignup({ authType }) {
                                 />
                             </div>
                             <div>
-                                <label htmlFor="phoneNumber">Phone Number:</label>
                                 <input
                                     type="text"
                                     id="phoneNumber"
+                                    placeholder='Phone Number'
                                     name="phoneNumber"
                                     value={formData.phoneNumber}
                                     onChange={handleChange}
@@ -118,7 +141,7 @@ export default function RestaurantSignup({ authType }) {
                                 </Stack>
                             </RadioGroup>
                             <div className="mb-1">
-                                Image <span className="font-css top">*</span>
+                                Image <span className="font-css top"></span>
                                 <div className="">
                                     {/* on onChange */}
                                     <input type="file" id="file-input" name="Image" accept="image/*" />
@@ -127,7 +150,7 @@ export default function RestaurantSignup({ authType }) {
 
                             <ModalFooter style={{ justifyContent: 'center', paddingBottom: '0' }} >
 
-                                <Button colorScheme='blue' mr={3} onClick={onClose}>
+                                <Button colorScheme='blue' mr={3} type='submit'>
                                     SignUp
                                 </Button>
 
