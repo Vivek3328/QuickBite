@@ -1,6 +1,7 @@
 import React,  { useState } from 'react'
 import { Link, useNavigate } from "react-router-dom";
 import styles from "../screens/styles/home.module.css"
+import axios from 'axios'
 
 import {
   Modal,
@@ -12,13 +13,14 @@ import {
   ModalCloseButton,
   Button,
   useDisclosure,
+  useToast
 
 } from '@chakra-ui/react'
 
 
 export default function Signup({userAuthType}) {
     const navigate = useNavigate()
-
+    const toast = useToast()
   const { isOpen, onOpen, onClose } = useDisclosure();
     const [fullName, setFullName] = useState("");
     const [email, setEmail] = useState("");
@@ -37,7 +39,37 @@ export default function Signup({userAuthType}) {
             onClose()
         }
     }
-
+    const handleApi=(e)=>{
+        e.preventDefault();
+        console.log({email, password})
+        axios.post('http://localhost:5000/api/userauth/registeruser',{
+            name:fullName ,
+            email,
+            password
+        })
+        .then(res =>{
+            toast({
+                title: 'Registered Successfully',
+                status: 'success',
+                duration: 2000,
+                position: 'top-right',
+                isClosable: true,
+              })
+            localStorage.setItem('token', res.data.token)
+            navigate('/userhome')
+            onClose() ;
+        })
+        .catch(err =>{
+            toast({
+                title: 'Error occured',
+                description: err.response.data.error || "Server error occured",
+                status: 'error',
+                duration: 2000,
+                position: 'top-right',
+                isClosable: true,
+              })
+        })
+      }
   return (
     <div className={styles.signupbtn}>
     <Link  to="/?userAuthType=signup">Register</Link>
@@ -85,7 +117,7 @@ export default function Signup({userAuthType}) {
 
             <ModalFooter style={{ justifyContent: 'center', paddingBottom: '0' }} >
 
-                <Button colorScheme='blue' mr={3} onClick={onClose}>
+                <Button colorScheme='blue' mr={3} onClick={handleApi}>
                     SignUp
                 </Button>
 
