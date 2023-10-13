@@ -32,6 +32,10 @@ const ownerSchema = new Schema({
             type:Number,
             required:true
       },
+      foodtype:{
+            type:String,
+            required:true
+      },
       image:{
             type:String,
             required:true

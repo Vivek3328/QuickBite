@@ -14,6 +14,7 @@ const registerowner =async(req,res)=>{
             restaurantType:req.body.restaurantType,
             pincode: req.body.pincode,
             mobile: req.body.mobile,
+            foodtype:req.body.foodtype,
             image: req.file.filename,
         });
             const data= await owner.save();
