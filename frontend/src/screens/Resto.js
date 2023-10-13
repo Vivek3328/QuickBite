@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import RestaurantLogin from '../components/RestaurantLogin'
 import styles from "../components/styles/resto.module.css"
 import RestaurantSignup from '../components/RestaurantSignup'
@@ -11,12 +12,16 @@ export default function Resto() {
   return (
       <div className={styles.restoScreen} >
         <div className={styles.logo}>
-          <h2>QuickBite</h2>
+          <Link to="/">QuickBite</Link>
+        </div>
+        <div className={styles.log}>
+        <Link to="/RestaurantHome">RestaurantHome</Link>
         </div>
 
         {/* <Login></Login> */}
           <RestaurantLogin authType={authType} />
           <RestaurantSignup authType={authType}/>
+          
       </div>
         
   )
