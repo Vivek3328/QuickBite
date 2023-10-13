@@ -17,6 +17,10 @@ const MenuItemSchema = new Schema({
       price:{
             type:Number,
             required:true
-      }
+      },
+      image:{
+            type:String,
+            required:true
+        }
 })
 module.exports = mongoose.model('menuitem',MenuItemSchema)
