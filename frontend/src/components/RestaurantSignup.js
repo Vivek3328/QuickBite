@@ -32,8 +32,7 @@ export default function RestaurantSignup({ authType }) {
             onClose()
         }
     }
-
-    const [value, setValue] = React.useState('1')
+    const [file,setfile]=React.useState()
     const [formData, setFormData] = useState({
         name: '',
         address: '',
@@ -68,7 +67,7 @@ export default function RestaurantSignup({ authType }) {
                     <ModalHeader>SignUp</ModalHeader>
                     <ModalCloseButton />
                     <ModalBody>
-                        <form onSubmit={handleSubmit}>
+                        <form onSubmit={handleSubmit} action="uploads" method="post" enctype="multipart/form-data">
                             <div>
                                 <input
                                     type="text"
@@ -144,7 +143,8 @@ export default function RestaurantSignup({ authType }) {
                             <div className="mb-1">
                                 Image <span className="font-css top"></span>
                                 <div className="">
-                                    <input type="file" id="file-input" name="ImageStyle" accept="image/*" />
+                                    {/* on onChange */}
+                                    <input type="file" id="file-input" name="Image" accept="image/*" />
                                 </div>
                             </div>
 
