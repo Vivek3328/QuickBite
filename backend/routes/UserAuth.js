@@ -4,7 +4,7 @@ const User = require("../models/UserModel");
 const { body, validationResult } = require("express-validator");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const fetchuser = require("../Middleware/fetchuser");
+const fetchuser = require("../Middlewares/fetchuser");
 const JWT_SECRET = "Iamfine";
 
 //ROUTE-1 : Register user using POST:"/api/userauth"
@@ -71,10 +71,12 @@ router.post("/loginuser",
             // Check whether user with this email exist already
             let user = await User.findOne({ email: req.body.email });
             if (!user) {
+                
                 return res.status(400).json({ error: "Please, Try to login with correct credential" });
             }
             const pswdcompare = await bcrypt.compare(req.body.password, user.password);
             if(!pswdcompare){
+                // console.log( "Please, Try to login with correct credential" )
                 return res.status(400).json({ error: "Please, Try to login with correct credential" });
             }
             //we return token instead of id

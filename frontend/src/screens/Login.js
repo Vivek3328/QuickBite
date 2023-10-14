@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Modal,
   ModalOverlay,
@@ -10,14 +10,26 @@ import {
   ModalCloseButton,
   Button,
   useDisclosure,
+  useToast
 
 } from '@chakra-ui/react'
 import styles from "../screens/styles/home.module.css"
-export default function Login() {
+import axios from 'axios'
 
-  const { isOpen, onOpen, onClose } = useDisclosure()
-
-
+export default function Login({userAuthType}) {
+    const toast = useToast()
+    const navigate = useNavigate()
+    const { isOpen, onOpen, onClose } = useDisclosure()
+    if(userAuthType==="login"){
+        if(!isOpen){
+            onOpen();
+        }
+    }
+    else{
+        if(isOpen){
+            onClose();
+        }
+    }
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -25,19 +37,51 @@ export default function Login() {
       e.preventDefault();
 
   }
+  const handleApi=(e)=>{
+    e.preventDefault();
+    axios.post('http://localhost:5000/api/userauth/loginuser',{
+        email,
+        password
+    })
+    .then(res =>{
+        toast({
+            title: 'Logged in Successfully',
+            status: 'success',
+            duration: 2000,
+            position: 'top-right',
+            isClosable: true,
+          })
+        localStorage.setItem('token', res.data.authtoken)
+        navigate('/userhome')
+        onClose() ;
+    })
+    .catch(err =>{
+        toast({
+            title: 'Error occured',
+            description: err.response.data.error || "Server error occured",
+            status: 'error',
+            duration: 2000,
+            position: 'top-right',
+            isClosable: true,
+          })
+    })
+  }
   return (
     <div className={styles.loginbtn}>
-            <div onClick={onOpen}>Login</div>
+            <Link to="/?userAuthType=login"> Login</Link>
 
-            <Modal isOpen={isOpen} onClose={onClose}>
+            <Modal isOpen={isOpen} onClose={()=>{
+                onClose();
+                navigate("/")
+            }}>
                 <ModalOverlay />
                 <ModalContent>
                     <ModalHeader> Login</ModalHeader>
-                    <ModalCloseButton />
+                    <ModalCloseButton onClick={()=>navigate("/")} />
+
                     <ModalBody>
                         <form onSubmit={handleSubmit}>
                             <div className="form-group">
-                                {/* <label htmlFor="exampleInputEmail1">Email address :</label> */}
                                 <input
                                     type="text" placeholder="Email"
                                     value={email}
@@ -47,7 +91,6 @@ export default function Login() {
                                 />
                             </div>
                             <div className="form-group">
-                                {/* <label htmlFor="exampleInputPassword1">Password :</label> */}
                                 <input
                                     type="password" placeholder="Password"
                                     autoComplete="current-password"
@@ -56,25 +99,19 @@ export default function Login() {
                                 />
                             </div>
 
-                            {/* <button type="submit" className="btn btn-dark">Submit</button> */}
                         </form>
-
-                        {/* <div className="card login-card input-field">
-                                {/* <h2>QuickBite</h2> */}
-
                     </ModalBody>
 
                     <ModalFooter style={{justifyContent: 'center', paddingBottom: '0'}} >
 
-                        <Button colorScheme='blue' mr={3} onClick={onClose}>
+                        <Button colorScheme='blue' mr={3} onClick={handleApi}>
+                       
                             Login
                         </Button>
-
-                        {/* <Button variant='ghost'>Secondary Action</Button> */}
                     </ModalFooter>
                     <div className={styles.revert}>
                         <h6>
-                            <Link to="/">Don't have an account ?</Link>
+                        <Link to="/?userAuthType=signup">Don't have an account ?</Link>
                         </h6>
                     </div>
 

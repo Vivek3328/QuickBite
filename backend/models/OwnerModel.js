@@ -20,15 +20,26 @@ const ownerSchema = new Schema({
             required:true
       },
       restaurantType:{
-            type : String,
-            enum : [ 'veg' , 'non-veg' ],
+            type: String,
+            enum: ['veg', 'non-veg'],
+            required: true,
+      },
+      pincode:{
+            type:Number,
             required:true
-      }
-      // pincode:{
-      //       // type:Number,
-      //       required:true
-      // },
-      
+      },
+      mobile:{
+            type:Number,
+            required:true
+      },
+      foodtype:{
+            type:String,
+            required:true
+      },
+      image:{
+            type:String,
+            required:true
+        }
 })
 
 const Owner = mongoose.model('owner',ownerSchema);

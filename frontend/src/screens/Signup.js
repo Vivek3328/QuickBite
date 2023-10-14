@@ -1,6 +1,7 @@
 import React,  { useState } from 'react'
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styles from "../screens/styles/home.module.css"
+import axios from 'axios'
 
 import {
   Modal,
@@ -12,11 +13,14 @@ import {
   ModalCloseButton,
   Button,
   useDisclosure,
+  useToast
 
 } from '@chakra-ui/react'
 
 
-export default function Signup() {
+export default function Signup({userAuthType}) {
+    const navigate = useNavigate()
+    const toast = useToast()
   const { isOpen, onOpen, onClose } = useDisclosure();
     const [fullName, setFullName] = useState("");
     const [email, setEmail] = useState("");
@@ -25,11 +29,55 @@ export default function Signup() {
         e.preventDefault();
 
     }
+    if (userAuthType === "signup") {
+        if (!isOpen) {
+            onOpen();
+        }
+    }
+    else {
+        if (isOpen) {
+            onClose()
+        }
+    }
+    const handleApi=(e)=>{
+        e.preventDefault();
+        console.log({email, password})
+        axios.post('http://localhost:5000/api/userauth/registeruser',{
+            name:fullName ,
+            email,
+            password
+        })
+        .then(res =>{
+            toast({
+                title: 'Registered Successfully',
+                status: 'success',
+                duration: 2000,
+                position: 'top-right',
+                isClosable: true,
+              })
+            localStorage.setItem('token', res.data.token)
+            navigate('/userhome')
+            onClose() ;
+        })
+        .catch(err =>{
+            toast({
+                title: 'Error occured',
+                description: err.response.data.error || "Server error occured",
+                status: 'error',
+                duration: 2000,
+                position: 'top-right',
+                isClosable: true,
+              })
+        })
+      }
   return (
     <div className={styles.signupbtn}>
-    <div onClick={onOpen}>Register</div>
+    <Link  to="/?userAuthType=signup">Register</Link>
 
-    <Modal isOpen={isOpen} onClose={onClose}>
+<Modal isOpen={isOpen} onClose={() => {
+    onClose();
+    navigate("/")
+}}>
         <ModalOverlay />
         <ModalContent>
             <ModalHeader>SignUp</ModalHeader>
@@ -69,7 +117,7 @@ export default function Signup() {
 
             <ModalFooter style={{ justifyContent: 'center', paddingBottom: '0' }} >
 
-                <Button colorScheme='blue' mr={3} onClick={onClose}>
+                <Button colorScheme='blue' mr={3} onClick={handleApi}>
                     SignUp
                 </Button>
 
@@ -77,7 +125,7 @@ export default function Signup() {
             </ModalFooter>
             <div className={styles.revert}>
                 <h6>
-                    <Link to="/">Already have an account ?</Link>
+                <Link to="/?userAuthType=login">Already have an account ?</Link>
                 </h6>
             </div>
         </ModalContent>
