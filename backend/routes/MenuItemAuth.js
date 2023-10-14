@@ -4,9 +4,6 @@ const { body, validationResult } = require("express-validator");
 const MenuItem = require("../models/MenuItemModel");
 const router = express.Router();
 
-
-
-//
 const bodyParsar = require("body-parser")
 router.use(bodyParsar.json());
 router.use(bodyParsar.urlencoded({extended:true}));
