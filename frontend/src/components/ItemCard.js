@@ -1,38 +1,48 @@
 import React from "react";
+import { Card, CardBody, Stack, Heading, Text, Image, Button } from '@chakra-ui/react'
 
 export default function ItemCard() {
 
-  const handleClick = () => {
+    // const handleClick = () => {
 
-  }
+    // }
 
-  const handleAddToCart = async () => {
+    // const handleAddToCart = async () => {
 
-    }
-    
+    // }
+
     return (
         <div>
-            <div className="card mt-3 border border-primary border-4 rounded" style={{ width: "18rem", maxHeight: "360px" }}>
-                <img src="https://images.unsplash.com/photo-1624555130581-1d9cca783bc0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2071&q=80" className="card-img-top" alt="..." style={{ height: "150px", objectFit: "fill" }} />
-                <div className="card-body">
-                    <h5 className="card-title">Dish Name</h5>
-                    <div className='container w-100 p-0' style={{ height: "38px" }}>
-                        <select className="m-2 h-100 w-20 bg-success text-black rounded" style={{ select: "#FF0000" }} onClick={handleClick} >
-                                    <option key="hiii" value="hiii">
-                                        hiii
-                                    </option>
-                        </select>
-                        <select className="m-2 h-100 w-20 bg-success text-black rounded" style={{ select: "#FF0000" }} >
-                                <option key="hii" value="hii">hii</option>
-                        </select>
-                        <div className=' d-inline ms-2 h-100 w-20 fs-5'>
-                            ₹500/-
+            <Card boxShadow='xl' maxW='md'>
+                <CardBody>
+                    <Image
+                        src='https://b.zmtcdn.com/data/pictures/chains/5/18575885/54b6de34323395a3b10897e48bd2a6e5_o2_featured_v2.jpg?output-format=webp'
+                        alt='Green double couch with wooden legs'
+                        borderRadius='lg'
+                    />
+                    <Stack mt='5' spacing='1'>
+                        <Heading size='md' alignContent='left' >La Pino'z Pizza</Heading>
+                        <div className='d-flex flex-row'>
+                            <div style={{ marginRight: '50px' }}>
+                                <Text >
+                                    Pizza, Italian, Pasta, Fast Food
+
+                                </Text>
+                                {/* <Text>
+                                    Udhna Gam, Surat
+                                </Text> */}
+                            </div>
+                            <Text  >
+                                Rs. 200 for one
+                            </Text>
                         </div>
-                    </div>
-                    <hr></hr>
-                    <button className="btn btn-danger justify-center ms-2" onClick={handleAddToCart}>Delete</button>
-                </div>
-            </div>
+                        <Button  variant='ghost' colorScheme='blue'>
+                       Order Now
+                    </Button>
+                    </Stack>
+                </CardBody>
+               
+            </Card>
         </div>
     )
 }
