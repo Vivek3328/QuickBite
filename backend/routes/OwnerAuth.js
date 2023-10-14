@@ -46,7 +46,7 @@ const Storage = multer.diskStorage({
      } ,
     })
 
-// Route to register a new owner
+// Route-1: To register a new owner
 router.post("/registerowner",upload.single('Image'),controller.registerowner);
   
 
@@ -82,4 +82,16 @@ router.post("/loginowner",async (req, res) => {
         }
     }
 );
+
+
+// Route-3 : GET all owners using 'api/ownerauth/fetchallowner'
+router.get("/fetchallowner", async (req, res) => {
+  try {
+      const items = await Owner.find({});
+      res.json(items);
+  } catch (error) {
+      console.error(error.message);
+      res.status(500).send("Internal server error occured");
+  }
+});
 module.exports = router;
