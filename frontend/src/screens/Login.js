@@ -10,11 +10,14 @@ import {
   ModalCloseButton,
   Button,
   useDisclosure,
+  useToast
 
 } from '@chakra-ui/react'
 import styles from "../screens/styles/home.module.css"
-export default function Login({userAuthType}) {
+import axios from 'axios'
 
+export default function Login({userAuthType}) {
+    const toast = useToast()
     const navigate = useNavigate()
     const { isOpen, onOpen, onClose } = useDisclosure()
     if(userAuthType==="login"){
@@ -27,8 +30,6 @@ export default function Login({userAuthType}) {
             onClose();
         }
     }
-
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -36,11 +37,38 @@ export default function Login({userAuthType}) {
       e.preventDefault();
 
   }
+  const handleApi=(e)=>{
+    e.preventDefault();
+    axios.post('http://localhost:5000/api/userauth/loginuser',{
+        email,
+        password
+    })
+    .then(res =>{
+        toast({
+            title: 'Logged in Successfully',
+            status: 'success',
+            duration: 2000,
+            position: 'top-right',
+            isClosable: true,
+          })
+        localStorage.setItem('token', res.data.authtoken)
+        navigate('/userhome')
+        onClose() ;
+    })
+    .catch(err =>{
+        toast({
+            title: 'Error occured',
+            description: err.response.data.error || "Server error occured",
+            status: 'error',
+            duration: 2000,
+            position: 'top-right',
+            isClosable: true,
+          })
+    })
+  }
   return (
     <div className={styles.loginbtn}>
-            {/* <div  onClick={onOpen}>Login</div> */}
             <Link to="/?userAuthType=login"> Login</Link>
-            {/* <Button><Link to="/resto?authType=login" >Login to view your existing Restaurant</Link></Button> */}
 
             <Modal isOpen={isOpen} onClose={()=>{
                 onClose();
@@ -54,7 +82,6 @@ export default function Login({userAuthType}) {
                     <ModalBody>
                         <form onSubmit={handleSubmit}>
                             <div className="form-group">
-                                {/* <label htmlFor="exampleInputEmail1">Email address :</label> */}
                                 <input
                                     type="text" placeholder="Email"
                                     value={email}
@@ -64,7 +91,6 @@ export default function Login({userAuthType}) {
                                 />
                             </div>
                             <div className="form-group">
-                                {/* <label htmlFor="exampleInputPassword1">Password :</label> */}
                                 <input
                                     type="password" placeholder="Password"
                                     autoComplete="current-password"
@@ -73,26 +99,19 @@ export default function Login({userAuthType}) {
                                 />
                             </div>
 
-                            {/* <button type="submit" className="btn btn-dark">Submit</button> */}
                         </form>
-
-                        {/* <div className="card login-card input-field">
-                                {/* <h2>QuickBite</h2> */}
-
                     </ModalBody>
 
                     <ModalFooter style={{justifyContent: 'center', paddingBottom: '0'}} >
 
-                        <Button colorScheme='blue' mr={3} onClick={onClose}>
+                        <Button colorScheme='blue' mr={3} onClick={handleApi}>
+                       
                             Login
                         </Button>
-
-                        {/* <Button variant='ghost'>Secondary Action</Button> */}
                     </ModalFooter>
                     <div className={styles.revert}>
                         <h6>
                         <Link to="/?userAuthType=signup">Don't have an account ?</Link>
-                            {/* <Link to="/">Don't have an account ?</Link> */}
                         </h6>
                     </div>
 
