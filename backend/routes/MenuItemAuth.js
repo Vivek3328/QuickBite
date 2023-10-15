@@ -81,7 +81,19 @@ router.get("/fetchallmenuitems", fetchowner, async (req, res) => {
     }
 });
 
-// Route-3 : Delete Menu items using 'api/menuitemauth/deletemenuitem'
+// Route-3 : GET Restaurant specific menu items using 'api/menuitemauth/fetchrestomenu/'
+router.get("/fetchrestomenu/:id", async (req, res) => {
+  try {
+      const items = await MenuItem.find({ owner: req.params.id });
+      console.log(items)
+      res.json(items);
+  } catch (error) {
+      console.error(error.message);
+      res.status(500).send("Internal server error occured");
+  }
+});
+
+// Route-4 : Delete Menu items using 'api/menuitemauth/deletemenuitem'
 router.delete('/deletemenuitems/:id', fetchowner, async (req, res) => {
     let item = await MenuItem.findById(req.params.id);
     if(!item) { return res.status(404).send("Not Found") }
