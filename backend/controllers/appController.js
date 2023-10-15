@@ -20,6 +20,7 @@ const registerowner =async(req,res)=>{
             const data= await owner.save();
             res.status(200).send({success:true,data:data});
     }catch (error) {
+        console.log(error.message)
         res.status(400).send(error.message);
     }
 }

@@ -19,9 +19,7 @@ import styles from "./styles/resto.module.css"
 export default function RestaurantSignup({ authType }) {
     const navigate = useNavigate()
     const { isOpen, onOpen, onClose } = useDisclosure();
-    // const [fullName, setFullName] = useState("");
-    // const [email, setEmail] = useState("");
-    // const [password, setPassword] = useState("");
+    
     if (authType === "signup") {
         if (!isOpen) {
             onOpen();
@@ -32,28 +30,40 @@ export default function RestaurantSignup({ authType }) {
             onClose()
         }
     }
-    const [file,setfile]=React.useState()
-    const [formData, setFormData] = useState({
-        name: '',
-        address: '',
-        pincode: '',
-        phoneNumber: '',
-    });
+    const [Credentials, setCredentials] = useState({name:"", email:"",password:"", address:"",pincode:null,  phoneNumber: null, foodtype:"",image:""});
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({
-            ...formData,
-            [name]: value,
-        });
-    };
+    const imageUpload=(e)=>{
+        console.log(e.target.files[0]);
+        setCredentials({...Credentials,image:e.target.files[0]})
+    }
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(e.target.address.value)
-        // Handle form submission here, e.g., send the data to an API or perform any necessary actions.
-        console.log('Form submitted with data:', formData);
-    };
+        const response = await fetch("http://localhost:5000/api/ownerauth/registerowner",{
+            method: 'POST',
+            headers:{
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({name:Credentials.name, email:Credentials.email,password:Credentials.password, address:Credentials.address,pincode:Credentials.pincode,  phoneNumber: Credentials.phoneNumber,image:Credentials.image, foodtype:"italian",restaurantType:Credentials.foodtype})
+        });
+
+        const json = await response.json()
+        console.log(json)
+
+        if(json.success){
+            localStorage.setItem('token', json.authtoken);
+            navigate("/RestaurantHome")
+        }
+        else{
+           alert("Invalid Credentials")
+        }
+
+    }
+
+    const onChange = (e)=>{
+        setCredentials({...Credentials, [e.target.name]: e.target.value});
+    }
+
     return (
         <div className={styles.signupbtn}>
             <Button ><Link to="/Resto?authType=signup">Register your restaurant</Link></Button>
@@ -67,15 +77,15 @@ export default function RestaurantSignup({ authType }) {
                     <ModalHeader>SignUp</ModalHeader>
                     <ModalCloseButton />
                     <ModalBody>
-                        <form onSubmit={handleSubmit} action="uploads" method="post" enctype="multipart/form-data">
+                        <form onSubmit={handleSubmit}>
                             <div>
                                 <input
                                     type="text"
                                     placeholder='Restaurant Name'
                                     id="name"
                                     name="name"
-                                    value={formData.name}
-                                    onChange={handleChange}
+                                    value={Credentials.name}
+                                    onChange={onChange}
                                     required
                                 />
                             </div>
@@ -85,8 +95,8 @@ export default function RestaurantSignup({ authType }) {
                                     placeholder='Enter your Email'
                                     id="email"
                                     name="email"
-                                    value={formData.email}
-                                    onChange={handleChange}
+                                    value={Credentials.email}
+                                    onChange={onChange}
                                     required
                                 />
                             </div>
@@ -96,8 +106,8 @@ export default function RestaurantSignup({ authType }) {
                                     placeholder='Create Password'
                                     id="password"
                                     name="password"
-                                    value={formData.password}
-                                    onChange={handleChange}
+                                    value={Credentials.password}
+                                    onChange={onChange}
                                     required
                                 />
                             </div>
@@ -106,8 +116,8 @@ export default function RestaurantSignup({ authType }) {
                                     id="address"
                                     name="address"
                                     placeholder='Complete Address'
-                                    value={formData.address}
-                                    onChange={handleChange}
+                                    value={Credentials.address}
+                                    onChange={onChange}
                                     required
                                 />
                             </div>
@@ -117,8 +127,8 @@ export default function RestaurantSignup({ authType }) {
                                     id="pincode"
                                     placeholder='Pincode'
                                     name="pincode"
-                                    value={formData.pincode}
-                                    onChange={handleChange}
+                                    value={Credentials.pincode}
+                                    onChange={onChange}
                                     required
                                 />
                             </div>
@@ -128,23 +138,23 @@ export default function RestaurantSignup({ authType }) {
                                     id="phoneNumber"
                                     placeholder='Phone Number'
                                     name="phoneNumber"
-                                    value={formData.phoneNumber}
-                                    onChange={handleChange}
+                                    value={Credentials.phoneNumber}
+                                    onChange={onChange}
                                     required
                                 />
                             </div>
-                            {/* { <RadioGroup onChange={setValue} value={value}>
+                             <RadioGroup >
                                 <Stack direction='row'>
                                     <label htmlFor="">Restaurant type:</label>
-                                    <Radio value='veg'>Veg</Radio>
-                                    <Radio value='non-veg'>Non-veg</Radio>
+                                    <Radio value='veg' id="veg" name="foodtype" onChange={onChange}>Veg</Radio>
+                                    <Radio value='non-veg' id="non-veg" name='foodtype' onChange={onchange}>Non-veg</Radio>
                                 </Stack>
-                            </RadioGroup>  } */}
+                            </RadioGroup>  
                             <div className="mb-1">
                                 Image <span className="font-css top"></span>
                                 <div className="">
                                     {/* on onChange */}
-                                    <input type="file" id="file-input" name="Image" accept="image/*" />
+                                    <input type="file" id="image" name="image" value={Credentials.image} onChange={imageUpload} accept="image/*" />
                                 </div>
                             </div>
 

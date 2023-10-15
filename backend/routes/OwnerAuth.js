@@ -53,6 +53,7 @@ router.post("/registerowner",upload.single('Image'),controller.registerowner);
 
 //Route-2: Login of Owner using POST:"/api/ownerauth/loginowner"
 router.post("/loginowner",async (req, res) => {
+        let success = false;
         const {email,password} = req.body;
         let owner= await Owner.findOne({email:email});
         try{
@@ -60,13 +61,13 @@ router.post("/loginowner",async (req, res) => {
             if(!owner){
                 return res
                     .status(400)
-                    .json({ error: "email not found" });
+                    .json({success, error: "email not found" });
             }
             const passwordCompare = await bcrypt.compare(password,owner.password);
             if(!passwordCompare){
                 return res
                     .status(400)
-                    .json({ error: "Invalid Password!" });
+                    .json({success, error: "Invalid Password!" });
             }
             const data = {
                 owner: {
@@ -75,7 +76,8 @@ router.post("/loginowner",async (req, res) => {
             };
             const authtoken = jwt.sign(data, JWT_SECRET);
             // console.log(authtoken);
-            res.json({ authtoken });
+            success = true;
+            res.json({success, authtoken });
         }catch (error){
             console.error(error.message);
             res.status(500).send("login failed");

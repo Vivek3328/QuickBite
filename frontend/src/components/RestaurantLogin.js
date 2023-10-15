@@ -30,17 +30,39 @@ export default function RestaurantLogin({authType}) {
         }
     }
 
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
 
-    const handleSubmit = (e) => {
+    const [Credentials, setCredentials] = useState({email: "", password: ""});
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
+        const response = await fetch("http://localhost:5000/api/ownerauth/loginowner",{
+            method: 'POST',
+            headers:{
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({email:Credentials.email,password:Credentials.password})
+        });
 
+        const json = await response.json()
+        console.log(json)
+
+        if(json.success){
+            localStorage.setItem('token', json.authtoken);
+            navigate("/RestaurantHome")
+        }
+        else{
+           alert("Invalid Credentials")
+        }
+
+    }
+
+    const onChange = (e)=>{
+        setCredentials({...Credentials, [e.target.name]: e.target.value});
     }
 
     return (
         <div className={styles.loginbtn}>
-            <Button><Link to="/resto?authType=login" >Login to view your existing Restaurant</Link></Button>
+            <Button><Link to={'/Resto?authType=login'} >Login to existing Restaurant</Link></Button>
 
             <Modal isOpen={isOpen} onClose={()=>{
                 onClose();
@@ -49,17 +71,20 @@ export default function RestaurantLogin({authType}) {
                 <ModalOverlay />
                 <ModalContent>
                     <ModalHeader> Login</ModalHeader>
-                    <ModalCloseButton onClick={()=>navigate("/Resto")} />
+                    <ModalCloseButton/>
                     <ModalBody>
                         <form onSubmit={handleSubmit}>
                             <div className="form-group">
                                 {/* <label htmlFor="exampleInputEmail1">Email address :</label> */}
                                 <input
                                     type="text" placeholder="Email"
-                                    value={email}
+                                    value={Credentials.email}
+                                    id='email'
+                                    name='email'
                                     autoFocus
                                     autoComplete="username"
-                                    onChange={(event) => setEmail(event.target.value)}
+                                    onChange={onChange}
+                                    
 
                                 />
                             </div>
@@ -68,27 +93,24 @@ export default function RestaurantLogin({authType}) {
                                 <input
                                     type="password" placeholder="Password"
                                     autoComplete="current-password"
-                                    value={password}
-                                    onChange={(event) => setPassword(event.target.value)}
+                                    id='password'
+                                    name='password'
+                                    value={Credentials.password}
+                                    onChange={onChange}
                                 />
                             </div>
+                            {/* <button type="submit" className="btn btn-primary">Login</button> */}
+                            <ModalFooter style={{justifyContent: 'center', paddingBottom: '0'}} >
 
-                            {/* <button type="submit" className="btn btn-dark">Submit</button> */}
+                        <Button colorScheme='blue' mr={3} type='submit'>
+                            Login
+                        </Button>
+                    </ModalFooter>
                         </form>
-
-                        {/* <div className="card login-card input-field">
-                                {/* <h2>QuickBite</h2> */}
 
                     </ModalBody>
 
-                    <ModalFooter style={{justifyContent: 'center', paddingBottom: '0'}} >
-
-                        <Button colorScheme='blue' mr={3} onClick={onClose}>
-                            Login
-                        </Button>
-
-                        {/* <Button variant='ghost'>Secondary Action</Button> */}
-                    </ModalFooter>
+                    
                     <div className={styles.revert}>
                         <h6>
                             <Link to="/resto?authType=signup">Don't have an account ?</Link>
