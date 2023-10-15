@@ -13,14 +13,8 @@ export default function Navbar(props) {
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
 
             {/* <li className="nav-item">
-              <Link className="nav-link" to="/login">Login</Link>
-            </li> */}
-            <li className="nav-item">
-              <Link className="nav-link" to="/menu">Menu</Link>
-            </li>
-            <li className="nav-item">
               <Link className="nav-link" to="/userHome">Hotels</Link>
-            </li>
+            </li> */}
           </ul>
         </div>
       </div>

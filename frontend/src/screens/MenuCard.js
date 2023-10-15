@@ -1,9 +1,10 @@
 import React from 'react'
 import { Card, CardBody, Stack, Heading, Text, Image, Button, CardFooter, Select } from '@chakra-ui/react'
 
-export default function MenuCard() {
+export default function MenuCard(props) {
     return (
         <div>
+         
             <Card
                 direction={{ base: 'column', sm: 'row' }}
                 overflow='hidden'
@@ -13,8 +14,8 @@ export default function MenuCard() {
             >
                 <Image
                     // objectFit='cover'
-                    maxW={{ base: '100%', sm: '300px' }}
-                    src='https://b.zmtcdn.com/data/pictures/chains/2/3800262/07aae713b8d0d951eaa489aa3bd02005_o2_featured_v2.jpg'
+                    maxW={{ base: '500%', sm: '300px' }}
+                    src=  'https://b.zmtcdn.com/data/dish_photos/ddc/846789cb5e7c7cd941130115c8196ddc.jpg'
                     alt='Caffe Latte'
                     borderRadius='3xl'
                     p='2'
@@ -23,7 +24,7 @@ export default function MenuCard() {
                 <Stack>
                     <CardBody>
                         <div style={{ display: 'flex'}}>
-                        <Heading size='md'>Margherita Pizza (personal Giant Slice (22.5 Cm))
+                        <Heading size='md'>{props.itemname}
                             <Image
                               maxW={{ base: '100%', sm: '40px' }}
                               src='https://img.icons8.com/?size=96&id=61083&format=png'
@@ -34,10 +35,10 @@ export default function MenuCard() {
                         </Heading>
                         </div>
                         <Heading py='1' size='sm'>
-                            Price : 250 Rs.
+                            Price : {props.price} Rs.
                         </Heading>
                         <Text py='1'>
-                            A classic cheesy Margherita. Cant go wrong. [Fat-14.3 per 100 g, Protein-12.6 per 100 g, Carbohydrate-39.2 per 100 g, Sugar-0 per 100 g, Calories-336 K.cal] Nutritional information per 100g
+                            {props.description}
                         </Text>
                     </CardBody>
 
