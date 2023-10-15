@@ -11,7 +11,7 @@ export default function RestoPage() {
   const [menu, setMenu] = useState([]);
   const updateMenu = async () => {
 
-    await axios.get('http://localhost:5000/api/menuitemauth/fetchallmenuitem')
+    await axios.get(`http://localhost:5000/api/menuitemauth/fetchrestomenu/${id}`)
       .then(res => {
         console.log(res.data)
         setMenu(res.data)
@@ -32,7 +32,7 @@ export default function RestoPage() {
           { menu?.map((element, index) => {
 
             return <div className="col-md-8" key={index} style={{ padding: '10px' }}>
-              <MenuCard name={element?.name} price={element?.price} image={element?.image ? element.image : "https://img.icons8.com/?size=96&id=61083&format=png"}
+              <MenuCard itemname={element?.itemname} price={element?.price} image={element?.image ? element.image : "https://img.icons8.com/?size=96&id=61083&format=png"} description={element?.description}
               />
             </div>
 
