@@ -19,6 +19,10 @@ const OrderSchema = new Schema({
         type : mongoose.Schema.Types.ObjectId,
         ref : 'user'
     },
+    owner:{
+        type : mongoose.Schema.Types.ObjectId,
+        ref : 'owner'
+    },
     menuitem:[ItemSchema],
     totalprice: {
         type: Number,
