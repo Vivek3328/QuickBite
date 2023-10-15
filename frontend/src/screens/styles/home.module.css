@@ -1,8 +1,8 @@
 .homeScreen{
     background-image: url("../../assets/images/home2.jpg");
     background-repeat: no-repeat;
-    background-size:1550px 800px;
-    /* background-size:cover; */
+    /* background-size:1550px 800px; */
+    background-size:cover;
 
     background-attachment: fixed;  
 
