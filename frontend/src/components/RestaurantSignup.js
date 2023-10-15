@@ -133,13 +133,14 @@ export default function RestaurantSignup({ authType }) {
                                     required
                                 />
                             </div>
-                            <RadioGroup onChange={setValue} value={value}>
+                            
+                            {/* <RadioGroup onChange={setValue} value={value}>
                                 <Stack direction='row'>
                                     <label htmlFor="">Restaurant type:</label>
                                     <Radio value='veg'>Veg</Radio>
                                     <Radio value='non-veg'>Non-veg</Radio>
                                 </Stack>
-                            </RadioGroup>
+                            </RadioGroup> */}
                             <div className="mb-1">
                                 Image <span className="font-css top"></span>
                                 <div className="">

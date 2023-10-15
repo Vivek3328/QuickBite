@@ -13,19 +13,6 @@ export default function Menu() {
                <div className="col-md-8"style={{padding:'10px'}} >
                   <MenuCard/>
               </div>
-               <div className="col-md-8 "style={{padding:'10px'}} >
-                  <MenuCard/>
-              </div>
-               <div className="col-md-8 "style={{padding:'10px'}} >
-                  <MenuCard/>
-              </div>
-               <div className="col-md-8 "style={{padding:'10px'}} >
-                  <MenuCard/>
-              </div>
-               <div className="col-md-8 "style={{padding:'10px'}} >
-                  <MenuCard/>
-              </div>
- 
              
             </div>
           </div>
