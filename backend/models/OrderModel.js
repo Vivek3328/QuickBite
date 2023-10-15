@@ -2,28 +2,24 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 const menuitem = require("../models/MenuItemModel");
 
+const ItemSchema= new Schema({
+    menuitem :{ 
+        type : mongoose.Schema.Types.ObjectId,
+        ref : 'menuitem' 
+    },
+    quantity : {
+        type: Number,
+        default : 1
+    }
+})
+
+
 const OrderSchema = new Schema({
     user:{
         type : mongoose.Schema.Types.ObjectId,
         ref : 'user'
     },
-    ownerId : {
-        type : String,
-        required:true
-    },
-    // UserId : {
-    //     type : String,
-    //     required:true
-    // },
-    menuitem : {
-        type : mongoose.Schema.Types.ObjectId,
-        ref : 'menuitem'
-    },
-    quantity: {
-        type: Number,
-        default : 1,
-        required: true,
-    },
+    menuitem:[ItemSchema],
     totalprice: {
         type: Number,
         required: true,
