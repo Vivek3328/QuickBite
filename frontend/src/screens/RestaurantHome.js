@@ -1,59 +1,54 @@
 import React from 'react'
-import AddItem from '../components/AddItem'
-import styles from "../components/styles/RestaurantHome.module.css"
 import ItemCard from '../components/ItemCard'
+import RestaurantHomeNavbar from '../components/RestaurantHomeNavbar'
 
 export default function RestaurantHome() {
     return (
         <>
-            <div className={styles.main}>
-                <div className={styles.name}>Restaurant name</div>
-                <div className={styles.add}><AddItem /></div>
+            <RestaurantHomeNavbar/>
+            <div className="container">
+
+            <div className="row my-3" style={{padding:'10px'}}>
+
+               <div className="col-md-4 "style={{padding:'10px'}} >
+                  <ItemCard/> 
+              </div>
+               <div className="col-md-4 "style={{padding:'10px'}} >
+                  <ItemCard/> 
+              </div>
+               <div className="col-md-4 "style={{padding:'10px'}} >
+                  <ItemCard/> 
+              </div>
+               <div className="col-md-4 "style={{padding:'10px'}} >
+                  <ItemCard/> 
+              </div>
+               <div className="col-md-4 "style={{padding:'10px'}} >
+                  <ItemCard/> 
+              </div>
+               <div className="col-md-4 "style={{padding:'10px'}} >
+                  <ItemCard/> 
+              </div>
+               <div className="col-md-4 "style={{padding:'10px'}} >
+                  <ItemCard/> 
+              </div>
+               <div className="col-md-4 "style={{padding:'10px'}} >
+                  <ItemCard/> 
+              </div>
+               <div className="col-md-4 "style={{padding:'10px'}} >
+                  <ItemCard/> 
+              </div>
+               <div className="col-md-4 "style={{padding:'10px'}} >
+                  <ItemCard/> 
+              </div>
+               <div className="col-md-4 "style={{padding:'10px'}} >
+                  <ItemCard/> 
+              </div>
+               <div className="col-md-4 "style={{padding:'10px'}} >
+                  <ItemCard/> 
+              </div>
+             
             </div>
-            <div className={styles.card}>
-            <div className='row'>
-                <div className="col md-4">
-                    <ItemCard />
-
-                </div>
-
-                <div className="col md-4">
-                    <ItemCard />
-
-                </div>
-
-                <div className="col md-4">
-                    <ItemCard />
-
-                </div>
-
-                <div className="col md-4">
-                    <ItemCard />
-
-                </div>
-
-                <div className="col md-4">
-                    <ItemCard />
-
-                </div>
-
-                <div className="col md-4">
-                    <ItemCard />
-
-                </div>
-
-                <div className="col md-4">
-                    <ItemCard />
-
-                </div>
-
-                <div className="col md-4">
-                    <ItemCard />
-
-                </div>
-
-            </div>
-            </div>
+          </div>
         </>
     )
 }

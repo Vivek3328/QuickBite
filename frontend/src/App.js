@@ -8,6 +8,8 @@ import UserHome from "./screens/UserHome";
 // import MenuCard from "./screens/MenuCard";
 import Menu from "./screens/Menu";
 import RestoPage from "./screens/RestoPage";
+import RestaurantOrder from "./screens/RestaurantOrder";
+
 
 function App() {
   return (
@@ -24,6 +26,7 @@ function App() {
           <Route exact path="/userHome/resto/:id" element={<RestoPage/>} />
           {/* <Route exact path="/menuCard" element={<MenuCard/>} /> */}
           <Route exact path="/menu" element={<Menu/>} />
+          <Route exact path="/RestaurantOrder" element={<RestaurantOrder/>} />
           
         </Routes>
       </BrowserRouter>
