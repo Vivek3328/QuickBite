@@ -10,6 +10,7 @@ import {
     ModalCloseButton,
     Button,
     useDisclosure,
+    useToast,
 
 } from '@chakra-ui/react'
 
@@ -18,6 +19,7 @@ import styles from "./styles/resto.module.css"
 
 export default function RestaurantLogin({authType}) {
     const navigate = useNavigate()
+    const toast = useToast()
     const { isOpen, onOpen, onClose } = useDisclosure()
     if(authType==="login"){
         if(!isOpen){
@@ -49,6 +51,13 @@ export default function RestaurantLogin({authType}) {
         if(json.success){
             localStorage.setItem('token', json.authtoken);
             navigate("/RestaurantHome")
+            toast({
+                title: 'Logged in Successfully',
+                status: 'success',
+                duration: 2000,
+                position: 'top-right',
+                isClosable: true,
+              })
         }
         else{
            alert("Invalid Credentials")

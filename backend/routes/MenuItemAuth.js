@@ -43,7 +43,7 @@ router.post("/additem", fetchowner,
 router.get("/fetchallmenuitems", fetchowner, async (req, res) => {
     try {
         const ownerdata = await OwnerModel.findById(req.owner.id)
-        console.log(ownerdata)
+        // console.log(ownerdata)
         const items = await MenuItem.find({ owner: req.owner.id });
         // console.log(req.owner)
         res.json({items, name:ownerdata.name});
@@ -56,10 +56,9 @@ router.get("/fetchallmenuitems", fetchowner, async (req, res) => {
 // Route-3 : GET Restaurant specific menu items using 'api/menuitemauth/fetchrestomenu/'
 router.get("/fetchrestomenu/:id", async (req, res) => {
   try {
-      const ownerdata = await OwnerModel.findById(req.owner.id)
       const items = await MenuItem.find({ owner: req.params.id });
-      console.log(items)
-      res.json({items, name:ownerdata.name});
+    //   console.log(items)
+      res.json(items);
   } catch (error) {
       console.error(error.message);
       res.status(500).send("Internal server error occured");
