@@ -14,9 +14,6 @@ export default function Resto() {
         <div className={styles.logo}>
           <Link to="/">QuickBite</Link>
         </div>
-        <div className={styles.log}>
-        <Link to="/RestaurantHome">RestaurantHome</Link>
-        </div>
 
         {/* <Login></Login> */}
           <RestaurantLogin authType={authType} />

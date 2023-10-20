@@ -71,7 +71,7 @@ export default function RestaurantLogin({authType}) {
 
     return (
         <div className={styles.loginbtn}>
-            <Button><Link to={'/Resto?authType=login'} >Login to existing Restaurant</Link></Button>
+            <Link to={'/Resto?authType=login'} ><Button>Login to existing Restaurant</Button></Link>
 
             <Modal isOpen={isOpen} onClose={()=>{
                 onClose();

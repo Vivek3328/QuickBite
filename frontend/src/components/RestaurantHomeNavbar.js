@@ -39,8 +39,12 @@ export default function RestaurantHomeNavbar(props) {
                         <Button>
                             <Link to="/RestaurantOrder"> Orders</Link>
                         </Button>
+                        </div>
+
+                        <div>
                         <Button className="btn btn-primary" onClick={handleLogout}>Logout</Button>
                         </div>
+
                     </div>
                 </div>
             </nav>

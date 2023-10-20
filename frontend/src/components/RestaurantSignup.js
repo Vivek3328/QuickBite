@@ -105,11 +105,12 @@ export default function RestaurantSignup({ authType }) {
 
     return (
         <div className={styles.signupbtn}>
-            <Button>
-                <Link to="/Resto?authType=signup">
+
+            <Link to="/Resto?authType=signup">
+                <Button>
                     Register your restaurant
-                </Link>
-            </Button>
+                </Button>
+            </Link>
 
             <Modal
                 isOpen={isOpen}
