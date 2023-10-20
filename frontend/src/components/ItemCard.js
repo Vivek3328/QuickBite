@@ -31,15 +31,11 @@ export default function ItemCard(props) {
                         </Heading>
                         <div className="d-flex flex-row">
                             <div style={{ marginRight: "50px" }}>
-                                <Text>
-                                    <div
-                                        style={{
+                                <Text style={{
                                             textAlign: "center",
                                             textJustify: "inter-word",
-                                        }}
-                                    >
+                                        }}>
                                         {props.description}
-                                    </div>
                                 </Text>
                             </div>
                             <div>
