@@ -10,7 +10,7 @@ export default function RestoCard(props) {
             <Card boxShadow='xl' maxW='md'>
                 <CardBody>
                     <Image
-                        src='https://b.zmtcdn.com/data/pictures/chains/5/18575885/54b6de34323395a3b10897e48bd2a6e5_o2_featured_v2.jpg?output-format=webp'
+                        src={props.image}
                         // src={ `../uploads/${props.image}`}
                         alt='Restaurant Image'
                         borderRadius='lg'

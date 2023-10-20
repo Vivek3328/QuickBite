@@ -15,7 +15,7 @@ export default function MenuCard(props) {
                 <Image
                     // objectFit='cover'
                     maxW={{ base: '500%', sm: '300px' }}
-                    src=  'https://b.zmtcdn.com/data/dish_photos/ddc/846789cb5e7c7cd941130115c8196ddc.jpg'
+                    src=  {props.image}
                     alt='Caffe Latte'
                     borderRadius='3xl'
                     p='2'

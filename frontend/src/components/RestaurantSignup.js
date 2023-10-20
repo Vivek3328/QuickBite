@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import {
     Modal,
     ModalOverlay,
@@ -10,68 +10,114 @@ import {
     ModalCloseButton,
     Button,
     useDisclosure,
-    Radio, RadioGroup, Stack
-
-} from '@chakra-ui/react'
-import styles from "./styles/resto.module.css"
-
+    Radio,
+    RadioGroup,
+    Stack,
+} from "@chakra-ui/react";
+import styles from "./styles/resto.module.css";
 
 export default function RestaurantSignup({ authType }) {
-    const navigate = useNavigate()
+    const navigate = useNavigate();
     const { isOpen, onOpen, onClose } = useDisclosure();
-    
+
     if (authType === "signup") {
         if (!isOpen) {
             onOpen();
         }
-    }
-    else {
+    } else {
         if (isOpen) {
-            onClose()
+            onClose();
         }
     }
-    const [Credentials, setCredentials] = useState({name:"", email:"",password:"", address:"",pincode:null,  phoneNumber: null, foodtype:"",image:""});
+    const [Credentials, setCredentials] = useState({
+        name: "",
+        email: "",
+        password: "",
+        address: "",
+        pincode: "",
+        mobile: "",
+        foodtype: "",
+        restaurantType: "veg",
+        image: "",
+    });
+    const [img, setImg] = useState("");
 
-    const imageUpload=(e)=>{
-        console.log(e.target.files[0]);
-        setCredentials({...Credentials,image:e.target.files[0]})
-    }
+    const uploadimage = async (e) => {
+        e.preventDefault();
+        const files = document.querySelector("[type=file]").files;
+        // await setImage(e.target.files)
+        console.log(files[0]);
+        const formData = new FormData();
+        formData.append("file", files[0]);
+        formData.append("upload_preset", "quickbite");
+        formData.append("cloud_name", "drdcsopo2");
+        await fetch("https://api.cloudinary.com/v1_1/drdcsopo2/image/upload", {
+            method: "post",
+            body: formData,
+        })
+            .then((res) => res.json())
+            .then((data) => {
+                console.log(data);
+                console.log(data.url);
+                setImg(data.url);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    };
+
+    const onChange = (e) => {
+        setCredentials({ ...Credentials, [e.target.name]: e.target.value });
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const response = await fetch("http://localhost:5000/api/ownerauth/registerowner",{
-            method: 'POST',
-            headers:{
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({name:Credentials.name, email:Credentials.email,password:Credentials.password, address:Credentials.address,pincode:Credentials.pincode,  phoneNumber: Credentials.phoneNumber,image:Credentials.image, foodtype:"italian",restaurantType:Credentials.foodtype})
-        });
-
-        const json = await response.json()
-        console.log(json)
-
-        if(json.success){
-            localStorage.setItem('token', json.authtoken);
-            navigate("/RestaurantHome")
+        const response = await fetch(
+            "http://localhost:5000/api/ownerauth/registerowner",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    name: Credentials.name,
+                    email: Credentials.email,
+                    password: Credentials.password,
+                    address: Credentials.address,
+                    pincode: Credentials.pincode,
+                    mobile: Credentials.mobile,
+                    image: img,
+                    foodtype: Credentials.foodtype,
+                    restaurantType: Credentials.restaurantType,
+                }),
+            }
+        );
+        console.log(Credentials);
+        const json = await response.json();
+        console.log(json);
+        if (json.success) {
+            localStorage.setItem("token", json.authtoken);
+            navigate("/Resto?authType=login");
+        } else {
+            alert("Invalid Credentials");
         }
-        else{
-           alert("Invalid Credentials")
-        }
-
-    }
-
-    const onChange = (e)=>{
-        setCredentials({...Credentials, [e.target.name]: e.target.value});
-    }
+    };
 
     return (
         <div className={styles.signupbtn}>
-            <Button ><Link to="/Resto?authType=signup">Register your restaurant</Link></Button>
+            <Button>
+                <Link to="/Resto?authType=signup">
+                    Register your restaurant
+                </Link>
+            </Button>
 
-            <Modal isOpen={isOpen} onClose={() => {
-                onClose();
-                navigate("/Resto")
-            }}>
+            <Modal
+                isOpen={isOpen}
+                onClose={() => {
+                    onClose();
+                    navigate("/Resto");
+                }}
+            >
                 <ModalOverlay />
                 <ModalContent>
                     <ModalHeader>SignUp</ModalHeader>
@@ -81,7 +127,7 @@ export default function RestaurantSignup({ authType }) {
                             <div>
                                 <input
                                     type="text"
-                                    placeholder='Restaurant Name'
+                                    placeholder="Restaurant Name"
                                     id="name"
                                     name="name"
                                     value={Credentials.name}
@@ -92,7 +138,7 @@ export default function RestaurantSignup({ authType }) {
                             <div>
                                 <input
                                     type="email"
-                                    placeholder='Enter your Email'
+                                    placeholder="Enter your Email"
                                     id="email"
                                     name="email"
                                     value={Credentials.email}
@@ -103,10 +149,11 @@ export default function RestaurantSignup({ authType }) {
                             <div>
                                 <input
                                     type="password"
-                                    placeholder='Create Password'
+                                    placeholder="Create Password"
                                     id="password"
                                     name="password"
                                     value={Credentials.password}
+                                    autoComplete="off"
                                     onChange={onChange}
                                     required
                                 />
@@ -115,7 +162,7 @@ export default function RestaurantSignup({ authType }) {
                                 <textarea
                                     id="address"
                                     name="address"
-                                    placeholder='Complete Address'
+                                    placeholder="Complete Address"
                                     value={Credentials.address}
                                     onChange={onChange}
                                     required
@@ -125,7 +172,7 @@ export default function RestaurantSignup({ authType }) {
                                 <input
                                     type="text"
                                     id="pincode"
-                                    placeholder='Pincode'
+                                    placeholder="Pincode"
                                     name="pincode"
                                     value={Credentials.pincode}
                                     onChange={onChange}
@@ -135,50 +182,83 @@ export default function RestaurantSignup({ authType }) {
                             <div>
                                 <input
                                     type="text"
-                                    id="phoneNumber"
-                                    placeholder='Phone Number'
-                                    name="phoneNumber"
-                                    value={Credentials.phoneNumber}
+                                    id="mobile"
+                                    placeholder="Phone Number"
+                                    name="mobile"
+                                    value={Credentials.mobile}
                                     onChange={onChange}
                                     required
                                 />
                             </div>
-                             <RadioGroup >
-                                <Stack direction='row'>
+                            <div>
+                                <input
+                                    type="text"
+                                    id="foodtype"
+                                    placeholder="eg. Italian, North Indian"
+                                    name="foodtype"
+                                    value={Credentials.foodtype}
+                                    onChange={onChange}
+                                    required
+                                />
+                            </div>
+                            <RadioGroup>
+                                <Stack direction="row">
                                     <label htmlFor="">Restaurant type:</label>
-                                    <Radio value='veg' id="veg" name="foodtype" onChange={onChange}>Veg</Radio>
-                                    <Radio value='non-veg' id="non-veg" name='foodtype' onChange={onchange}>Non-veg</Radio>
+                                    <Radio
+                                        value="veg"
+                                        id="restaurantType1"
+                                        name="restaurantType"
+                                        onChange={onChange}
+                                        defaultChecked
+                                        required
+                                    >
+                                        Veg
+                                    </Radio>
+                                    <Radio
+                                        value="non-veg"
+                                        id="restaurantType2"
+                                        name="restaurantType"
+                                        onChange={onchange}
+                                        required
+                                    >
+                                        Non-veg
+                                    </Radio>
                                 </Stack>
-                            </RadioGroup>  
+                            </RadioGroup>
                             <div className="mb-1">
                                 Image <span className="font-css top"></span>
                                 <div className="">
-                                    {/* on onChange */}
-                                    <input type="file" id="image" name="image" value={Credentials.image} onChange={imageUpload} accept="image/*" />
+                                    <input
+                                        type="file"
+                                        id="image"
+                                        name="image"
+                                        onChange={uploadimage}
+                                    />
                                 </div>
                             </div>
 
-                            <ModalFooter style={{ justifyContent: 'center', paddingBottom: '0' }} >
-
-                                <Button colorScheme='blue' mr={3} type='submit'>
+                            <ModalFooter
+                                style={{
+                                    justifyContent: "center",
+                                    paddingBottom: "0",
+                                }}
+                            >
+                                <Button colorScheme="blue" mr={3} type="submit">
                                     SignUp
                                 </Button>
-
-                                {/* <Button variant='ghost'>Secondary Action</Button> */}
                             </ModalFooter>
-
-
                         </form>
                     </ModalBody>
 
-
                     <div className={styles.revert}>
                         <h6>
-                            <Link to="/Resto?authType=login">Already have an account ?</Link>
+                            <Link to="/Resto?authType=login">
+                                Already have an account ?
+                            </Link>
                         </h6>
                     </div>
                 </ModalContent>
             </Modal>
         </div>
-    )
+    );
 }
