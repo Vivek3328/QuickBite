@@ -10,6 +10,31 @@ import {
 } from "@chakra-ui/react";
 
 export default function ItemCard(props) {
+    const handleDelete = async () => {
+        // Assuming you have an API endpoint for deleting items
+        const apiUrl = `http://localhost:5000/api/menuitemauth/deletemenuitems/${props.itemId}`;
+
+        // Make a DELETE request to the API
+        await fetch(apiUrl, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                "auth-token" : localStorage.getItem("token")
+            },
+        })
+            .then((response) => {
+                if (response.ok) {
+                    console.log(`Item deleted: ${props.itemname}`);
+                    props.updateHotels();
+                    // You can also update the UI to reflect the deletion if needed
+                } else {
+                    console.error("Failed to delete item");
+                }
+            })
+            .catch((error) => {
+                console.error("Error while deleting item:", error);
+            });
+    };
     return (
         <div>
             <Card
@@ -46,7 +71,7 @@ export default function ItemCard(props) {
                             style={{ display: "flex", justifyContent: "right" }}
                         >
                             <div className="mx-2">
-                                <Button variant="outline" colorScheme="red">
+                                <Button variant="outline" colorScheme="red" onClick={handleDelete}>
                                     Delete
                                 </Button>
                             </div>

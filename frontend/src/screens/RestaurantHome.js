@@ -35,7 +35,7 @@ export default function RestaurantHome() {
                         {menuItem?.map((element, index) => {
 
                             return <div className="col-md-8" key={index} style={{ padding: '10px' }}>
-                                <ItemCard itemname={element?.itemname} price={element?.price} image={element?.image ? element.image : "https://img.icons8.com/?size=96&id=61083&format=png"} description={element?.description}
+                                <ItemCard itemname={element?.itemname} price={element?.price} image={element?.image ? element.image : "https://img.icons8.com/?size=96&id=61083&format=png"} description={element?.description}  itemId = {element?._id} updateHotels = {updateHotels}
                                 />
                             </div>
 
