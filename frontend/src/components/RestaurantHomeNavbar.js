@@ -1,10 +1,23 @@
 import React from 'react'
 import styles from "../components/styles/RestaurantHome.module.css"
-import { Link } from 'react-router-dom'
-import { Button } from '@chakra-ui/react'
+import { Link, useNavigate } from 'react-router-dom'
+import { Button, useToast } from '@chakra-ui/react'
 import AddItem from '../components/AddItem'
 
 export default function RestaurantHomeNavbar(props) {
+    const navigate = useNavigate();
+    const toast = useToast()
+    const handleLogout = () =>{
+        localStorage.removeItem('token');
+        navigate('/Resto')
+        toast({
+            title: 'Logged Out Successfully',
+            status: 'success',
+            duration: 2000,
+            position: 'top-right',
+            isClosable: true,
+          })
+    }
     return (
         <>
             <nav className="navbar sticky-top navbar-expand-lg navbar-dark bg-black">
@@ -25,7 +38,8 @@ export default function RestaurantHomeNavbar(props) {
                         <div className={styles.order}>
                         <Button>
                             <Link to="/RestaurantOrder"> Orders</Link>
-                            </Button>
+                        </Button>
+                        <Button className="btn btn-primary" onClick={handleLogout}>Logout</Button>
                         </div>
                     </div>
                 </div>
