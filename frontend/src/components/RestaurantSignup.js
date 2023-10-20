@@ -13,11 +13,13 @@ import {
     Radio,
     RadioGroup,
     Stack,
+    useToast,
 } from "@chakra-ui/react";
 import styles from "./styles/resto.module.css";
 
 export default function RestaurantSignup({ authType }) {
     const navigate = useNavigate();
+    const toast = useToast()
     const { isOpen, onOpen, onClose } = useDisclosure();
 
     if (authType === "signup") {
@@ -98,6 +100,13 @@ export default function RestaurantSignup({ authType }) {
         if (json.success) {
             localStorage.setItem("token", json.authtoken);
             navigate("/Resto?authType=login");
+            toast({
+                title: 'Restuarant Created Successfully',
+                status: 'success',
+                duration: 2000,
+                position: 'top-right',
+                isClosable: true,
+              })
         } else {
             alert("Invalid Credentials");
         }

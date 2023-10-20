@@ -75,11 +75,6 @@ export default function ItemCard(props) {
                                     Delete
                                 </Button>
                             </div>
-                            <div className="mx-2">
-                                <Button variant="outline" colorScheme="blue">
-                                    Edit
-                                </Button>
-                            </div>
                         </div>
                     </Stack>
                 </CardBody>
