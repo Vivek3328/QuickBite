@@ -38,7 +38,7 @@ const ownerSchema = new Schema({
       },
       image:{
             type:String,
-            required:true
+            // required:true
         }
 })
 

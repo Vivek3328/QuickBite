@@ -15,41 +15,60 @@ router.use(bodyParsar.urlencoded({extended:true}));
 const path=require('path')
 const multer = require("multer");
 router.use(express.static('uploads'))
-
-
-// // Image configure
-const Storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-      //where to store
-      cb(null, path.join(__dirname,"../uploads"),function(error,success){
-        if(error) throw error
-      });
-    },
-    filename: function (req, file, cb) {
-      cb(null, Date.now() + file.originalname);
-    },
-  });
   
-  const upload = multer({
-      storage: Storage,
-      limits: {
-        fileSize: 2048 * 2048 * 5,
-      },
-      fileFilter:(req, file, cb) => {
-        //reject a file if it's not a jpg or png
-        if (file.mimetype === "image/jpeg" || file.mimetype === "image/png" || mimetype === "image/jpg") 
-          {
-          cb(null, true);
-          } else {
-          cb(null, false);
-        }
-     } ,
-    })
-
 // Route-1: To register a new owner
-router.post("/registerowner",upload.single('Image'),controller.registerowner);
-  
-
+router.post("/registerowner",
+[
+    body("email", "Enter a valid Email").isEmail(),
+    body("name", "Enter a valid name").isLength({ min: 5 }),
+    body("password", "Enter a valid password").isLength({ min: 4 }),
+],
+async (req, res) => {
+    let success = false;
+    console.log(req.body);
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ success, errors: errors.array() });
+    }
+    try {
+        // Check whether user with this email exist already
+        let owner = await Owner.findOne({ email: req.body.email });
+        if (owner) {
+            return res
+                .status(400)
+                .json({ error: "Owner with this Email already exist" });
+        }
+        const salt = await bcrypt.genSalt(10);
+        const secpass = await bcrypt.hash(req.body.password, salt);
+        owner = await Owner.create({
+            name: req.body.name,
+            password: secpass,
+            email: req.body.email,
+            address:req.body.address,
+            restaurantType: req.body.restaurantType,
+            pincode:req.body.pincode,
+            mobile:req.body.mobile,
+            foodtype:req.body.foodtype,
+            image: req.body.image
+        });
+        //we return token instead of id
+        const data = {
+            owner: {
+                id: owner.id,
+            },
+        };
+        const authtoken = jwt.sign(data, JWT_SECRET);
+        console.log(authtoken);
+        success=true;
+        res.json({ success:true, authtoken });
+        // res.json(user)
+    } catch (error) {
+        console.error(error.message);
+        // res.status(500).send("Some error occured");
+        res.status(500).json({ success:false, error: "Some Error occured" });
+    }
+}
+);
 
 //Route-2: Login of Owner using POST:"/api/ownerauth/loginowner"
 router.post("/loginowner",async (req, res) => {
