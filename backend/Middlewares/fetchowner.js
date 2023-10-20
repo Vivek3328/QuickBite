@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const JWT_SECRET = "Iamfine";
+
 const fetchowner=(req,res,next)=>{
 
     //get the user from jwt token and Add Id to req object
@@ -9,7 +10,7 @@ const fetchowner=(req,res,next)=>{
     }
     try {
         const data = jwt.verify(token, JWT_SECRET);
-        console.log(data)
+        // console.log(data)
         req.owner = data.owner;
         next();
       

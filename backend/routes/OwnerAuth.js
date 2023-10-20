@@ -1,6 +1,5 @@
 const express = require("express");
 const router = express.Router();
-const bodyParsar = require("body-parser")
 const { body, validationResult } = require("express-validator");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -8,13 +7,6 @@ const jwt = require("jsonwebtoken");
 const JWT_SECRET = "Iamfine";
 const controller = require("../controllers/appController");
 const Owner = require("../models/OwnerModel");
-
-router.use(bodyParsar.json());
-router.use(bodyParsar.urlencoded({extended:true}));
-
-const path=require('path')
-const multer = require("multer");
-router.use(express.static('uploads'))
   
 // Route-1: To register a new owner
 router.post("/registerowner",

@@ -4,6 +4,7 @@ import RestaurantHomeNavbar from '../components/RestaurantHomeNavbar'
 
 export default function RestaurantHome() {
     const [menuItem, setmenuItem] = useState([]);
+    const [restoName, setRestoName] = useState([]);
     const updateHotels = async () => {
         const response = await fetch( "http://localhost:5000/api/menuitemauth/fetchallmenuitems",
             {
@@ -15,7 +16,8 @@ export default function RestaurantHome() {
             }
         )
         const res = await response.json();
-        setmenuItem(res)
+        setmenuItem(res.items)
+        setRestoName(res.name)
         console.log(res)
     }
     useEffect(() => {
@@ -24,7 +26,7 @@ export default function RestaurantHome() {
     }, [])
     return (
         <>
-            <RestaurantHomeNavbar  />
+            <RestaurantHomeNavbar name={restoName} />
             <div>
                 <div className="container">
 
