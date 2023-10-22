@@ -28,8 +28,9 @@
 
 .order{
     position: absolute;
-    left: 75%;
-    top: 18%;
+    display: flex;
+    justify-content: flex-end;
+    width: 97%;
 }
 
 
