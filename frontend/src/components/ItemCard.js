@@ -7,6 +7,7 @@ import {
     Text,
     Image,
     Button,
+    CardFooter,
 } from "@chakra-ui/react";
 
 export default function ItemCard(props) {
@@ -19,7 +20,7 @@ export default function ItemCard(props) {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json",
-                "auth-token" : localStorage.getItem("token")
+                "auth-token": localStorage.getItem("token")
             },
         })
             .then((response) => {
@@ -37,7 +38,7 @@ export default function ItemCard(props) {
     };
     return (
         <div>
-            <Card
+            {/* <Card
                 direction={{ base: "column", sm: "row" }}
                 overflow="hidden"
                 variant="outline"
@@ -78,6 +79,43 @@ export default function ItemCard(props) {
                         </div>
                     </Stack>
                 </CardBody>
+            </Card> */}
+
+            <Card
+                direction={{ base: "column", sm: "row" }}
+                overflow="hidden"
+                variant="outline"
+                boxShadow="xl"
+                borderRadius="2xl"
+            >
+                <Image
+                    objectFit='cover'
+                    src={props.image}
+                    alt='Caffe Latte'
+                />
+
+                <Stack>
+                    <CardBody>
+                        <Heading size='md'>{props.itemname}</Heading>
+
+                        <Text py='2'>
+                            {props.description}
+                        </Text>
+
+                        <Heading py='1' size='sm' style={{float:"right"}}>
+                            Price : {props.price} Rs.
+                        </Heading>
+                    </CardBody>
+
+                    <CardFooter>
+                        <div style={{ display: "flex", justifyContent: 'flex-end' }}>
+                            <Button variant='solid' colorScheme='red' onClick={handleDelete}>
+                                Delete
+                            </Button>
+                        </div>
+
+                    </CardFooter>
+                </Stack>
             </Card>
         </div>
     );
