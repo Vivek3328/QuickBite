@@ -27,7 +27,6 @@ export default function MenuCard(props) {
         //eslint-disable-next-line 
     }, [])
 
-    // console.log(location);
     return (
         <div>
 
