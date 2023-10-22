@@ -9,12 +9,16 @@ export default function RestoCard(props) {
         <div>
             <Card boxShadow='xl' maxW='md'>
                 <CardBody>
+                  <center>
+                  <div>
                     <Image
                         src={props.image}
                         // src={ `../uploads/${props.image}`}
                         alt='Restaurant Image'
                         borderRadius='lg'
                     />
+                    </div>
+                  </center>
                     <Stack mt='5' spacing='1'>
                         <Heading size='md' alignContent='left' >{props.name}</Heading>
                         <div className='d-flex flex-row' style={{justifyContent:'space-between'}}>

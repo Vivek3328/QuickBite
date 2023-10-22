@@ -6,14 +6,20 @@ import RestaurantHome from "./screens/RestaurantHome";
 // import RestoCard from "./screens/RestoCard";
 import UserHome from "./screens/UserHome";
 // import MenuCard from "./screens/MenuCard";
-import Menu from "./screens/Menu";
+// import Menu from "./screens/Menu";
 import RestoPage from "./screens/RestoPage";
 import RestaurantOrder from "./screens/RestaurantOrder";
+import Cart from "./screens/Cart";
+import CartState from "./Context/CartState";
 
 
 function App() {
+
+
+
   return (
     <>
+      <CartState>
       <BrowserRouter>
         <Routes>
 
@@ -25,11 +31,12 @@ function App() {
           <Route exact path="/userHome" element={<UserHome/>} />
           <Route exact path="/userHome/resto/:id" element={<RestoPage/>} />
           {/* <Route exact path="/menuCard" element={<MenuCard/>} /> */}
-          <Route exact path="/menu" element={<Menu/>} />
           <Route exact path="/RestaurantOrder" element={<RestaurantOrder/>} />
+          <Route exact path="/cart" element= { <Cart/> } />
           
         </Routes>
       </BrowserRouter>
+      </CartState>
     </>
   );
 }
