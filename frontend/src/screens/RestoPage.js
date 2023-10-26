@@ -14,7 +14,7 @@ export default function RestoPage() {
 
     await axios.get(`http://localhost:5000/api/menuitemauth/fetchrestomenu/${id}`)
       .then(res => {
-        console.log(res.data)
+        // console.log(res.data)
         setMenu(res.data)
       })
       .catch(err => console.log(err))
