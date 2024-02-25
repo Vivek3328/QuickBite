@@ -17,38 +17,38 @@ import {
 import styles from "./styles/resto.module.css"
 
 
-export default function RestaurantLogin({authType}) {
+export default function RestaurantLogin({ authType }) {
     const navigate = useNavigate()
     const toast = useToast()
     const { isOpen, onOpen, onClose } = useDisclosure()
-    if(authType==="login"){
-        if(!isOpen){
+    if (authType === "login") {
+        if (!isOpen) {
             onOpen();
         }
     }
-    else{
-        if(isOpen){
+    else {
+        if (isOpen) {
             onClose();
         }
     }
 
 
-    const [Credentials, setCredentials] = useState({email: "", password: ""});
+    const [Credentials, setCredentials] = useState({ email: "", password: "" });
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const response = await fetch("http://localhost:5000/api/ownerauth/loginowner",{
+        const response = await fetch("http://localhost:5000/api/ownerauth/loginowner", {
             method: 'POST',
-            headers:{
+            headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({email:Credentials.email,password:Credentials.password})
+            body: JSON.stringify({ email: Credentials.email, password: Credentials.password })
         });
 
         const json = await response.json()
         console.log(json)
 
-        if(json.success){
+        if (json.success) {
             localStorage.setItem('token', json.authtoken);
             navigate("/RestaurantHome")
             toast({
@@ -57,30 +57,30 @@ export default function RestaurantLogin({authType}) {
                 duration: 2000,
                 position: 'top-right',
                 isClosable: true,
-              })
+            })
         }
-        else{
-           alert("Invalid Credentials")
+        else {
+            alert("Invalid Credentials")
         }
 
     }
 
-    const onChange = (e)=>{
-        setCredentials({...Credentials, [e.target.name]: e.target.value});
+    const onChange = (e) => {
+        setCredentials({ ...Credentials, [e.target.name]: e.target.value });
     }
 
     return (
         <div className={styles.loginbtn}>
             <Link to={'/Resto?authType=login'} ><Button>Login to existing Restaurant</Button></Link>
 
-            <Modal isOpen={isOpen} onClose={()=>{
+            <Modal isOpen={isOpen} onClose={() => {
                 onClose();
                 navigate("/Resto")
             }}>
                 <ModalOverlay />
                 <ModalContent>
                     <ModalHeader> Login</ModalHeader>
-                    <ModalCloseButton/>
+                    <ModalCloseButton />
                     <ModalBody>
                         <form onSubmit={handleSubmit}>
                             <div className="form-group">
@@ -93,8 +93,6 @@ export default function RestaurantLogin({authType}) {
                                     autoFocus
                                     autoComplete="username"
                                     onChange={onChange}
-                                    
-
                                 />
                             </div>
                             <div className="form-group">
@@ -109,17 +107,17 @@ export default function RestaurantLogin({authType}) {
                                 />
                             </div>
                             {/* <button type="submit" className="btn btn-primary">Login</button> */}
-                            <ModalFooter style={{justifyContent: 'center', paddingBottom: '0'}} >
+                            <ModalFooter style={{ justifyContent: 'center', paddingBottom: '0' }} >
 
-                        <Button colorScheme='blue' mr={3} type='submit'>
-                            Login
-                        </Button>
-                    </ModalFooter>
+                                <Button colorScheme='blue' mr={3} type='submit'>
+                                    Login
+                                </Button>
+                            </ModalFooter>
                         </form>
 
                     </ModalBody>
 
-                    
+
                     <div className={styles.revert}>
                         <h6>
                             <Link to="/resto?authType=signup">Don't have an account ?</Link>

@@ -8,18 +8,16 @@ import { useSearchParams } from 'react-router-dom'
 
 export default function Resto() {
   const [params] = useSearchParams();
-  let authType=params.get("authType")
+  let authType = params.get("authType")
   return (
-      <div className={styles.restoScreen} >
-        <div className={styles.logo}>
-          <Link to="/">QuickBite</Link>
-        </div>
-
-        {/* <Login></Login> */}
-          <RestaurantLogin authType={authType} />
-          <RestaurantSignup authType={authType}/>
-          
+    <div className={styles.restoScreen} >
+      <div className={styles.logo}>
+        <Link to="/">QuickBite</Link>
       </div>
-        
+      <RestaurantLogin authType={authType} />
+      <RestaurantSignup authType={authType} />
+
+    </div>
+
   )
 }

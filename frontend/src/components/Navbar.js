@@ -24,10 +24,8 @@ export default function Navbar() {
     <nav className="navbar sticky-top navbar-expand-lg navbar-dark bg-black">
       <div className="container-fluid">
         <Link className="navbar-brand" to="/">QuickBite</Link>
-        
-       
         <div className={styles.order} >
-        <Link className="navbar-brand" to="/cart">Cart</Link>
+          <Link className="navbar-brand" to="/cart">Cart</Link>
           <Button className="btn btn-primary" onClick={handleLogout}>Logout</Button>
         </div>
       </div>
