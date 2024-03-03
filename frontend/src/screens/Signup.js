@@ -42,7 +42,7 @@ export default function Signup({ userAuthType }) {
     const handleApi = (e) => {
         e.preventDefault();
         // console.log({email, password})
-        axios.post('http://localhost:5000/api/userauth/registeruser', {
+        axios.post('https://quickbite-kh86.onrender.com/api/userauth/registeruser', {
             name: fullName,
             email,
             password

@@ -53,7 +53,7 @@ export default function AddItem() {
     const handleSubmit = async (e) => {
         // e.preventDefault();
         const response = await fetch(
-            "http://localhost:5000/api/menuitemauth/additem",
+            "https://quickbite-kh86.onrender.com/api/menuitemauth/additem",
             {
                 method: "POST",
                 headers: {

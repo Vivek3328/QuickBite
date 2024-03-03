@@ -8,7 +8,7 @@ export default function UserHome() {
    const [owner, setOwner] = useState([]);
    const updateHotels = async () => {
 
-      await axios.get('http://localhost:5000/api/ownerauth/fetchallowner')
+      await axios.get('https://quickbite-kh86.onrender.com/api/ownerauth/fetchallowner')
          .then(res => {
             setOwner(res.data)
             // console.log(res.data)

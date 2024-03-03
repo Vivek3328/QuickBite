@@ -13,7 +13,7 @@ import {
 export default function ItemCard(props) {
     const handleDelete = async () => {
         // Assuming you have an API endpoint for deleting items
-        const apiUrl = `http://localhost:5000/api/menuitemauth/deletemenuitems/${props.itemId}`;
+        const apiUrl = `https://quickbite-kh86.onrender.com/api/menuitemauth/deletemenuitems/${props.itemId}`;
 
         // Make a DELETE request to the API
         await fetch(apiUrl, {

@@ -6,7 +6,7 @@ export default function RestaurantHome() {
     const [menuItem, setmenuItem] = useState([]);
     const [restoName, setRestoName] = useState([]);
     const updateHotels = async () => {
-        const response = await fetch("http://localhost:5000/api/menuitemauth/fetchallmenuitems",
+        const response = await fetch("https://quickbite-kh86.onrender.com/api/menuitemauth/fetchallmenuitems",
             {
                 method: "GET",
                 headers: {

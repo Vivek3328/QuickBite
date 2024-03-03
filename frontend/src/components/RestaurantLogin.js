@@ -37,7 +37,7 @@ export default function RestaurantLogin({ authType }) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const response = await fetch("http://localhost:5000/api/ownerauth/loginowner", {
+        const response = await fetch("https://quickbite-kh86.onrender.com/api/ownerauth/loginowner", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

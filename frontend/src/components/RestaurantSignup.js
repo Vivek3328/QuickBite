@@ -75,7 +75,7 @@ export default function RestaurantSignup({ authType }) {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const response = await fetch(
-            "http://localhost:5000/api/ownerauth/registerowner",
+            "https://quickbite-kh86.onrender.com/api/ownerauth/registerowner",
             {
                 method: "POST",
                 headers: {
