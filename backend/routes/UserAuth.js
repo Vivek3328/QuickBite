@@ -15,7 +15,7 @@ router.post("/registeruser",
         body("password", "Enter a valid password").isLength({ min: 4 }),
     ],
     async (req, res) => {
-        console.log(req.body);
+        // console.log(req.body);
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() });
@@ -42,7 +42,7 @@ router.post("/registeruser",
                 },
             };
             const authtoken = jwt.sign(data, JWT_SECRET);
-            console.log(authtoken);
+            // console.log(authtoken);
             res.json({ authtoken });
             // res.json(user)
         } catch (error) {
@@ -59,7 +59,7 @@ router.post("/loginuser",
         body("password", "Enter a valid password").isLength({ min: 4 }),
     ],
     async (req, res) => {
-        console.log(req.body);
+        // console.log(req.body);
         //If there are error return bad request or error
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -71,11 +71,11 @@ router.post("/loginuser",
             // Check whether user with this email exist already
             let user = await User.findOne({ email: req.body.email });
             if (!user) {
-                
+
                 return res.status(400).json({ error: "Please, Try to login with correct credential" });
             }
             const pswdcompare = await bcrypt.compare(req.body.password, user.password);
-            if(!pswdcompare){
+            if (!pswdcompare) {
                 // console.log( "Please, Try to login with correct credential" )
                 return res.status(400).json({ error: "Please, Try to login with correct credential" });
             }
@@ -87,10 +87,10 @@ router.post("/loginuser",
             };
             // console.log(data, user);
             const authtoken = jwt.sign(data, JWT_SECRET);
-            console.log(authtoken);
+            // console.log(authtoken);
             res.json({ authtoken });
             // res.json(user);
-        } 
+        }
         catch (error) {
             console.error(error.message);
             res.status(500).send("Some error occured");
@@ -104,7 +104,7 @@ router.post("/loginuser",
 router.post("/getuser", fetchuser, async (req, res) => {
     try {
         userId = req.user.id;
-        console.log(userId)
+        // console.log(userId)
         const user = await User.findById(userId).select("-password")
         res.send(user)
     } catch (error) {

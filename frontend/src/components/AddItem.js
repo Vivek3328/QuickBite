@@ -1,4 +1,4 @@
-import React,{useState} from 'react'
+import React, { useState } from 'react'
 import {
     Modal,
     ModalOverlay,
@@ -16,17 +16,17 @@ import {
 export default function AddItem() {
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [Item, setItem] = useState({
-        itemname:"",
-        description:"",
-        price:"",
-        image:""
+        itemname: "",
+        description: "",
+        price: "",
+        image: ""
     });
     const [img, setImg] = useState("");
 
     const uploadimage = async (e) => {
         e.preventDefault();
         const files = document.querySelector("[type=file]").files;
-        console.log(files[0]);
+        // console.log(files[0]);
         const formData = new FormData();
         formData.append("file", files[0]);
         formData.append("upload_preset", "quickbite");
@@ -35,15 +35,15 @@ export default function AddItem() {
             method: "post",
             body: formData,
         })
-        .then((res) => res.json())
-        .then((data) => {
-            console.log(data);
-            console.log(data.url);
-            setImg(data.url);
-        })
-        .catch((err) => {
-            console.log(err);
-        });
+            .then((res) => res.json())
+            .then((data) => {
+                // console.log(data);
+                // console.log(data.url);
+                setImg(data.url);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
     };
 
     const onChange = (e) => {
@@ -58,7 +58,7 @@ export default function AddItem() {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "auth-token":localStorage.getItem('token')
+                    "auth-token": localStorage.getItem('token')
                 },
                 body: JSON.stringify({
                     itemname: Item.itemname,
@@ -68,9 +68,9 @@ export default function AddItem() {
                 }),
             }
         );
-        console.log(Item);
+        // console.log(Item);
         const json = await response.json();
-        console.log(json);
+        // console.log(json);
         if (json.success) {
             window.location.reload(false);
         } else {
@@ -88,7 +88,7 @@ export default function AddItem() {
                     <ModalCloseButton />
                     <ModalBody>
                         <form >
-                        <div>
+                            <div>
                                 <input
                                     type="text"
                                     placeholder='Item Name'
@@ -130,14 +130,14 @@ export default function AddItem() {
                                 </div>
                             </div>
                             <ModalFooter>
-                        <Button colorScheme='blue' mr={3} onClick={handleSubmit}>
-                            Add
-                        </Button>
-                        </ModalFooter>
+                                <Button colorScheme='blue' mr={3} onClick={handleSubmit}>
+                                    Add
+                                </Button>
+                            </ModalFooter>
                         </form>
                     </ModalBody>
 
-                    
+
                 </ModalContent>
             </Modal>
         </div>

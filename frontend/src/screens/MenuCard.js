@@ -8,19 +8,19 @@ export default function MenuCard(props) {
 
     const a = useContext(cartContext);
     const location = useLocation();
-  
+
     const handleRemove = (id) => {
         const arr = a.cart.filter((item) => item._id !== id);
         a.setCart(arr);
         localStorage.removeItem("cart");
-        localStorage.setItem("cart",JSON.stringify(arr))
+        localStorage.setItem("cart", JSON.stringify(arr))
     }
     useEffect(() => {
-        console.log("menupage")
-       a.handlePrice();
+        // console.log("menupage")
+        a.handlePrice();
         //eslint-disable-next-line 
     }, [a.cart])
- 
+
     return (
         <div>
 
@@ -105,7 +105,7 @@ export default function MenuCard(props) {
                     </CardFooter>
                 </Stack>
             </Card>
-          
+
         </div>
     )
 }

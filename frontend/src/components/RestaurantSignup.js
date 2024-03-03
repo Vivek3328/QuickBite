@@ -48,7 +48,7 @@ export default function RestaurantSignup({ authType }) {
         e.preventDefault();
         const files = document.querySelector("[type=file]").files;
         // await setImage(e.target.files)
-        console.log(files[0]);
+        // console.log(files[0]);
         const formData = new FormData();
         formData.append("file", files[0]);
         formData.append("upload_preset", "quickbite");
@@ -59,8 +59,8 @@ export default function RestaurantSignup({ authType }) {
         })
             .then((res) => res.json())
             .then((data) => {
-                console.log(data);
-                console.log(data.url);
+                // console.log(data);
+                // console.log(data.url);
                 setImg(data.url);
             })
             .catch((err) => {
@@ -94,9 +94,9 @@ export default function RestaurantSignup({ authType }) {
                 }),
             }
         );
-        console.log(Credentials);
+        // console.log(Credentials);
         const json = await response.json();
-        console.log(json);
+        // console.log(json);
         if (json.success) {
             localStorage.setItem("token", json.authtoken);
             navigate("/Resto?authType=login");
@@ -106,7 +106,7 @@ export default function RestaurantSignup({ authType }) {
                 duration: 2000,
                 position: 'top-right',
                 isClosable: true,
-              })
+            })
         } else {
             alert("Invalid Credentials");
         }

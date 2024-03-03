@@ -25,7 +25,7 @@ export default function ItemCard(props) {
         })
             .then((response) => {
                 if (response.ok) {
-                    console.log(`Item deleted: ${props.itemname}`);
+                    // console.log(`Item deleted: ${props.itemname}`);
                     props.updateHotels();
                     // You can also update the UI to reflect the deletion if needed
                 } else {
@@ -102,7 +102,7 @@ export default function ItemCard(props) {
                             {props.description}
                         </Text>
 
-                        <Heading py='1' size='sm' style={{float:"right"}}>
+                        <Heading py='1' size='sm' style={{ float: "right" }}>
                             Price : {props.price} Rs.
                         </Heading>
                     </CardBody>
