@@ -1,0 +1,14 @@
+.loginbtn {
+  color: aliceblue;
+  position: relative;
+  z-index: 1;
+  cursor: pointer;
+  top: 10%;
+  padding-left: 10px;
+  padding-right: 20px;
+}
+.revert {
+  width: 100%;
+  text-align: center;
+  padding-bottom: 2%;
+}
