@@ -1,0 +1,17 @@
+.signupbtn {
+  color: aliceblue;
+  position: relative;
+  z-index: 1;
+  width: auto;
+  cursor: pointer;
+  height: auto;
+  top: 10%;
+  padding-right: 10px;
+  padding-left: 5px;
+}
+
+.revert {
+  width: 100%;
+  text-align: center;
+  padding-bottom: 2%;
+}

@@ -23,7 +23,7 @@ const OrderSchema = new Schema({
         type : mongoose.Schema.Types.ObjectId,
         ref : 'owner'
     },
-    menuitem:[ItemSchema],
+    item:[ItemSchema],
     totalprice: {
         type: Number,
         required: true,
