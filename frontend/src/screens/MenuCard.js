@@ -8,7 +8,6 @@ import {
   Image,
   Button,
   CardFooter,
-  Select,
 } from "@chakra-ui/react";
 import cartContext from "../Context/cartContext";
 import { useLocation } from "react-router-dom";
@@ -26,8 +25,9 @@ export default function MenuCard(props) {
   useEffect(() => {
     // console.log("menupage")
     a.handlePrice();
+
     //eslint-disable-next-line
-  }, [a.cart]);
+  }, [a.cart, ]);
 
   return (
     <div>
@@ -49,7 +49,7 @@ export default function MenuCard(props) {
           p="2"
         />
 
-        <Stack>
+<Stack>
           <CardBody>
             <div style={{ display: "flex" }}>
               <Heading size="md">
@@ -72,34 +72,40 @@ export default function MenuCard(props) {
           <CardFooter>
             {location.pathname === "/cart" ? (
               <>
-                <div style={{ display: "flex", justifyContent: "end" }}>
-                  <div className="btns">
-                    <Button
-                      variant="solid"
-                      colorScheme="red"
-                      pl="5"
-                      onClick={() => a.handleQuant(props._id, -1)}
-                    >
-                      -
-                    </Button>
-                    <Button
-                      variant="outline"
-                      colorScheme="green"
-                      pl="5"
-                      value="cnt"
-                    >
-                      {props.quantity}
-                    </Button>
-                    <Button
-                      variant="solid"
-                      colorScheme="messenger"
-                      pl="5"
-                      onClick={() => a.handleQuant(props._id, +1)}
-                    >
-                      +
-                    </Button>
-                  </div>
-                  <div style={{ paddingLeft: "200px" }}>
+                <div className='row' >
+                  <div className="btns" style={{ display: 'flex'}}>
+                    <div className="first-three-buttons me-5"
+                     style={{ 
+                     display: 'flex' ,
+                     justifyContent: location.pathname === "/cart" ? "space-between" : "flex-end", 
+                    alignItems: 'flex-start' ,
+                    gap: '5px' 
+                    }}>
+                      <Button
+                        variant="solid"
+                        colorScheme="red"
+                        pl="5"
+                        onClick={() => a.handleQuant(props._id, -1)}
+                      >
+                        -
+                      </Button>
+                      <Button
+                        variant="outline"
+                        colorScheme="green"
+                        pl="5"
+                        value="cnt"
+                      >
+                        {props.quantity}
+                      </Button>
+                      <Button
+                        variant="solid"
+                        colorScheme="messenger"
+                        pl="5"
+                        onClick={() => a.handleQuant(props._id, +1)}
+                      >
+                        +
+                      </Button>
+                    </div>
                     <Button
                       variant="solid"
                       colorScheme="red"
@@ -110,33 +116,21 @@ export default function MenuCard(props) {
                     </Button>
                   </div>
                 </div>
+
               </>
             ) : (
               <>
-                {/* {console.log(props.item)} */}
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    marginRight: "27px",
-                  }}
-                >
-                  <Select placeholder="Select Quantity">
-                    <option value="1"> 1</option>
-                    <option value="2"> 2</option>
-                    <option value="3"> 3</option>
-                    <option value="4"> 4</option>
-                    <option value="5"> 5</option>
-                  </Select>
-                </div>
-                <Button
+              <div className="row ms-1 ">
+              <Button
                   variant="outline"
                   colorScheme="green"
                   pl="5"
-                  onClick={() => a.handleclick(props.item)}
+                  onClick={() => a.checkCart(props.item)}
                 >
                   Add to Cart
                 </Button>
+              </div>
+               
               </>
             )}
           </CardFooter>
