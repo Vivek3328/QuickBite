@@ -13,8 +13,8 @@ import CartState from "./Context/CartState";
 function App() {
   return (
     <>
-      <CartState>
-        <BrowserRouter>
+      <BrowserRouter>
+        <CartState>
           <Routes>
             <Route path="/" element={<Home />} />
             <Route exact path="/resto" element={<Resto />} />
@@ -25,8 +25,8 @@ function App() {
             <Route exact path="/RestaurantOrder" element={<RestaurantOrder />} />
             <Route exact path="/cart" element={<Cart />} />
           </Routes>
-        </BrowserRouter>
-      </CartState>
+        </CartState>
+      </BrowserRouter>
     </>
   );
 }
