@@ -1,29 +1,24 @@
-const express = require( "express")
-const connectTomongo = require( "./db")
-const cors = require('cors');
-connectTomongo();
-
+const express = require("express");
+const cors = require("cors");
+const bodyParser = require("body-parser");
+const connectTOMongoDB = require("./db");
 const app = express();
+require("dotenv").config();
 
-// Enable CORS for all routes
+const port = process.env.PORT;
+
+connectTOMongoDB();
+
 app.use(cors());
+app.use(express.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
+app.use("/api/ownerauth", require("./routes/OwnerAuth.js"));
+app.use("/api/userauth", require("./routes/UserAuth.js"));
+app.use("/api/menuitemauth", require("./routes/MenuItemAuth.js"));
+app.use("/api/orders", require("./routes/OrderAuth.js"));
 
-const port = 5000
-
-app.use(express.json())
-
-
-app.use('/api/ownerauth',require('./routes/OwnerAuth'))
-app.use('/api/userauth', require('./routes/UserAuth'))
-app.use('/api/menuitemauth', require('./routes/MenuItemAuth'))
-app.use('/api/orderauth', require('./routes/OrderAuth'))
-
-  
-  app.listen(port, () => {
-    console.log(`Example app listening on port ${port}`)
-  })
-
-
- 
-
+app.listen(port, () => {
+  console.log(`App is Listening on Port ${port}`);
+});

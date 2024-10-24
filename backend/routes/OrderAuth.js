@@ -1,42 +1,33 @@
 const express = require("express");
 const router = express.Router();
-const { body, validationResult } = require("express-validator");
-const Order= require("../models/OrderModel");
-const fetchuser = require("../Middlewares/fetchuser");
+const fetchUser = require("../middlewares/fetchUser");
+const fetchOwner = require("../middlewares/fetchOwner");
+const { body } = require("express-validator");
+const {
+  checkout,
+  restaurantOrders,
+  userOrders,
+  updateStatus,
+} = require("../controllers/OrderController");
 
-router.post("/checkout",fetchuser,async (req, res) => {
-    try {
-      const Item = req.body.item.map((item) => ({
-        menuitem: item.menuitem, 
-        quantity: item.quantity,
-    }));
-
-        order = await Order.create({
-            user:req.user,
-            owner:req.body.owner,
-            item:Item,
-            shipping:req.body.shipping,
-            totalprice:req.body.totalprice,
-            dateOrdered:req.body.dateOrdered,
-        });
-    } catch (error) {
-        console.error(error.message);
-        res.status(500).json({ success:false, error: "Some Error occured" });
-    }
-}
+router.post(
+  "/checkout",
+  fetchUser, // Middleware to fetch logged-in user info
+  [
+    body("owner", "Owner is required").not().isEmpty(),
+    body("item", "Items are required").isArray({ min: 1 }),
+    body("totalprice", "Total price is required and must be a number").isFloat({
+      gt: 0,
+    }),
+    body("shipping", "Shipping details are required").not().isEmpty(),
+  ],
+  checkout
 );
 
+router.get("/myorders/", fetchOwner, restaurantOrders);
 
-router.get('myorders/:ownerId', async (req, res) => {
-  try {
-      const ownerId = req.params.ownerId;
-      const orders = await Order.find({ owner: ownerId });
-      res.status(200).json(orders);
-  } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: 'Internal server error' });
-  }
-});
+router.get("/userorders", fetchUser, userOrders);
 
+router.put("/updateorder/:id", fetchOwner, updateStatus);
 
 module.exports = router;
