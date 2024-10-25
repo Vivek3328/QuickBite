@@ -49,20 +49,19 @@ const Modal = ({ showModal, onClose, onSubmit }) => {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-      <div className="bg-white w-full max-w-lg rounded-lg shadow-lg p-8">
-        <h2 className="text-2xl font-bold mb-4 text-center">
+      <div className="bg-white w-full max-w-md rounded-lg shadow-lg p-6">
+        <h2 className="text-xl font-bold mb-4 text-center">
           Enter Your Address
         </h2>
 
-        <div className="space-y-4">
+        <div className="space-y-2">
           <input
             type="text"
             placeholder="Phone Number"
             value={mobile}
             onChange={(e) => setMobile(e.target.value)}
-            className={`border rounded w-full p-2 focus:outline-none focus:ring-2 ${
-              errors.mobile ? "border-red-500" : "focus:ring-red-500"
-            }`}
+            className={`border rounded text-sm w-full p-2 focus:outline-none focus:ring-2 ${errors.mobile ? "border-red-500" : "focus:ring-red-500"
+              }`}
           />
           {errors.mobile && (
             <p className="text-red-500 text-sm">{errors.mobile}</p>
@@ -73,9 +72,8 @@ const Modal = ({ showModal, onClose, onSubmit }) => {
             placeholder="Pincode"
             value={pincode}
             onChange={(e) => setPincode(e.target.value)}
-            className={`border rounded w-full p-2 focus:outline-none focus:ring-2 ${
-              errors.pincode ? "border-red-500" : "focus:ring-red-500"
-            }`}
+            className={`border rounded text-sm w-full p-1 focus:outline-none focus:ring-2 ${errors.pincode ? "border-red-500" : "focus:ring-red-500"
+              }`}
           />
           {errors.pincode && (
             <p className="text-red-500 text-sm">{errors.pincode}</p>
@@ -86,9 +84,8 @@ const Modal = ({ showModal, onClose, onSubmit }) => {
             placeholder="State"
             value={state}
             onChange={(e) => setState(e.target.value)}
-            className={`border rounded w-full p-2 focus:outline-none focus:ring-2 ${
-              errors.state ? "border-red-500" : "focus:ring-red-500"
-            }`}
+            className={`border rounded text-sm w-full p-1 focus:outline-none focus:ring-2 ${errors.state ? "border-red-500" : "focus:ring-red-500"
+              }`}
           />
           {errors.state && (
             <p className="text-red-500 text-sm">{errors.state}</p>
@@ -99,18 +96,16 @@ const Modal = ({ showModal, onClose, onSubmit }) => {
             placeholder="City"
             value={city}
             onChange={(e) => setCity(e.target.value)}
-            className={`border rounded w-full p-2 focus:outline-none focus:ring-2 ${
-              errors.city ? "border-red-500" : "focus:ring-red-500"
-            }`}
+            className={`border rounded w-full p-1 focus:outline-none focus:ring-2 ${errors.city ? "border-red-500" : "focus:ring-red-500"
+              }`}
           />
           {errors.city && <p className="text-red-500 text-sm">{errors.city}</p>}
 
           <select
             value={paymode}
             onChange={(e) => setPaymentMode(e.target.value)}
-            className={`border rounded w-full p-2 focus:outline-none focus:ring-2 ${
-              errors.paymode ? "border-red-500" : "focus:ring-red-500"
-            }`}
+            className={`border rounded w-full p-1 text-sm focus:outline-none focus:ring-2 ${errors.paymode ? "border-red-500" : "focus:ring-red-500"
+              }`}
           >
             <option value="">Select Payment Mode</option>
             <option value="Credit Card">Credit Card</option>
@@ -126,13 +121,13 @@ const Modal = ({ showModal, onClose, onSubmit }) => {
         <div className="mt-6 flex justify-end">
           <button
             onClick={handleSubmit}
-            className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-700 transition duration-200"
+            className="bg-green-500 text-white text-sm px-4 py-1 rounded hover:bg-green-700 transition duration-200"
           >
             Proceed
           </button>
           <button
             onClick={handleClose}
-            className="ml-4 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700 transition duration-200"
+            className="ml-4 bg-red-500 text-white text-sm px-4 py-1 rounded hover:bg-red-700 transition duration-200"
           >
             Cancel
           </button>

@@ -98,9 +98,9 @@ const AddRestaurant = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-1">
-      <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-4xl">
-        <h2 className="text-3xl font-extrabold text-center mb-4 text-[rgb(239,79,95)]">
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 pt-16">
+      <div className="bg-white p-4 rounded-lg shadow-lg w-full max-w-4xl">
+        <h2 className="text-2xl font-extrabold text-center mb-4 text-[rgb(239,79,95)]">
           {isLogin ? "Restaurant Owner Login" : "Register Your Restaurant"}
         </h2>
 
@@ -112,13 +112,12 @@ const AddRestaurant = () => {
 
         <form
           onSubmit={handleSubmit}
-          className={`grid gap-4 ${
-            isLogin ? "grid-cols-1" : "grid-cols-1 md:grid-cols-3"
-          }`}
+          className={`grid gap-4 ${isLogin ? "grid-cols-1" : "grid-cols-1 md:grid-cols-3"
+            }`}
         >
           {isLogin ? (
             <>
-              <div className="mb-3 grid grid-cols-2 gap-4">
+              <div className="mb-3 grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-gray-700 font-semibold mb-1">
                     Email
@@ -128,7 +127,7 @@ const AddRestaurant = () => {
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-[rgb(239,79,95)] transition duration-300 ease-in-out"
+                    className="w-full px-2 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[rgb(239,79,95)] transition duration-300 ease-in-out"
                     placeholder="Enter your email"
                     required
                   />
@@ -143,7 +142,7 @@ const AddRestaurant = () => {
                     name="password"
                     value={formData.password}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-[rgb(239,79,95)] transition duration-300 ease-in-out"
+                    className="w-full px-2 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[rgb(239,79,95)] transition duration-300 ease-in-out"
                     placeholder="Enter your password"
                     required
                   />
@@ -162,7 +161,7 @@ const AddRestaurant = () => {
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-[rgb(239,79,95)] transition duration-300 ease-in-out"
+                  className="w-full px-2 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[rgb(239,79,95)] transition duration-300 ease-in-out"
                   placeholder="Enter your restaurant name"
                   required
                 />
@@ -177,7 +176,7 @@ const AddRestaurant = () => {
                   name="address"
                   value={formData.address}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-[rgb(239,79,95)] transition duration-300 ease-in-out"
+                  className="w-full px-2 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[rgb(239,79,95)] transition duration-300 ease-in-out"
                   placeholder="Enter your address"
                   required
                 />
@@ -192,7 +191,7 @@ const AddRestaurant = () => {
                   name="pincode"
                   value={formData.pincode}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-[rgb(239,79,95)] transition duration-300 ease-in-out"
+                  className="w-full px-2 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[rgb(239,79,95)] transition duration-300 ease-in-out"
                   placeholder="Enter your pincode"
                   required
                 />
@@ -207,7 +206,7 @@ const AddRestaurant = () => {
                   name="mobile"
                   value={formData.mobile}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-[rgb(239,79,95)] transition duration-300 ease-in-out"
+                  className="w-full px-2 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[rgb(239,79,95)] transition duration-300 ease-in-out"
                   placeholder="Enter your phone number"
                   required
                 />
@@ -222,7 +221,7 @@ const AddRestaurant = () => {
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-[rgb(239,79,95)] transition duration-300 ease-in-out"
+                  className="w-full px-2 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[rgb(239,79,95)] transition duration-300 ease-in-out"
                   placeholder="Enter your email"
                   required
                 />
@@ -237,7 +236,7 @@ const AddRestaurant = () => {
                   name="password"
                   value={formData.password}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-[rgb(239,79,95)] transition duration-300 ease-in-out"
+                  className="w-full px-2 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[rgb(239,79,95)] transition duration-300 ease-in-out"
                   placeholder="Enter your password"
                   required
                 />
@@ -252,7 +251,7 @@ const AddRestaurant = () => {
                   name="foodtype"
                   value={formData.foodtype}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-[rgb(239,79,95)] transition duration-300 ease-in-out"
+                  className="w-full px-2 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[rgb(239,79,95)] transition duration-300 ease-in-out"
                   placeholder="Italian, Spanish, etc."
                   required
                 />
@@ -266,7 +265,7 @@ const AddRestaurant = () => {
                   name="restaurantType"
                   value={formData.restaurantType}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-[rgb(239,79,95)] transition duration-300 ease-in-out"
+                  className="w-full px-2 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[rgb(239,79,95)] transition duration-300 ease-in-out"
                   required
                 >
                   <option value="">Select Type</option>
@@ -284,7 +283,7 @@ const AddRestaurant = () => {
                   accept="image/*"
                   name="image"
                   onChange={handleFileChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-[rgb(239,79,95)] transition duration-300 ease-in-out"
+                  className="w-full px-2 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[rgb(239,79,95)] transition duration-300 ease-in-out"
                   required
                 />
               </div>
@@ -293,14 +292,14 @@ const AddRestaurant = () => {
 
           <button
             type="submit"
-            className="bg-[rgb(239,79,95)] text-white font-semibold py-3 rounded-lg transition duration-300 ease-in-out hover:bg-[rgb(239,79,95,0.8)]"
+            className="bg-[rgb(239,79,95)] text-white font-semibold py-1 rounded-lg transition duration-300 ease-in-out hover:bg-[rgb(239,79,95,0.8)]"
             disabled={loading}
           >
             {loading ? "Loading..." : isLogin ? "Login" : "Register"}
           </button>
         </form>
 
-        <div className="text-center mt-6">
+        <div className="text-center mt-2">
           <p className="text-gray-600">
             {isLogin ? "Don't have an account? " : "Already have an account? "}
             <button

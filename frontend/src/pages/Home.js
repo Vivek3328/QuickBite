@@ -32,7 +32,7 @@ const Home = () => {
   }, [isLoggedIn]);
 
   if (loading) {
-    return <div className="text-center text-lg">Loading...</div>;
+    return <div className="text-center text-base">Loading...</div>;
   }
 
   if (error) {
@@ -44,33 +44,35 @@ const Home = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-r from-gray-200 to-white">
-      <div className="flex-1 pt-16">
+    <div className="min-h-screen flex flex-col bg-gradient-to-r from-gray-200 to-white pt-12">
+      <div className="flex-1">
         {isLoggedIn ? (
-          <div className="p-8">
-            <h1 className="text-4xl font-bold text-gray-800 text-center mb-4">
+          <div className="p-4">
+            <h1 className="text-2xl md:text-3xl font-bold text-gray-800 text-center mb-2">
               Explore Our Restaurants
             </h1>
-            <p className="text-lg text-gray-700 text-center mb-8">
+            <p className="text-sm text-gray-700 text-center mb-4">
               Discover a variety of dining options available in your area.
-              Whether you're looking for a cozy cafe, a family-friendly diner,
-              or a fine dining experience, we've got you covered!
             </p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6 mx-8">
               {restaurants.map((restaurant) => (
-                <RestaurantCard
-                  key={restaurant._id} // Use a unique key
-                  id={restaurant._id}
-                  image={restaurant.image}
-                  name={restaurant.name}
-                  foodtype={restaurant.foodtype}
-                />
+                <div
+                  key={restaurant._id}
+                  className="transform transition-transform hover:scale-105 mb-4" // Added margin-bottom for spacing
+                >
+                  <RestaurantCard
+                    id={restaurant._id}
+                    image={restaurant.image}
+                    name={restaurant.name}
+                    foodtype={restaurant.foodtype}
+                  />
+                </div>
               ))}
             </div>
           </div>
         ) : (
           <div
-            className="flex-1 flex items-center justify-center w-full min-h-screen overflow-hidden"
+            className="flex-1 flex items-center justify-center w-full min-h-screen"
             style={{
               backgroundImage: `url(${backgroundImage})`,
               backgroundSize: "cover",
@@ -78,11 +80,11 @@ const Home = () => {
               backgroundRepeat: "no-repeat",
             }}
           >
-            <div className="bg-black bg-opacity-50 p-8 rounded-lg text-center">
-              <h1 className="text-white text-4xl md:text-5xl font-bold">
+            <div className="bg-black bg-opacity-60 p-4 rounded-lg text-center">
+              <h1 className="text-white text-xl font-bold">
                 Welcome to QuickBite - Discover Deliciousness!
               </h1>
-              <p className="text-white mt-4 text-lg">
+              <p className="text-white mt-2 text-sm">
                 Join us today and explore an amazing selection of restaurants
                 just for you!
               </p>

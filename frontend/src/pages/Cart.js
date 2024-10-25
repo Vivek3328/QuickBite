@@ -132,10 +132,10 @@ const Cart = () => {
     platformFee;
 
   return (
-    <div className="container mx-auto py-8 flex flex-wrap mt-16">
-      <div className="flex-1">
+    <div className="container mx-auto py-8 flex flex-wrap pt-20">
+      <div className="flex-1 lg:ml-10 lg:mr-4">
         <h1 className="text-2xl font-bold mb-6">Your Cart</h1>
-        <div className="space-y-4">
+        <div className="space-y-2">
           {cartItems.length === 0 ? (
             <p className="text-gray-500">Your cart is empty.</p>
           ) : (
@@ -147,7 +147,7 @@ const Cart = () => {
                 <img
                   src={item.image}
                   alt={item.itemname}
-                  className="w-20 h-20 object-cover mr-4 rounded-md"
+                  className="w-16 h-16 object-cover mr-4 rounded-md"
                 />
                 <div className="flex-1">
                   <h2 className="font-semibold text-lg">{item.itemname}</h2>
@@ -155,14 +155,14 @@ const Cart = () => {
                 </div>
                 <div className="flex items-center">
                   <button
-                    className="bg-[rgb(239,79,95)] text-white rounded-full p-1 w-8 h-8 flex items-center justify-center hover:bg-red-700 transition"
+                    className="bg-[rgb(239,79,95)] text-white rounded-full p-1 w-6 h-6 flex items-center justify-center hover:bg-red-700 transition"
                     onClick={() => changeQuantity(item._id, -1)}
                   >
                     <span className="text-2xl font-bold mb-2">-</span>
                   </button>
                   <span className="text-lg mx-4">{quantities[item._id]}</span>
                   <button
-                    className="bg-[rgb(239,79,95)] text-white rounded-full p-1 w-8 h-8 flex items-center justify-center hover:bg-red-700 transition"
+                    className="bg-[rgb(239,79,95)] text-white rounded-full p-1 w-6 h-6 flex items-center justify-center hover:bg-red-700 transition"
                     onClick={() => changeQuantity(item._id, 1)}
                   >
                     <span className="text-xl font-bold mb-1">+</span>
@@ -175,7 +175,7 @@ const Cart = () => {
       </div>
 
       {cartItems.length > 0 && (
-        <div className="w-full h-3/4 md:w-1/3 bg-white shadow-lg rounded-lg p-6 ml-4 mt-8 md:mt-0 border border-gray-200">
+        <div className="w-full h-3/4 md:w-1/3 bg-white shadow-lg rounded-lg p-6 ml-4 mt-8 md:mt-0 border border-gray-200 mr-8">
           <h2 className="text-xl font-bold mb-4 text-[rgb(239,79,95)] ">
             Cart Summary
           </h2>
@@ -220,11 +220,11 @@ const Cart = () => {
               placeholder="Enter coupon code"
               value={couponCode}
               onChange={(e) => setCouponCode(e.target.value)}
-              className="border rounded w-3/5 p-2 focus:outline-none focus:ring-2 focus:ring-red-500"
+              className="border text-sm rounded w-3/5 p-1 focus:outline-none focus:ring-2 focus:ring-red-500"
             />
             <button
               onClick={applyCoupon}
-              className="ml-2 w-2/5 bg-blue-500 text-white py-2 rounded hover:bg-blue-700 transition"
+              className="ml-4 w-2/5 bg-blue-500 text-white text-base py-1 rounded hover:bg-blue-700 transition"
             >
               Apply Coupon
             </button>
@@ -232,7 +232,7 @@ const Cart = () => {
 
           <button
             onClick={() => setShowModal(true)}
-            className="w-full bg-[rgb(239,79,95)]  text-white py-2 rounded hover:bg-red-700 transition"
+            className="w-full bg-[rgb(239,79,95)]  text-white text-base py-1 rounded hover:bg-red-700 transition"
           >
             Checkout
           </button>

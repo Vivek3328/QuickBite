@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import ConfirmationModal from "../components/ConfirmationModal";
+// import ConfirmationModal from "../components/ConfirmationModal";
 
 const RestaurantMenu = () => {
   const [menuItem, setmenuItem] = useState([]);
   const [restoName, setRestoName] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [img, setImg] = useState("");
-  const [deleteId, setDeleteId] = useState("");
+  // const [deleteId, setDeleteId] = useState("");
   const [editItemId, setEditItemId] = useState(null); // Track the item being edited
   const [newItem, setNewItem] = useState({
     itemname: "",
@@ -15,7 +15,7 @@ const RestaurantMenu = () => {
     price: "",
     image: "",
   });
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  // const [isModalOpen, setIsModalOpen] = useState(false);
 
   const MenuItems = async () => {
     try {
@@ -133,21 +133,21 @@ const RestaurantMenu = () => {
     setEditItemId(item._id); // Set the ID of the item being edited
   };
 
-  const handleDeleteItem = async (id) => {
-    try {
-      await axios.delete(
-        `${process.env.REACT_APP_API_BASE_URL}/menuitemauth/deletemenuitems/${id}`,
-        {
-          headers: {
-            "auth-token": localStorage.getItem("ownerToken"),
-          },
-        }
-      );
-      setmenuItem(menuItem.filter((item) => item._id !== id));
-    } catch (error) {
-      console.error("Error deleting item:", error);
-    }
-  };
+  // const handleDeleteItem = async (id) => {
+  //   try {
+  //     await axios.delete(
+  //       `${process.env.REACT_APP_API_BASE_URL}/menuitemauth/deletemenuitems/${id}`,
+  //       {
+  //         headers: {
+  //           "auth-token": localStorage.getItem("ownerToken"),
+  //         },
+  //       }
+  //     );
+  //     setmenuItem(menuItem.filter((item) => item._id !== id));
+  //   } catch (error) {
+  //     console.error("Error deleting item:", error);
+  //   }
+  // };
 
   const removeImage = () => {
     setImg("");
@@ -157,12 +157,12 @@ const RestaurantMenu = () => {
   return (
     <div className="min-h-screen bg-gray-100 p-4 mt-16">
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-800 text-center">
+        <h1 className="text-2xl font-bold text-gray-800 text-center">
           {restoName}'s Menu
         </h1>
         <button
           onClick={() => setShowModal(true)}
-          className="px-8 py-3 bg-red-500 text-white rounded-lg shadow-md hover:bg-red-600 transition text-lg font-bold"
+          className="px-4 py-2 bg-red-500 text-white rounded-lg shadow-md hover:bg-red-600 transition text-sm font-bold"
         >
           + Add New Item
         </button>
@@ -170,12 +170,12 @@ const RestaurantMenu = () => {
 
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md transform transition-all">
-            <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">
+          <div className="bg-white p-6 rounded-xl shadow-lg w-full max-w-md transform transition-all mt-6">
+            <h2 className="text-2xl font-bold text-gray-800 mb-2 text-center">
               {editItemId ? "Edit Item" : "Add New Item"}
             </h2>
             <form onSubmit={handleAddOrEditItem}>
-              <div className="space-y-4">
+              <div className="space-y-1">
                 <div>
                   <label className="block text-gray-700 font-semibold">
                     Item Name
@@ -185,7 +185,7 @@ const RestaurantMenu = () => {
                     name="itemname"
                     value={newItem.itemname}
                     onChange={handleInputChange}
-                    className="w-full p-3 mt-1 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400"
+                    className="w-full p-1 mt-1 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400"
                     placeholder="Enter item name"
                     required
                   />
@@ -198,7 +198,7 @@ const RestaurantMenu = () => {
                     name="description"
                     value={newItem.description}
                     onChange={handleInputChange}
-                    className="w-full p-3 mt-1 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400"
+                    className="w-full p-1 mt-1 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400"
                     placeholder="Enter item description"
                     required
                   />
@@ -212,7 +212,7 @@ const RestaurantMenu = () => {
                     name="price"
                     value={newItem.price}
                     onChange={handleInputChange}
-                    className="w-full p-3 mt-1 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400"
+                    className="w-full p-1 mt-1 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400"
                     placeholder="Enter item price"
                     required
                   />
@@ -227,15 +227,15 @@ const RestaurantMenu = () => {
                     type="file"
                     accept="image/*"
                     onChange={uploadImage}
-                    className="w-full p-3 mt-1 border rounded-lg"
+                    className="w-full p-1 mt-1 text-sm border rounded-lg"
                   />
-                  <div className="mb-4">
+                  <div className="mb-2">
                     {img ? (
                       <div className=" flex">
                         <img
                           src={img}
                           alt="Current Item"
-                          className="w-12 h-12 object-cover rounded-lg mt-2"
+                          className="w-10 h-10 object-cover rounded-lg mt-2"
                         />
                         <button
                           type="button"
@@ -252,17 +252,22 @@ const RestaurantMenu = () => {
                 </div>
               </div>
 
-              <div className="mt-6 flex justify-end space-x-4">
+              <div className="mt-2 flex justify-end space-x-4">
                 <button
                   type="button"
-                  onClick={() => setShowModal(false)}
-                  className="px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition"
+                  onClick={() => {
+                    setShowModal(false);
+                    setNewItem({ itemname: "", description: "", price: "", image: "" });
+                    setImg("");
+                    setEditItemId(null);
+                  }}
+                  className="px-2 py-2 bg-gray-500 text-white text-sm rounded-lg hover:bg-gray-600 transition"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
+                  className="px-2 py-2 bg-red-500 text-white text-sm rounded-lg hover:bg-red-600 transition"
                 >
                   {editItemId ? "Update Item" : "Add Item"}
                 </button>
@@ -279,7 +284,7 @@ const RestaurantMenu = () => {
               <img
                 src={item?.image}
                 alt={item?.itemname}
-                className="w-full h-64 cover rounded-lg"
+                className="w-full h-44 cover rounded-lg"
               />
               <h3 className="text-xl font-bold mt-2">{item?.itemname}</h3>
               <p className="text-gray-600">{item?.description}</p>
@@ -287,19 +292,19 @@ const RestaurantMenu = () => {
               <div className="flex justify-between mt-4">
                 <button
                   onClick={() => handleEditClick(item)}
-                  className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
+                  className="px-4 py-1 bg-blue-500 text-sm text-white rounded-lg hover:bg-blue-600 transition"
                 >
                   Edit
                 </button>
-                <button
+                {/* <button
                   onClick={() => {
                     setDeleteId(item?._id);
                     setIsModalOpen(true);
                   }}
-                  className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
+                  className="px-4 py-1 bg-red-500 text-sm text-white rounded-lg hover:bg-red-600 transition"
                 >
                   Delete
-                </button>
+                </button> */}
               </div>
             </div>
           ))
@@ -308,14 +313,14 @@ const RestaurantMenu = () => {
         )}
       </div>
 
-      <ConfirmationModal
+      {/* <ConfirmationModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         title="Delete Confirmation"
         message="Are you sure you want to Delete this item?"
         onConfirm={() => handleDeleteItem(deleteId)}
         onCancel={() => setIsModalOpen(false)}
-      />
+      /> */}
     </div>
   );
 };

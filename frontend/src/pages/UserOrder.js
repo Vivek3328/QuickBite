@@ -46,7 +46,7 @@ const UserOrder = () => {
   return (
     <div className="min-h-screen bg-gray-50 py-8 mt-16">
       <div className="container mx-auto max-w-5xl px-4">
-        <h1 className="text-4xl font-bold mb-8 text-center text-red-600">
+        <h1 className="text-3xl md:text-4xl font-bold mb-8 text-center text-red-600">
           My Orders
         </h1>
 
@@ -56,21 +56,21 @@ const UserOrder = () => {
           orders.map((order) => (
             <div
               key={order._id}
-              className="bg-white rounded-lg shadow-lg p-6 mb-8 border border-gray-200 transition-transform transform hover:scale-105"
+              className="bg-white rounded-lg shadow-lg p-4 md:p-6 mb-8 border border-gray-200"
             >
               {/* Order ID, Restaurant Name and Status */}
               <div className="mb-4 flex justify-between items-center">
                 <div>
-                  <h2 className="text-xl font-bold text-black">
+                  <h2 className="text-lg md:text-xl font-bold text-black">
                     Order ID: <span className="text-red-600">{order._id}</span>
                   </h2>
-                  <h3 className="text-lg font-semibold text-black">
+                  <h3 className="text-md md:text-lg font-semibold text-black">
                     Restaurant:{" "}
                     <span className="text-green-600">{order.owner.name}</span>
                   </h3>
                 </div>
                 <span
-                  className={`text-sm font-semibold px-2 py-1 rounded ${getStatusStyle(
+                  className={`text-xs md:text-sm font-semibold px-2 py-1 rounded ${getStatusStyle(
                     order.status
                   )}`}
                 >
@@ -87,17 +87,17 @@ const UserOrder = () => {
                   <img
                     src={item.menuitem.image}
                     alt={item.menuitem.itemname}
-                    className="w-20 h-20 rounded-lg object-cover border-2 border-red-500 mr-4 shadow"
+                    className="w-16 h-16 md:w-20 md:h-20 rounded-lg object-cover border-2 border-red-500 mr-4 shadow"
                   />
                   <div className="flex-grow">
-                    <h3 className="text-lg font-semibold text-gray-900">
+                    <h3 className="text-md md:text-lg font-semibold text-gray-900">
                       {item.menuitem.itemname}
                     </h3>
                     <p className="text-sm text-gray-600">
                       Quantity: {item.quantity}
                     </p>
                   </div>
-                  <p className="text-lg font-semibold text-red-500">
+                  <p className="text-md md:text-lg font-semibold text-red-500">
                     ₹{item.menuitem.price}
                   </p>
                 </div>
@@ -117,7 +117,7 @@ const UserOrder = () => {
                     <p>Payment Mode: {order.shipping.paymode}</p>
                   </div>
                   <div className="text-right">
-                    <p className="text-xl font-bold text-gray-900">
+                    <p className="text-lg md:text-xl font-bold text-gray-900">
                       Total: ₹{order.totalprice}
                     </p>
                   </div>
