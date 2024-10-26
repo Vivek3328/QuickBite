@@ -10,7 +10,7 @@ const {
   deleteMenuItem,
 } = require("../controllers/MenuItemController");
 
-const fetchOwner = require("../middlewares/fetchOwner");
+const fetchOwner = require("../middlewares/fetchOwner.js");
 
 router.post(
   "/additem",
