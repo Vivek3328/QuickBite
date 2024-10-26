@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const fetchUser = require("../middlewares/fetchUser");
-const fetchOwner = require("../middlewares/fetchOwner");
+const fetchUser = require("../middlewares/fetchUser.js");
+const fetchOwner = require("../middlewares/fetchOwner.js");
 const { body } = require("express-validator");
 const {
   checkout,

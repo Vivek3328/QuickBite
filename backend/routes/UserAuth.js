@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { body } = require("express-validator");
-const fetchUser = require("../middlewares/fetchUser");
+const fetchUser = require("../middlewares/fetchUser.js");
 const {
   registerUser,
   loginUser,
@@ -29,6 +29,6 @@ router.post(
   loginUser
 );
 
-// router.get("/getuser", fetchUser, getUser);
+router.get("/getuser", fetchUser, getUser);
 
 module.exports = router;
