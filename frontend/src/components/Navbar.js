@@ -19,6 +19,7 @@ const Navbar = () => {
     localStorage.removeItem("ownerToken");
     localStorage.removeItem("role");
     navigate("/login");
+    window.location.reload();
   };
 
   return (

@@ -78,6 +78,7 @@ const AddRestaurant = () => {
         localStorage.setItem("ownerToken", response.data.authtoken);
         localStorage.setItem("role", "owner");
         navigate("/restaurant-menu");
+        window.location.reload();
       } else {
         console.log("before register");
         console.log(formData);

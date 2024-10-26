@@ -49,6 +49,7 @@ const LoginSignup = () => {
         console.log("Login Successful:", response.data);
         localStorage.setItem("userToken", response.data.authtoken);
         navigate("/");
+        window.location.reload();
       }
     } catch (err) {
       setError(err.response?.data?.message || "Something went wrong");
