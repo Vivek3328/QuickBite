@@ -1,14 +1,14 @@
 const express = require("express");
 const router = express.Router();
 const { body } = require("express-validator");
-
+const fetchUser = require("../middlewares/fetchUser");
 const {
   registerUser,
   loginUser,
   getUser,
 } = require("../controllers/UserController");
 
-const fetchUser = require("../middlewares/fetchUser");
+
 
 router.post(
   "/registeruser",
