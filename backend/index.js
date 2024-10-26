@@ -11,7 +11,7 @@ connectTOMongoDB();
 
 app.use(
   cors({
-    origin: process.env.FRONETND_URL,
+    origin: "https://quick-bite-wine.vercel.app/",
     methods: 'GET, POST, PUT, DELETE',
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
