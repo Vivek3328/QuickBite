@@ -9,14 +9,7 @@ const port = process.env.PORT || 8000;
 
 connectTOMongoDB();
 
-app.use(
-  cors({
-    origin: "https://quick-bite-wine.vercel.app/",
-    methods: 'GET, POST, PUT, DELETE',
-    allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true,
-  })
-);
+app.use(cors());
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
