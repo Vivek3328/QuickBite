@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { body } = require("express-validator");
-
+const fetchOwner = require("../middlewares/fetchOwner.js");
 const {
   allmenuitems,
   addItem,
@@ -10,7 +10,7 @@ const {
   deleteMenuItem,
 } = require("../controllers/MenuItemController");
 
-const fetchOwner = require("../middlewares/fetchOwner.js");
+
 
 router.post(
   "/additem",
@@ -30,6 +30,6 @@ router.get("/fetchrestomenu/:id", restaurantMenu);
 
 router.put("/updatemenuitem/:id", fetchOwner, updateMenuItem);
 
-router.delete("/deletemenuitems/:id", fetchOwner, deleteMenuItem);
+// router.delete("/deletemenuitems/:id", fetchOwner, deleteMenuItem);
 
 module.exports = router;
