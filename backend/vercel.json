@@ -5,7 +5,11 @@
       "src": "index.js",
       "use": "@vercel/node",
       "config": {
-        "includeFiles": ["./middlewares/*", "./models/*", "./routes/*"]
+        "includeFiles": [
+          "backend/middlewares/*",
+          "backend/models/*",
+          "backend/routes/*"
+        ]
       }
     }
   ],
