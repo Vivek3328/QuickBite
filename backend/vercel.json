@@ -3,8 +3,7 @@
   "builds": [
     {
       "src": "index.js",
-      "use": "@vercel/node",
-      "includeFiles": ["backend/middlewares/*"]
+      "use": "@vercel/node"
     }
   ],
   "routes": [
@@ -13,5 +12,8 @@
       "dest": "/",
       "methods": ["GET", "PUT", "POST", "DELETE"]
     }
-  ]
+  ],
+  "build": {
+    "includeFiles": ["backend/middlewares/*"]
+  }
 }
