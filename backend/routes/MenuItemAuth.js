@@ -30,6 +30,6 @@ router.get("/fetchrestomenu/:id", restaurantMenu);
 
 router.put("/updatemenuitem/:id", fetchOwner, updateMenuItem);
 
-// router.delete("/deletemenuitems/:id", fetchOwner, deleteMenuItem);
+router.delete("/deletemenuitems/:id", fetchOwner, deleteMenuItem);
 
 module.exports = router;
