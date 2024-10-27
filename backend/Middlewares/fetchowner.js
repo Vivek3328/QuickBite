@@ -15,4 +15,4 @@ const fetchOwner = (req, res, next) => {
     res.status(401).send({ error: "Please authenticate using a valid token" });
   }
 };
-module.exports = fetchOwner;
+module.exports = { fetchOwner };

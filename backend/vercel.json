@@ -7,6 +7,10 @@
     }
   ],
   "routes": [
-    { "src": "/(.*)", "dest": "/", "methods": ["GET", "PUT", "POST", "DELETE"] }
+    {
+      "src": "/(.*)",
+      "dest": "/",
+      "methods": ["GET", "PUT", "POST", "DELETE"]
+    }
   ]
 }
