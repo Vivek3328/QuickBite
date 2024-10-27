@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const JWT_SECRET = process.env.JWT_SECRET_KEY;
 
-const FetchOwner = async (req, res, next) => {//get the user from jwt token and Add Id to req object
+const fetchOwner = async (req, res, next) => {//get the user from jwt token and Add Id to req object
     const token = req.header("auth-token");
     if (!token) {
         res.status(401).send({ error: "Please authenticate using a valid token" });
@@ -15,4 +15,4 @@ const FetchOwner = async (req, res, next) => {//get the user from jwt token and 
     }
 }
 
-module.exports = FetchOwner
+module.exports = fetchOwner
