@@ -20,6 +20,10 @@ app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+app.get("/", (req, res) => {
+  res.send("Hello backend");
+});
+
 app.use("/api/ownerauth", require("./routes/OwnerAuth.js"));
 app.use("/api/userauth", require("./routes/UserAuth.js"));
 app.use("/api/menuitemauth", require("./routes/MenuItemAuth.js"));
