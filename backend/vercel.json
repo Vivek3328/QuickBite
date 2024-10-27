@@ -13,5 +13,5 @@
       "methods": ["GET", "PUT", "POST", "DELETE"]
     }
   ],
-  "includeFiles": ["backend/middlewares/*"]
+  "includeFiles": ["./middlewares/*"]
 }
