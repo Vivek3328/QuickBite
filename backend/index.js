@@ -9,6 +9,12 @@ const port = process.env.PORT || 8000;
 
 connectTOMongoDB();
 
+app.options("", cors({
+  origin: "*",
+  credentials: true,
+  methods: ["GET", "PUT", "POST", "DELETE"],
+}))
+
 app.use(
   cors({
     origin: "*",
