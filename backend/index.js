@@ -30,10 +30,12 @@ app.get("/", (req, res) => {
   res.send("Hello backend");
 });
 
-app.use("/api/ownerauth", require("./routes/OwnerAuth.js"));
-app.use("/api/userauth", require("./routes/UserAuth.js"));
-app.use("/api/menuitemauth", require("./routes/MenuItemAuth.js"));
-app.use("/api/orders", require("./routes/OrderAuth.js"));
+app.get("/")
+
+app.use("/ownerauth", require("./routes/OwnerAuth.js"));
+app.use("/userauth", require("./routes/UserAuth.js"));
+app.use("/menuitemauth", require("./routes/MenuItemAuth.js"));
+app.use("/orders", require("./routes/OrderAuth.js"));
 
 app.listen(port, () => {
   console.log(`App is Listening on Port ${port}`);
