@@ -8,20 +8,7 @@ require("dotenv").config();
 const port = process.env.PORT || 8000;
 
 connectTOMongoDB();
-
-app.options("", cors({
-  origin: "*",
-  credentials: true,
-  methods: ["GET", "PUT", "POST", "DELETE"],
-}))
-
-app.use(
-  cors({
-    origin: "*",
-    credentials: true,
-    methods: ["GET", "PUT", "POST", "DELETE"],
-  })
-);
+app.use(cors());
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
