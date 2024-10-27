@@ -12,6 +12,5 @@
       "dest": "/",
       "methods": ["GET", "PUT", "POST", "DELETE"]
     }
-  ],
-  "includeFiles": ["./middlewares/*"]
+  ]
 }
