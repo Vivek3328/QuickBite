@@ -7,12 +7,12 @@ const {
   userOrders,
   updateStatus,
 } = require("../controllers/OrderController");
-const fetchOwner = require("../middlewares/fetchOwner");
-const fetchUser = require("../middlewares/fetchUser");
+const FetchOwner = require("../middlewares/fetchOwner");
+const FetchUser = require("../middlewares/fetchUser");
 
 router.post(
   "/checkout",
-  fetchUser,
+  FetchUser,
   [
     body("owner", "Owner is required").not().isEmpty(),
     body("item", "Items are required").isArray({ min: 1 }),
@@ -24,10 +24,10 @@ router.post(
   checkout
 );
 
-router.get("/myorders/", fetchOwner, restaurantOrders);
+router.get("/myorders/", FetchOwner, restaurantOrders);
 
-router.get("/userorders", fetchUser, userOrders);
+router.get("/userorders", FetchUser, userOrders);
 
-router.put("/updateorder/:id", fetchOwner, updateStatus);
+router.put("/updateorder/:id", FetchOwner, updateStatus);
 
 module.exports = router;

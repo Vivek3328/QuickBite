@@ -1,7 +1,7 @@
 
 
-const fetchUser = async (req, res, next) => {
+const FetchUser = async (req, res, next) => {
 
 }
 
-module.exports = fetchUser
+module.exports = FetchUser

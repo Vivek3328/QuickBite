@@ -1,3 +1,3 @@
-const fetchOwner = async (req, res, next) => { }
+const FetchOwner = async (req, res, next) => { }
 
-module.exports = fetchOwner
+module.exports = FetchOwner

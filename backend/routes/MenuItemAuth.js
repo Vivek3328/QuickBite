@@ -8,13 +8,13 @@ const {
   updateMenuItem,
   deleteMenuItem,
 } = require("../controllers/MenuItemController");
-const fetchOwner = require("../middlewares/fetchOwner")
+const FetchOwner = require("../middlewares/fetchOwner")
 
 
 
 router.post(
   "/additem",
-  fetchOwner,
+  FetchOwner,
   [
     body("itemname", "Enter a valid Item Name").isLength({ min: 3 }),
     body("description", "Description must be of minimum 5 character").isLength({
@@ -24,12 +24,12 @@ router.post(
   addItem
 );
 
-router.get("/fetchallmenuitems", fetchOwner, allmenuitems);
+router.get("/fetchallmenuitems", FetchOwner, allmenuitems);
 
 router.get("/fetchrestomenu/:id", restaurantMenu);
 
-router.put("/updatemenuitem/:id", fetchOwner, updateMenuItem);
+router.put("/updatemenuitem/:id", FetchOwner, updateMenuItem);
 
-router.delete("/deletemenuitems/:id", fetchOwner, deleteMenuItem);
+router.delete("/deletemenuitems/:id", FetchOwner, deleteMenuItem);
 
 module.exports = router;
