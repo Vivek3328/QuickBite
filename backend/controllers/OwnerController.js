@@ -43,10 +43,10 @@ const registerOwner = async (req, res) => {
 
     const authtoken = jwt.sign(data, JWT_SECRET);
     success = true;
-    res.json({ success: true, authtoken });
+    return res.json({ success: true, authtoken });
   } catch (error) {
     console.error(error.message);
-    res.status(500).json({ success: false, error: "Some Error occured" });
+    return res.status(500).json({ success: false, error: "Some Error occured" });
   }
 };
 
@@ -71,20 +71,20 @@ const loginOwner = async (req, res) => {
     const authtoken = jwt.sign(data, JWT_SECRET);
 
     success = true;
-    res.json({ success, authtoken });
+    return res.json({ success, authtoken });
   } catch (error) {
     console.error(error.message);
-    res.status(500).send("login failed");
+    return res.status(500).send("login failed");
   }
 };
 
 const fetchAllOwner = async (req, res) => {
   try {
     const items = await Owner.find({});
-    res.json(items);
+    return res.json(items);
   } catch (error) {
     console.error(error.message);
-    res.status(500).send("Internal server error occured");
+    return res.status(500).send("Internal server error occured");
   }
 };
 

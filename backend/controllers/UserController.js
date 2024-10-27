@@ -32,10 +32,10 @@ const registerUser = async (req, res) => {
     };
     const authtoken = jwt.sign(data, JWT_SECRET);
     // console.log(authtoken);
-    res.json({ authtoken });
+    return res.json({ authtoken });
   } catch (error) {
     console.error(error.message);
-    res.status(500).send("Some error occured");
+    return res.status(500).send("Some error occured");
   }
 };
 
@@ -69,10 +69,10 @@ const loginUser = async (req, res) => {
     // console.log(data, user);
     const authtoken = jwt.sign(data, JWT_SECRET);
     // console.log(authtoken);
-    res.json({ authtoken });
+    return res.json({ authtoken });
   } catch (error) {
     console.error(error.message);
-    res.status(500).send("Some error occured");
+    return res.status(500).send("Some error occured");
   }
 };
 
@@ -80,10 +80,10 @@ const getUser = async (req, res) => {
   try {
     userId = req.user.id;
     const user = await User.findById(userId).select("-password");
-    res.send(user);
+    return res.send(user);
   } catch (error) {
     console.error(error.message);
-    res.status(500).send("Internal server error occured");
+    return res.status(500).send("Internal server error occured");
   }
 };
 

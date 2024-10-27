@@ -31,10 +31,10 @@ const allmenuitems = async (req, res) => {
     // console.log(ownerdata)
     const items = await MenuItem.find({ owner: req.owner.id });
     // console.log(req.owner)
-    res.json({ items, name: ownerdata.name });
+    return res.json({ items, name: ownerdata.name });
   } catch (error) {
     console.error(error.message);
-    res.status(500).send("Internal server error occured");
+    return res.status(500).send("Internal server error occured");
   }
 };
 
@@ -42,10 +42,10 @@ const restaurantMenu = async (req, res) => {
   try {
     const items = await MenuItem.find({ owner: req.params.id });
     //   console.log(items)
-    res.json(items);
+    return res.json(items);
   } catch (error) {
     console.error(error.message);
-    res.status(500).send("Internal server error occured");
+    return res.status(500).send("Internal server error occured");
   }
 };
 
@@ -80,10 +80,10 @@ const updateMenuItem = async (req, res) => {
     );
 
     // Return the updated item
-    res.json({ success: true, updatedItem: item });
+    return res.json({ success: true, updatedItem: item });
   } catch (error) {
     console.error(error.message);
-    res.status(500).send("Internal server error occurred");
+    return res.status(500).send("Internal server error occurred");
   }
 };
 
@@ -97,7 +97,7 @@ const deleteMenuItem = async (req, res) => {
     return res.status(401).send("Not Allowed");
   }
   item = await MenuItem.findByIdAndDelete(req.params.id);
-  res.json({ Success: "Menu Items Deleted Successfully" });
+  return res.json({ Success: "Menu Items Deleted Successfully" });
 };
 
 module.exports = {

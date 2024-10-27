@@ -34,10 +34,10 @@ const checkout = async (req, res) => {
       status: "Pending",
     });
 
-    res.status(201).json({ success: true, order });
+    return res.status(201).json({ success: true, order });
   } catch (error) {
     console.error(error.message);
-    res
+    return res
       .status(500)
       .json({ success: false, error: "Internal server error occurred" });
   }
@@ -49,10 +49,10 @@ const restaurantOrders = async (req, res) => {
     const orders = await Order.find({ owner: req.owner.id })
       .populate("user")
       .populate("item.menuitem");
-    res.status(200).json(orders);
+    return res.status(200).json(orders);
   } catch (error) {
     console.error(error.message);
-    res
+    return res
       .status(500)
       .json({ success: false, error: "Internal server error occurred" });
   }
@@ -64,10 +64,10 @@ const userOrders = async (req, res) => {
     const orders = await Order.find({ user: req.user.id })
       .populate("item.menuitem")
       .populate("owner");
-    res.status(200).json(orders);
+    return res.status(200).json(orders);
   } catch (error) {
     console.error(error.message);
-    res
+    return res
       .status(500)
       .json({ success: false, error: "Internal server error occurred" });
   }
@@ -103,10 +103,10 @@ const updateStatus = async (req, res) => {
       { new: true }
     );
 
-    res.json({ success: true, order });
+    return res.json({ success: true, order });
   } catch (error) {
     console.error(error.message);
-    res
+    return res
       .status(500)
       .json({ success: false, error: "Internal server error occurred" });
   }
