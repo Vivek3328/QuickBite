@@ -24,9 +24,9 @@ router.post(
   checkout
 );
 
-// router.get("/myorders/", fetchOwner, restaurantOrders);
+router.get("/myorders/", fetchOwner, restaurantOrders);
 
-// router.get("/userorders", fetchUser, userOrders);
+router.get("/userorders", fetchUser, userOrders);
 
 router.put("/updateorder/:id", fetchOwner, updateStatus);
 

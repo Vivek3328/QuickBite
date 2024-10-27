@@ -24,7 +24,7 @@ router.post(
   addItem
 );
 
-// router.get("/fetchallmenuitems", fetchOwner, allmenuitems);
+router.get("/fetchallmenuitems", fetchOwner, allmenuitems);
 
 router.get("/fetchrestomenu/:id", restaurantMenu);
 
