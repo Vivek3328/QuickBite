@@ -54,7 +54,7 @@ const Home = () => {
             <p className="text-sm text-gray-700 text-center mb-4">
               Discover a variety of dining options available in your area.
             </p>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6 mx-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mx-8">
               {restaurants.map((restaurant) => (
                 <div
                   key={restaurant._id}

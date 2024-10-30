@@ -128,17 +128,22 @@ const Navbar = () => {
                 <Link
                   to="/restaurant-menu"
                   className="block text-white hover:bg-[rgb(219,59,75)] py-2 rounded-lg transition duration-300"
+                  onClick={() => setIsMenuOpen(false)}
                 >
                   Dashboard
                 </Link>
                 <Link
                   to="/Restaurant-orders"
                   className="block text-white hover:bg-[rgb(219,59,75)] py-2 rounded-lg transition duration-300"
+                  onClick={() => setIsMenuOpen(false)}
                 >
                   Orders
                 </Link>
                 <button
-                  onClick={() => setIsModalOpen(true)}
+                  onClick={() => {
+                    setIsModalOpen(true)
+                    setIsMenuOpen(false)
+                  }}
                   className="block text-white hover:bg-[rgb(219,59,75)] py-2 rounded-lg transition duration-300"
                 >
                   Logout
@@ -149,6 +154,7 @@ const Navbar = () => {
                 <Link
                   to="/cart"
                   className="block text-white hover:bg-[rgb(219,59,75)] py-2 rounded-lg transition duration-300"
+                  onClick={() => setIsMenuOpen(false)}
                 >
                   <FiShoppingCart className="inline-block" />
                   {totalItems > 0 && (
@@ -160,11 +166,15 @@ const Navbar = () => {
                 <Link
                   to="/user-orders"
                   className="block text-white hover:bg-[rgb(219,59,75)] py-2 rounded-lg transition duration-300"
+                  onClick={() => setIsMenuOpen(false)}
                 >
                   My Orders
                 </Link>
                 <button
-                  onClick={() => setIsModalOpen(true)}
+                  onClick={() => {
+                    setIsModalOpen(true)
+                    // setIsMenuOpen(false)
+                  }}
                   className="block text-white hover:bg-[rgb(219,59,75)] py-2 rounded-lg transition duration-300"
                 >
                   Logout
@@ -176,20 +186,31 @@ const Navbar = () => {
               <Link
                 to="/login"
                 className="block text-white hover:text-pink-200 transition duration-300"
+                onClick={() => setIsMenuOpen(false)}
               >
                 Login
               </Link>
               <Link
                 to="/add-restaurant"
                 className="block bg-white hover:bg-pink-200 text-[rgb(239,79,95)] font-semibold py-2 rounded-lg transition duration-300"
+                onClick={() => setIsMenuOpen(false)}
               >
                 Add Restaurant
               </Link>
             </>
           )}
+          <ConfirmationModal
+            isOpen={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
+            title="Logout Confirmation"
+            message="Are you sure you want to log out?"
+            onConfirm={handleLogout}
+            onCancel={() => setIsModalOpen(false)}
+          />
         </div>
-      )}
-    </nav>
+      )
+      }
+    </nav >
   );
 };
 
