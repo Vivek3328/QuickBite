@@ -11,24 +11,43 @@ const LoginSignup = () => {
     password: "",
   });
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [errors, setErrors] = useState({});
   const navigate = useNavigate();
 
   const toggleForm = () => {
     setIsSignup((prevState) => !prevState);
     setFormData({ name: "", email: "", password: "" });
-    setError(null);
+    setErrors({});
   };
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    setErrors({ ...errors, [e.target.name]: "" });
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+    if (isSignup && formData.name.length < 5) {
+      newErrors.name = "Name must be at least 5 characters long.";
+    }
+    if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = "Please enter a valid email address.";
+    }
+    if (formData.password.length < 6) {
+      newErrors.password = "Password must be at least 6 characters long.";
+    }
+    return newErrors;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    setError(null);
+    const validationErrors = validateForm();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
 
+    setLoading(true);
     try {
       if (isSignup) {
         const response = await axios.post(
@@ -52,7 +71,7 @@ const LoginSignup = () => {
         window.location.reload();
       }
     } catch (err) {
-      setError(err.response?.data?.message || "Something went wrong");
+      setErrors({ general: err.response?.data?.message || "Something went wrong" });
     } finally {
       setLoading(false);
     }
@@ -68,9 +87,9 @@ const LoginSignup = () => {
           {isSignup ? "Create Account" : "Welcome Back!"}
         </h2>
 
-        {error && (
+        {errors.general && (
           <div className="bg-red-100 text-red-700 p-2 rounded mb-4 text-center text-sm">
-            {error}
+            {errors.general}
           </div>
         )}
 
@@ -89,6 +108,9 @@ const LoginSignup = () => {
                 placeholder="Enter your name"
                 required
               />
+              {errors.name && (
+                <p className="text-red-600 text-xs mt-1">{errors.name}</p>
+              )}
             </div>
           )}
 
@@ -105,6 +127,9 @@ const LoginSignup = () => {
               placeholder="Enter your email"
               required
             />
+            {errors.email && (
+              <p className="text-red-600 text-xs mt-1">{errors.email}</p>
+            )}
           </div>
 
           <div>
@@ -120,6 +145,9 @@ const LoginSignup = () => {
               placeholder="Enter your password"
               required
             />
+            {errors.password && (
+              <p className="text-red-600 text-xs mt-1">{errors.password}</p>
+            )}
           </div>
 
           <button

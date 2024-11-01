@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 const Modal = ({ showModal, onClose, onSubmit }) => {
   const [mobile, setMobile] = useState("");
@@ -7,7 +8,32 @@ const Modal = ({ showModal, onClose, onSubmit }) => {
   const [city, setCity] = useState("");
   const [paymode, setPaymentMode] = useState("");
 
+  const [states, setStates] = useState([]);
+  const [cities, setCities] = useState([]);
   const [errors, setErrors] = useState({});
+
+  useEffect(() => {
+    axios.post("https://countriesnow.space/api/v0.1/countries/states", {
+      country: "India",
+    })
+      .then((response) => {
+        setStates(response.data.data.states);
+      })
+      .catch((error) => console.error("Error fetching states:", error));
+  }, []);
+
+  useEffect(() => {
+    if (state) {
+      axios.post("https://countriesnow.space/api/v0.1/countries/state/cities", {
+        country: "India",
+        state: state,
+      })
+        .then((response) => {
+          setCities(response.data.data);
+        })
+        .catch((error) => console.error("Error fetching cities:", error));
+    }
+  }, [state]);
 
   const resetForm = () => {
     setMobile("");
@@ -21,7 +47,6 @@ const Modal = ({ showModal, onClose, onSubmit }) => {
   const handleSubmit = () => {
     const addressDetails = { mobile, pincode, state, city, paymode };
 
-    // Validation
     const newErrors = {};
     if (!mobile) newErrors.mobile = "Phone number is required.";
     if (!pincode) newErrors.pincode = "Pincode is required.";
@@ -33,13 +58,13 @@ const Modal = ({ showModal, onClose, onSubmit }) => {
 
     if (Object.keys(newErrors).length === 0) {
       onSubmit(addressDetails);
-      resetForm(); // Reset the form on successful submission
+      resetForm();
       onClose();
     }
   };
 
   const handleClose = () => {
-    resetForm(); // Reset the form when closing the modal
+    resetForm();
     onClose();
   };
 
@@ -50,9 +75,7 @@ const Modal = ({ showModal, onClose, onSubmit }) => {
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
       <div className="bg-white w-full max-w-md rounded-lg shadow-lg p-6">
-        <h2 className="text-xl font-bold mb-4 text-center">
-          Enter Your Address
-        </h2>
+        <h2 className="text-xl font-bold mb-4 text-center">Enter Your Address</h2>
 
         <div className="space-y-2">
           <input
@@ -60,52 +83,48 @@ const Modal = ({ showModal, onClose, onSubmit }) => {
             placeholder="Phone Number"
             value={mobile}
             onChange={(e) => setMobile(e.target.value)}
-            className={`border rounded text-sm w-full p-2 focus:outline-none focus:ring-2 ${errors.mobile ? "border-red-500" : "focus:ring-red-500"
-              }`}
+            className={`border rounded text-sm w-full p-2 focus:outline-none focus:ring-2 ${errors.mobile ? "border-red-500" : "focus:ring-red-500"}`}
           />
-          {errors.mobile && (
-            <p className="text-red-500 text-sm">{errors.mobile}</p>
-          )}
+          {errors.mobile && <p className="text-red-500 text-sm">{errors.mobile}</p>}
+
+          <select
+            value={state}
+            onChange={(e) => setState(e.target.value)}
+            className={`border rounded w-full p-1 text-sm focus:outline-none focus:ring-2 ${errors.state ? "border-red-500" : "focus:ring-red-500"}`}
+          >
+            <option value="">Select State</option>
+            {states.map((state, index) => (
+              <option key={index} value={state.name}>{state.name}</option>
+            ))}
+          </select>
+          {errors.state && <p className="text-red-500 text-sm">{errors.state}</p>}
+
+          <select
+            value={city}
+            onChange={(e) => setCity(e.target.value)}
+            className={`border rounded w-full p-1 focus:outline-none focus:ring-2 ${errors.city ? "border-red-500" : "focus:ring-red-500"}`}
+            disabled={!state}
+          >
+            <option value="">Select City</option>
+            {cities.map((city, index) => (
+              <option key={index} value={city}>{city}</option>
+            ))}
+          </select>
+          {errors.city && <p className="text-red-500 text-sm">{errors.city}</p>}
 
           <input
             type="text"
             placeholder="Pincode"
             value={pincode}
             onChange={(e) => setPincode(e.target.value)}
-            className={`border rounded text-sm w-full p-1 focus:outline-none focus:ring-2 ${errors.pincode ? "border-red-500" : "focus:ring-red-500"
-              }`}
+            className={`border rounded text-sm w-full p-1 focus:outline-none focus:ring-2 ${errors.pincode ? "border-red-500" : "focus:ring-red-500"}`}
           />
-          {errors.pincode && (
-            <p className="text-red-500 text-sm">{errors.pincode}</p>
-          )}
-
-          <input
-            type="text"
-            placeholder="State"
-            value={state}
-            onChange={(e) => setState(e.target.value)}
-            className={`border rounded text-sm w-full p-1 focus:outline-none focus:ring-2 ${errors.state ? "border-red-500" : "focus:ring-red-500"
-              }`}
-          />
-          {errors.state && (
-            <p className="text-red-500 text-sm">{errors.state}</p>
-          )}
-
-          <input
-            type="text"
-            placeholder="City"
-            value={city}
-            onChange={(e) => setCity(e.target.value)}
-            className={`border rounded w-full p-1 focus:outline-none focus:ring-2 ${errors.city ? "border-red-500" : "focus:ring-red-500"
-              }`}
-          />
-          {errors.city && <p className="text-red-500 text-sm">{errors.city}</p>}
+          {errors.pincode && <p className="text-red-500 text-sm">{errors.pincode}</p>}
 
           <select
             value={paymode}
             onChange={(e) => setPaymentMode(e.target.value)}
-            className={`border rounded w-full p-1 text-sm focus:outline-none focus:ring-2 ${errors.paymode ? "border-red-500" : "focus:ring-red-500"
-              }`}
+            className={`border rounded w-full p-1 text-sm focus:outline-none focus:ring-2 ${errors.paymode ? "border-red-500" : "focus:ring-red-500"}`}
           >
             <option value="">Select Payment Mode</option>
             <option value="Credit Card">Credit Card</option>
@@ -113,9 +132,7 @@ const Modal = ({ showModal, onClose, onSubmit }) => {
             <option value="Net Banking">Net Banking</option>
             <option value="Cash on Delivery">Cash on Delivery</option>
           </select>
-          {errors.paymode && (
-            <p className="text-red-500 text-sm">{errors.paymode}</p>
-          )}
+          {errors.paymode && <p className="text-red-500 text-sm">{errors.paymode}</p>}
         </div>
 
         <div className="mt-6 flex justify-end">
