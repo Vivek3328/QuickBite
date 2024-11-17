@@ -92,7 +92,7 @@ const AddRestaurant = () => {
         console.log("Registration Successful:", res.data);
       }
     } catch (err) {
-      setError(err.response?.data?.message || "Something went wrong");
+      setError(err.response?.data?.error || "Something went wrong");
     } finally {
       setLoading(false);
     }

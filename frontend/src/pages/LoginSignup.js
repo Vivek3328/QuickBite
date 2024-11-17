@@ -71,7 +71,7 @@ const LoginSignup = () => {
         window.location.reload();
       }
     } catch (err) {
-      setErrors({ general: err.response?.data?.message || "Something went wrong" });
+      setErrors({ general: err.response?.data?.error || "Something went wrong" });
     } finally {
       setLoading(false);
     }

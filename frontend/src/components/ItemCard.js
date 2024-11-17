@@ -33,7 +33,7 @@ const ItemCard = ({ image, name, price, description, item, ownerId }) => {
         const isItemInCart = checkIdInArray(cart, newItem._id);
 
         if (isItemInCart) {
-          navigate("/cart");
+          alert("Item Already in cart")
         } else {
           cart.push({ ...newItem, owner: ownerId });
           dispatch(setTotalItems(totalItems + 1));
