@@ -17,7 +17,9 @@ app.get("/", (req, res) => {
   res.send("Hello backend");
 });
 
-app.get("/")
+app.get("/getkey", (req, res) =>
+  res.status(200).json({ key: process.env.RAZORPAY_KEY_ID })
+);
 
 app.use("/ownerauth", require("./routes/OwnerAuth.js"));
 app.use("/userauth", require("./routes/UserAuth.js"));

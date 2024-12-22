@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const RestaurantOrder = () => {
   const [orders, setOrders] = useState([]);
@@ -71,6 +73,7 @@ const RestaurantOrder = () => {
             order._id === orderId ? { ...order, status: newStatus } : order
           )
         );
+        toast.success('Status Updated')
       }
     } catch (error) {
       console.error("Error updating status:", error);
@@ -235,6 +238,7 @@ const RestaurantOrder = () => {
           ))
         )}
       </div>
+      <ToastContainer hideProgressBar={true} position="top-center" />
     </div>
   );
 };

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 // import ConfirmationModal from "../components/ConfirmationModal";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const RestaurantMenu = () => {
   const [menuItem, setmenuItem] = useState([]);
@@ -94,6 +96,7 @@ const RestaurantMenu = () => {
           item._id === editItemId ? response.data.item : item
         );
         setmenuItem(updatedItems);
+        toast.success('Item Updated');
       } else {
         // Add new item
         const response = await axios.post(
@@ -321,6 +324,7 @@ const RestaurantMenu = () => {
         onConfirm={() => handleDeleteItem(deleteId)}
         onCancel={() => setIsModalOpen(false)}
       /> */}
+      <ToastContainer hideProgressBar={true} position="top-center" />
     </div>
   );
 };

@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import ItemCard from "../components/ItemCard";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Menu = () => {
   const { id } = useParams(); // Get the restaurant ID from the URL
@@ -89,6 +91,7 @@ const Menu = () => {
           ))}
         </div>
       </div>
+      <ToastContainer hideProgressBar={true} position="top-center" />
     </div>
   );
 };

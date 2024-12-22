@@ -76,6 +76,10 @@ const OrderSchema = new Schema({
     ],
     default: "Pending",
   },
+  razorpayOrderId: {
+    type: String,
+    required: true,
+  },
 });
 
 module.exports = mongoose.model("order", OrderSchema);

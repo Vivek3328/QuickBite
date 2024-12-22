@@ -1,10 +1,10 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setTotalItems } from "../redux/cartSlice";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const ItemCard = ({ image, name, price, description, item, ownerId }) => {
-  const navigate = useNavigate();
   const dispatch = useDispatch();
   const totalItems = useSelector((state) => state.cart.totalItems);
 
@@ -23,17 +23,20 @@ const ItemCard = ({ image, name, price, description, item, ownerId }) => {
     if (cart.length === 0) {
       cart.push({ ...newItem, owner: ownerId });
       dispatch(setTotalItems(totalItems + 1));
+      toast.success("Item Added to Cart");
     } else {
       const existingOwnerId = cart[0].owner;
 
       if (existingOwnerId !== ownerId) {
         cart = [{ ...newItem, owner: ownerId }];
         dispatch(setTotalItems(1));
+        toast.success("Item Added to Cart");
       } else {
         const isItemInCart = checkIdInArray(cart, newItem._id);
 
         if (isItemInCart) {
-          alert("Item Already in cart")
+          // alert("Item Already in cart");
+          toast.error("Item Already in cart");
         } else {
           cart.push({ ...newItem, owner: ownerId });
           dispatch(setTotalItems(totalItems + 1));

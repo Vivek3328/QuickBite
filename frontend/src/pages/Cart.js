@@ -4,6 +4,8 @@ import { useDispatch } from "react-redux";
 import { setTotalItems } from "../redux/cartSlice";
 import Modal from "../components/Modal";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
@@ -21,6 +23,10 @@ const Cart = () => {
       menuitem: item._id,
       quantity: quantities[item._id],
     }));
+
+    const { key } = await axios.get(
+      `${process.env.REACT_APP_API_BASE_URL}/getkey`
+    );
 
     try {
       const response = await axios.post(
@@ -40,8 +46,34 @@ const Cart = () => {
         }
       );
 
+      // console.log(response.data.order.razorpayOrderId);
+
+      var options = {
+        key: key,
+        amount: grandTotal,
+        currency: "INR",
+        name: "QuickBite",
+        description: "Test Transaction",
+        image: "https://example.com/your_logo",
+        order_id: response.data.order.razorpayOrderId,
+        callback_url: `${process.env.REACT_APP_API_BASE_URL}/orders/verify-payment`,
+        prefill: {
+          name: "Gaurav Kumar",
+          email: "gaurav.kumar@example.com",
+          contact: "9000090000",
+        },
+        notes: {
+          address: "Razorpay Corporate Office",
+        },
+        theme: {
+          color: "#3399cc",
+        },
+      };
+      var rzp1 = new window.Razorpay(options);
+      rzp1.open();
+
       if (response.data.success) {
-        alert("Order placed successfully!");
+        toast.success("Order placed successfully");
         setShowModal(false);
 
         setCartItems([]);
@@ -243,6 +275,7 @@ const Cart = () => {
         onClose={() => setShowModal(false)}
         onSubmit={handleSubmit}
       />
+      <ToastContainer hideProgressBar={true} position="top-center" />
     </div>
   );
 };

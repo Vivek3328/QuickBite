@@ -44,7 +44,7 @@ const Home = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-r from-gray-200 to-white pt-12">
+    <div className="min-h-screen flex flex-col bg-gradient-to-r from-gray-200 to-white pt-12 mt-5">
       <div className="flex-1">
         {isLoggedIn ? (
           <div className="p-4">
@@ -54,7 +54,7 @@ const Home = () => {
             <p className="text-sm text-gray-700 text-center mb-4">
               Discover a variety of dining options available in your area.
             </p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mx-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mx-8 mt-10">
               {restaurants.map((restaurant) => (
                 <div
                   key={restaurant._id}

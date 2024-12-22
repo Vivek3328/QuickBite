@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 const RestaurantCard = (props) => {
   return (
     <div className="max-w-xs w-full h-80 bg-white rounded-lg shadow-lg overflow-hidden sm:h-96 md:h-auto">
-      <div className="relative w-full h-40 sm:h-48 md:h-56">
+      <div className="relative w-full h-40 sm:h-48 md:h-60">
         <img
           src={props.image}
           alt={props.name}

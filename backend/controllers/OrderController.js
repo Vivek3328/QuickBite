@@ -1,5 +1,7 @@
 const { validationResult } = require("express-validator");
 const Order = require("../models/OrderModel");
+const crypto = require("crypto");
+const razorpayInstance = require("../utils/razorpay");
 
 // Checkout API
 const checkout = async (req, res) => {
@@ -24,6 +26,12 @@ const checkout = async (req, res) => {
       paymode: req.body.shipping.paymode,
     };
 
+    const razorpayOrder = await razorpayInstance.orders.create({
+      amount: req.body.totalprice * 100, // Amount in paise (multiply by 100 to convert to rupees)
+      currency: "INR",
+      receipt: `order_${Date.now()}`,
+    });
+
     // Create the order
     const order = await Order.create({
       user: req.user.id,
@@ -32,9 +40,45 @@ const checkout = async (req, res) => {
       shipping: shipping,
       totalprice: req.body.totalprice,
       status: "Pending",
+      razorpayOrderId: razorpayOrder.id,
     });
 
-    return res.status(201).json({ success: true, order });
+    return res.status(201).json({ success: true, razorpayOrder, order });
+  } catch (error) {
+    console.error(error.message);
+    return res
+      .status(500)
+      .json({ success: false, error: "Internal server error occurred" });
+  }
+};
+
+const verifyPayment = async (req, res) => {
+  const { razorpay_order_id, razorpay_payment_id, razorpay_signature } =
+    req.body;
+
+  try {
+    const body = razorpay_order_id + "|" + razorpay_payment_id;
+    const expectedSignature = crypto
+      .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
+      .update(body.toString())
+      .digest("hex");
+
+    if (expectedSignature !== razorpay_signature) {
+      return res
+        .status(400)
+        .json({ success: false, error: "Payment verification failed" });
+    }
+
+    // Update the order status to "Paid" in your database
+    const order = await Order.findOneAndUpdate(
+      { razorpay_order_id },
+      { $set: { status: "Paid" } },
+      { new: true }
+    );
+
+    res.redirect(
+      `${process.env.FRONTEND_URL}/Payment-success?reference=${razorpay_payment_id}`
+    );
   } catch (error) {
     console.error(error.message);
     return res
@@ -63,7 +107,8 @@ const userOrders = async (req, res) => {
   try {
     const orders = await Order.find({ user: req.user.id })
       .populate("item.menuitem")
-      .populate("owner");
+      .populate("owner")
+      .sort({ dateOrdered: -1 });
     return res.status(200).json(orders);
   } catch (error) {
     console.error(error.message);
@@ -112,4 +157,10 @@ const updateStatus = async (req, res) => {
   }
 };
 
-module.exports = { checkout, restaurantOrders, userOrders, updateStatus };
+module.exports = {
+  checkout,
+  restaurantOrders,
+  userOrders,
+  updateStatus,
+  verifyPayment,
+};

@@ -13,9 +13,10 @@ const Modal = ({ showModal, onClose, onSubmit }) => {
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
-    axios.post("https://countriesnow.space/api/v0.1/countries/states", {
-      country: "India",
-    })
+    axios
+      .post("https://countriesnow.space/api/v0.1/countries/states", {
+        country: "India",
+      })
       .then((response) => {
         setStates(response.data.data.states);
       })
@@ -24,10 +25,11 @@ const Modal = ({ showModal, onClose, onSubmit }) => {
 
   useEffect(() => {
     if (state) {
-      axios.post("https://countriesnow.space/api/v0.1/countries/state/cities", {
-        country: "India",
-        state: state,
-      })
+      axios
+        .post("https://countriesnow.space/api/v0.1/countries/state/cities", {
+          country: "India",
+          state: state,
+        })
         .then((response) => {
           setCities(response.data.data);
         })
@@ -48,8 +50,12 @@ const Modal = ({ showModal, onClose, onSubmit }) => {
     const addressDetails = { mobile, pincode, state, city, paymode };
 
     const newErrors = {};
-    if (!mobile) newErrors.mobile = "Phone number is required.";
-    if (!pincode) newErrors.pincode = "Pincode is required.";
+    if (!/^\d{10}$/.test(mobile)) {
+      newErrors.mobile = "Mobile number must contain digits only.";
+    }
+    if (!/^\d{6}$/.test(pincode)) {
+      newErrors.pincode = "Pincode must contain digits only.";
+    }
     if (!state) newErrors.state = "State is required.";
     if (!city) newErrors.city = "City is required.";
     if (!paymode) newErrors.paymode = "Payment mode is required.";
@@ -75,39 +81,56 @@ const Modal = ({ showModal, onClose, onSubmit }) => {
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
       <div className="bg-white w-full max-w-md rounded-lg shadow-lg p-6">
-        <h2 className="text-xl font-bold mb-4 text-center">Enter Your Address</h2>
+        <h2 className="text-xl font-bold mb-4 text-center">
+          Enter Your Address
+        </h2>
 
         <div className="space-y-2">
           <input
             type="text"
             placeholder="Phone Number"
             value={mobile}
+            maxLength={10}
             onChange={(e) => setMobile(e.target.value)}
-            className={`border rounded text-sm w-full p-2 focus:outline-none focus:ring-2 ${errors.mobile ? "border-red-500" : "focus:ring-red-500"}`}
+            className={`border rounded text-sm w-full p-2 focus:outline-none focus:ring-2 ${
+              errors.mobile ? "border-red-500" : "focus:ring-red-500"
+            }`}
           />
-          {errors.mobile && <p className="text-red-500 text-sm">{errors.mobile}</p>}
+          {errors.mobile && (
+            <p className="text-red-500 text-sm">{errors.mobile}</p>
+          )}
 
           <select
             value={state}
             onChange={(e) => setState(e.target.value)}
-            className={`border rounded w-full p-1 text-sm focus:outline-none focus:ring-2 ${errors.state ? "border-red-500" : "focus:ring-red-500"}`}
+            className={`border rounded w-full p-1 text-sm focus:outline-none focus:ring-2 ${
+              errors.state ? "border-red-500" : "focus:ring-red-500"
+            }`}
           >
             <option value="">Select State</option>
             {states.map((state, index) => (
-              <option key={index} value={state.name}>{state.name}</option>
+              <option key={index} value={state.name}>
+                {state.name}
+              </option>
             ))}
           </select>
-          {errors.state && <p className="text-red-500 text-sm">{errors.state}</p>}
+          {errors.state && (
+            <p className="text-red-500 text-sm">{errors.state}</p>
+          )}
 
           <select
             value={city}
             onChange={(e) => setCity(e.target.value)}
-            className={`border rounded w-full p-1 focus:outline-none focus:ring-2 ${errors.city ? "border-red-500" : "focus:ring-red-500"}`}
+            className={`border rounded w-full p-1 focus:outline-none focus:ring-2 ${
+              errors.city ? "border-red-500" : "focus:ring-red-500"
+            }`}
             disabled={!state}
           >
             <option value="">Select City</option>
             {cities.map((city, index) => (
-              <option key={index} value={city}>{city}</option>
+              <option key={index} value={city}>
+                {city}
+              </option>
             ))}
           </select>
           {errors.city && <p className="text-red-500 text-sm">{errors.city}</p>}
@@ -116,15 +139,22 @@ const Modal = ({ showModal, onClose, onSubmit }) => {
             type="text"
             placeholder="Pincode"
             value={pincode}
+            maxLength={6}
             onChange={(e) => setPincode(e.target.value)}
-            className={`border rounded text-sm w-full p-1 focus:outline-none focus:ring-2 ${errors.pincode ? "border-red-500" : "focus:ring-red-500"}`}
+            className={`border rounded text-sm w-full p-1 focus:outline-none focus:ring-2 ${
+              errors.pincode ? "border-red-500" : "focus:ring-red-500"
+            }`}
           />
-          {errors.pincode && <p className="text-red-500 text-sm">{errors.pincode}</p>}
+          {errors.pincode && (
+            <p className="text-red-500 text-sm">{errors.pincode}</p>
+          )}
 
           <select
             value={paymode}
             onChange={(e) => setPaymentMode(e.target.value)}
-            className={`border rounded w-full p-1 text-sm focus:outline-none focus:ring-2 ${errors.paymode ? "border-red-500" : "focus:ring-red-500"}`}
+            className={`border rounded w-full p-1 text-sm focus:outline-none focus:ring-2 ${
+              errors.paymode ? "border-red-500" : "focus:ring-red-500"
+            }`}
           >
             <option value="">Select Payment Mode</option>
             <option value="Credit Card">Credit Card</option>
@@ -132,7 +162,9 @@ const Modal = ({ showModal, onClose, onSubmit }) => {
             <option value="Net Banking">Net Banking</option>
             <option value="Cash on Delivery">Cash on Delivery</option>
           </select>
-          {errors.paymode && <p className="text-red-500 text-sm">{errors.paymode}</p>}
+          {errors.paymode && (
+            <p className="text-red-500 text-sm">{errors.paymode}</p>
+          )}
         </div>
 
         <div className="mt-6 flex justify-end">
