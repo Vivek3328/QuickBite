@@ -71,7 +71,9 @@ const LoginSignup = () => {
         window.location.reload();
       }
     } catch (err) {
-      setErrors({ general: err.response?.data?.error || "Something went wrong" });
+      setErrors({
+        general: err.response?.data?.error || "Something went wrong",
+      });
     } finally {
       setLoading(false);
     }
@@ -152,8 +154,9 @@ const LoginSignup = () => {
 
           <button
             type="submit"
-            className={`w-full bg-[rgb(239,79,95)] text-white py-2 rounded-lg font-bold hover:bg-[rgb(219,59,75)] transition-colors duration-300 ${loading ? "opacity-50 cursor-not-allowed" : ""
-              }`}
+            className={`w-full bg-[rgb(239,79,95)] text-white py-2 rounded-lg font-bold hover:bg-[rgb(219,59,75)] transition-colors duration-300 ${
+              loading ? "opacity-50 cursor-not-allowed" : ""
+            }`}
             disabled={loading}
           >
             {loading ? "Processing..." : isSignup ? "Signup" : "Login"}

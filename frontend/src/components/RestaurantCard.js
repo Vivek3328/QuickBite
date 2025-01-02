@@ -18,7 +18,9 @@ const RestaurantCard = (props) => {
         <h3 className="text-lg md:text-xl font-semibold text-gray-800 hover:text-red-500 transition-colors duration-200">
           {props.name}
         </h3>
-        <p className="text-gray-600 text-xs md:text-sm mt-1">{props.foodtype}</p>
+        <p className="text-gray-600 text-xs md:text-sm mt-1">
+          {props.foodtype}
+        </p>
         <div className="flex items-center justify-between mt-4">
           <Link
             to={`/restaurant/${props.id}`}
@@ -27,7 +29,7 @@ const RestaurantCard = (props) => {
             Order Now
           </Link>
           <p className="text-gray-700 font-medium text-sm">
-            ${props.avgPrice || "15"} / meal
+            &#8377; {props.avgPrice || "15"} / meal
           </p>
         </div>
       </div>

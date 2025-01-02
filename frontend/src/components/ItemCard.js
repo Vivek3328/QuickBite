@@ -60,7 +60,9 @@ const ItemCard = ({ image, name, price, description, item, ownerId }) => {
       <div className="p-4">
         <h3 className="text-xl font-bold text-gray-800">{name}</h3>
         <p className="text-gray-600 mt-1">{description}</p>
-        <p className="text-lg font-semibold text-gray-800 mt-2">${price}</p>
+        <p className="text-lg font-semibold text-gray-800 mt-2">
+          &#8377; {price}
+        </p>
         <button
           onClick={() => addToCart(item, ownerId)}
           className="mt-4 w-full bg-red-500 text-white font-semibold py-2 rounded hover:bg-red-600 transition duration-300"

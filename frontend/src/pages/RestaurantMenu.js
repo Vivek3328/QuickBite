@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 // import ConfirmationModal from "../components/ConfirmationModal";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const RestaurantMenu = () => {
   const [menuItem, setmenuItem] = useState([]);
@@ -18,6 +18,7 @@ const RestaurantMenu = () => {
     image: "",
   });
   // const [isModalOpen, setIsModalOpen] = useState(false);
+  const [wordCount, setWordCount] = useState(0);
 
   const MenuItems = async () => {
     try {
@@ -43,6 +44,12 @@ const RestaurantMenu = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+
+    if (name === "description") {
+      const words = value.length;
+      setWordCount(words);
+    }
+
     setNewItem({
       ...newItem,
       [name]: value,
@@ -72,6 +79,11 @@ const RestaurantMenu = () => {
   const handleAddOrEditItem = async (e) => {
     e.preventDefault();
 
+    if (wordCount < 100 || wordCount > 300) {
+      toast.error("Description must be between 100 and 300 words.");
+      return;
+    }
+
     const itemData = {
       itemname: newItem.itemname,
       description: newItem.description,
@@ -96,7 +108,7 @@ const RestaurantMenu = () => {
           item._id === editItemId ? response.data.item : item
         );
         setmenuItem(updatedItems);
-        toast.success('Item Updated');
+        toast.success("Item Updated");
       } else {
         // Add new item
         const response = await axios.post(
@@ -119,6 +131,7 @@ const RestaurantMenu = () => {
       setNewItem({ itemname: "", description: "", price: "", image: "" });
       setImg("");
       setEditItemId(null); // Reset edit mode
+      setWordCount(0);
     } catch (error) {
       console.error("Error saving item", error.response.data);
     }
@@ -194,15 +207,18 @@ const RestaurantMenu = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-gray-700 font-semibold">
-                    Description
+                  <label className="block text-gray-700 font-semibold flex justify-between">
+                    <span>Description</span>
+                    <span className="text-gray-500 text-[12px] top-0">
+                      {wordCount}/300 words
+                    </span>
                   </label>
                   <textarea
                     name="description"
                     value={newItem.description}
                     onChange={handleInputChange}
                     className="w-full p-1 mt-1 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400"
-                    placeholder="Enter item description"
+                    placeholder="Enter item description (min: 100 words)"
                     required
                   />
                 </div>
@@ -260,7 +276,12 @@ const RestaurantMenu = () => {
                   type="button"
                   onClick={() => {
                     setShowModal(false);
-                    setNewItem({ itemname: "", description: "", price: "", image: "" });
+                    setNewItem({
+                      itemname: "",
+                      description: "",
+                      price: "",
+                      image: "",
+                    });
                     setImg("");
                     setEditItemId(null);
                   }}
@@ -291,7 +312,7 @@ const RestaurantMenu = () => {
               />
               <h3 className="text-xl font-bold mt-2">{item?.itemname}</h3>
               <p className="text-gray-600">{item?.description}</p>
-              <p className="text-gray-800 font-bold">${item?.price}</p>
+              <p className="text-gray-800 font-bold">&#8377; {item?.price}</p>
               <div className="flex justify-between mt-4">
                 <button
                   onClick={() => handleEditClick(item)}

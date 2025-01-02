@@ -83,7 +83,6 @@ const Cart = () => {
         alert("Failed to place order.");
       }
     } catch (error) {
-      console.error("Error during checkout:", error);
       alert("An error occurred during checkout.");
     }
   };
@@ -213,23 +212,23 @@ const Cart = () => {
           </h2>
           <div className="flex justify-between mb-2 border-b pb-2">
             <span className="text-gray-700">Item Total:</span>
-            <span className="font-semibold">${subtotal.toFixed(2)}</span>
+            <span className="font-semibold">&#8377; {subtotal.toFixed(2)}</span>
           </div>
           <div className="flex justify-between mb-2 border-b pb-2">
             <span className="text-gray-700">GST (18%):</span>
-            <span className="font-semibold">${gst}</span>
+            <span className="font-semibold">&#8377; {gst}</span>
           </div>
           <div className="flex justify-between mb-2 border-b pb-2">
             <span className="text-gray-700">Restaurant Charges:</span>
-            <span className="font-semibold">${restaurantCharges}</span>
+            <span className="font-semibold">&#8377; {restaurantCharges}</span>
           </div>
           <div className="flex justify-between mb-2 border-b pb-2">
             <span className="text-gray-700">Delivery Fee:</span>
-            <span className="font-semibold">${deliveryFee}</span>
+            <span className="font-semibold">&#8377; {deliveryFee}</span>
           </div>
           <div className="flex justify-between mb-2 border-b pb-2">
             <span className="text-gray-700">Platform Fee:</span>
-            <span className="font-semibold">${platformFee}</span>
+            <span className="font-semibold">&#8377; {platformFee}</span>
           </div>
           {appliedCoupon && (
             <div className="flex justify-between mb-2 border-b pb-2">
@@ -237,13 +236,15 @@ const Cart = () => {
                 Discount ({appliedCoupon.code}):
               </span>
               <span className="font-semibold text-red-500">
-                -${discount.toFixed(2)}
+                - &#8377; {discount.toFixed(2)}
               </span>
             </div>
           )}
           <div className="flex justify-between font-bold text-lg mb-4 pt-2 border-t">
             <span>Grand Total:</span>
-            <span className="text-green-500">${grandTotal.toFixed(2)}</span>
+            <span className="text-green-500">
+              &#8377; {grandTotal.toFixed(2)}
+            </span>
           </div>
 
           <div className="mb-4 flex">

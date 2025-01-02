@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import backgroundImage from "../assets/home.jpg";
 import RestaurantCard from "../components/RestaurantCard";
+import Skelleton from "../components/Skelleton";
 
 const Home = () => {
   const [restaurants, setRestaurants] = useState([]);
@@ -31,10 +32,6 @@ const Home = () => {
     }
   }, [isLoggedIn]);
 
-  if (loading) {
-    return <div className="text-center text-base">Loading...</div>;
-  }
-
   if (error) {
     return (
       <div className="text-center text-red-500">
@@ -44,10 +41,10 @@ const Home = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-r from-gray-200 to-white pt-12 mt-5">
+    <div className="min-h-screen flex flex-col bg-gradient-to-r">
       <div className="flex-1">
         {isLoggedIn ? (
-          <div className="p-4">
+          <div className="p-4 mt-12">
             <h1 className="text-2xl md:text-3xl font-bold text-gray-800 text-center mb-2">
               Explore Our Restaurants
             </h1>
@@ -55,39 +52,50 @@ const Home = () => {
               Discover a variety of dining options available in your area.
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mx-8 mt-10">
-              {restaurants.map((restaurant) => (
-                <div
-                  key={restaurant._id}
-                  className="transform transition-transform hover:scale-105 mb-4" // Added margin-bottom for spacing
-                >
-                  <RestaurantCard
-                    id={restaurant._id}
-                    image={restaurant.image}
-                    name={restaurant.name}
-                    foodtype={restaurant.foodtype}
-                  />
-                </div>
-              ))}
+              {loading
+                ? Array.from({ length: 6 }).map((_, index) => (
+                    <div
+                      key={index}
+                      className="transform transition-transform hover:scale-105 mb-4"
+                    >
+                      <Skelleton />
+                    </div>
+                  ))
+                : restaurants.map((restaurant) => (
+                    <div
+                      key={restaurant._id}
+                      className="transform transition-transform hover:scale-105 mb-4"
+                    >
+                      <RestaurantCard
+                        id={restaurant._id}
+                        image={restaurant.image}
+                        name={restaurant.name}
+                        foodtype={restaurant.foodtype}
+                      />
+                    </div>
+                  ))}
             </div>
           </div>
         ) : (
           <div
-            className="flex-1 flex items-center justify-center w-full min-h-screen"
+            className="flex-1 flex items-center justify-center w-full min-h-screen bg-fixed bg-cover bg-center"
             style={{
               backgroundImage: `url(${backgroundImage})`,
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-              backgroundRepeat: "no-repeat",
             }}
           >
-            <div className="bg-black bg-opacity-60 p-4 rounded-lg text-center">
-              <h1 className="text-white text-xl font-bold">
+            <div className="bg-black bg-opacity-60 p-8 rounded-xl shadow-lg text-center">
+              <h1 className="text-white text-3xl font-extrabold mb-4 text-shadow-lg">
                 Welcome to QuickBite - Discover Deliciousness!
               </h1>
-              <p className="text-white mt-2 text-sm">
+              <p className="text-white text-lg font-medium mt-2 text-shadow-md">
                 Join us today and explore an amazing selection of restaurants
                 just for you!
               </p>
+              <div className="mt-6">
+                <button className="bg-red-500 text-white px-6 py-2 rounded-lg text-lg font-semibold hover:bg-red-600 transition-all duration-300">
+                  Get Started
+                </button>
+              </div>
             </div>
           </div>
         )}
