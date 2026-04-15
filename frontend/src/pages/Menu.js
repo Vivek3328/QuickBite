@@ -28,7 +28,7 @@ const Menu = () => {
         );
 
         const restaurantOwner = ownerResponse.data.find(
-          (owner) => owner._id === id
+          (o) => o._id === id
         );
 
         setOwner(restaurantOwner);
@@ -44,55 +44,62 @@ const Menu = () => {
 
   if (error) {
     return (
-      <div className="text-center text-red-500">
-        Error fetching restaurant menu: {error}
+      <div className="mx-auto max-w-lg px-4 py-16 text-center">
+        <div className="surface-card border-red-100 bg-red-50 p-8 text-red-800">
+          <p className="font-semibold">Could not load this menu</p>
+          <p className="mt-2 text-sm">{error}</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 mt-5">
-      <div className="max-w-6xl mx-auto pt-16 px-6">
+    <div className="min-h-screen bg-gradient-to-b from-brand-50/40 to-ink-50 pb-16">
+      <div className="mx-auto max-w-7xl px-4 pt-6 sm:px-6 lg:px-8">
         {loading ? (
-          <div className="bg-white rounded-lg shadow-md p-6 mb-8">
+          <div className="surface-card border-0 p-8">
             <div className="text-center">
-              <Skeleton height={40} width={200} className="mb-4" />
-              <Skeleton height={30} width={150} className="mb-2" />
-              <Skeleton height={20} width={250} className="mb-2" />
-              <Skeleton height={20} width={250} className="mb-2" />
-              <Skeleton height={20} width={250} className="mb-2" />
-              <Skeleton height={30} width={100} />
+              <Skeleton height={36} width={220} className="mb-4 !rounded-lg" />
+              <Skeleton height={24} width={160} className="mb-2 !rounded-lg" />
+              <Skeleton height={18} width={280} className="mb-2 !rounded-lg" />
+              <Skeleton height={18} width={240} className="mb-4 !rounded-lg" />
+              <Skeleton height={28} width={120} className="!rounded-full" />
             </div>
           </div>
         ) : (
           owner && (
-            <div className="bg-white rounded-lg shadow-md p-6 mb-8">
+            <div className="surface-card overflow-hidden border-0 bg-gradient-to-br from-white to-brand-50/30 p-8 sm:p-10">
               <div className="text-center">
-                <h1 className="text-4xl font-bold text-gray-800">
+                <h1 className="font-display text-3xl font-bold tracking-tight text-ink-900 sm:text-4xl">
                   {owner.name}
                 </h1>
-                <p className="text-lg text-gray-600">{owner.foodtype}</p>
-                <p className="text-gray-600">{owner.address}</p>
-                <p className="text-gray-600">Contact: {owner.mobile}</p>
-                <p className="text-gray-600">Email: {owner.email}</p>
+                <p className="mt-2 text-lg text-brand-700">{owner.foodtype}</p>
+                <p className="mt-4 text-ink-600">{owner.address}</p>
+                <div className="mt-4 flex flex-wrap items-center justify-center gap-3 text-sm text-ink-600">
+                  <span>{owner.mobile}</span>
+                  <span className="hidden sm:inline">·</span>
+                  <span>{owner.email}</span>
+                </div>
                 <span
-                  className={`mt-2 inline-block py-1 px-3 rounded-full text-white ${
-                    owner.restaurantType === "veg"
-                      ? "bg-green-500"
-                      : "bg-red-500"
+                  className={`mt-6 inline-flex items-center rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-wide text-white ${
+                    owner.restaurantType === "veg" ? "bg-emerald-600" : "bg-rose-600"
                   }`}
                 >
-                  {owner.restaurantType === "veg" ? "Veg" : "Non-Veg"}
+                  {owner.restaurantType === "veg" ? "Vegetarian" : "Non-veg"}
                 </span>
               </div>
             </div>
           )
         )}
 
-        <h2 className="text-3xl font-semibold text-gray-800 mb-4 text-center">
+        <h2 className="mt-12 text-center font-display text-2xl font-bold text-ink-900 sm:text-3xl">
           Menu
         </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <p className="mx-auto mt-2 max-w-md text-center text-sm text-ink-500">
+          Tap add to put items in your cart. You can adjust quantities at checkout.
+        </p>
+
+        <div className="mt-10 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
           {loading
             ? Array.from({ length: 6 }).map((_, index) => (
                 <Skelleton key={index} />
@@ -110,7 +117,7 @@ const Menu = () => {
               ))}
         </div>
       </div>
-      <ToastContainer hideProgressBar={true} position="top-center" />
+      <ToastContainer hideProgressBar={true} position="top-center" theme="light" />
     </div>
   );
 };

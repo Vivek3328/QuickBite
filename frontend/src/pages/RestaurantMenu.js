@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-// import ConfirmationModal from "../components/ConfirmationModal";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -9,15 +8,13 @@ const RestaurantMenu = () => {
   const [restoName, setRestoName] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [img, setImg] = useState("");
-  // const [deleteId, setDeleteId] = useState("");
-  const [editItemId, setEditItemId] = useState(null); // Track the item being edited
+  const [editItemId, setEditItemId] = useState(null);
   const [newItem, setNewItem] = useState({
     itemname: "",
     description: "",
     price: "",
     image: "",
   });
-  // const [isModalOpen, setIsModalOpen] = useState(false);
   const [wordCount, setWordCount] = useState(0);
 
   const MenuItems = async () => {
@@ -80,7 +77,7 @@ const RestaurantMenu = () => {
     e.preventDefault();
 
     if (wordCount < 100 || wordCount > 300) {
-      toast.error("Description must be between 100 and 300 words.");
+      toast.error("Description must be between 100 and 300 characters.");
       return;
     }
 
@@ -88,12 +85,11 @@ const RestaurantMenu = () => {
       itemname: newItem.itemname,
       description: newItem.description,
       price: newItem.price,
-      image: img || newItem.image, // If no new image is uploaded, retain the existing one
+      image: img || newItem.image,
     };
 
     try {
       if (editItemId) {
-        // Edit item
         const response = await axios.put(
           `${process.env.REACT_APP_API_BASE_URL}/menuitemauth/updatemenuitem/${editItemId}`,
           itemData,
@@ -108,9 +104,8 @@ const RestaurantMenu = () => {
           item._id === editItemId ? response.data.item : item
         );
         setmenuItem(updatedItems);
-        toast.success("Item Updated");
+        toast.success("Item updated");
       } else {
-        // Add new item
         const response = await axios.post(
           `${process.env.REACT_APP_API_BASE_URL}/menuitemauth/additem`,
           itemData,
@@ -126,14 +121,13 @@ const RestaurantMenu = () => {
 
       MenuItems();
 
-      // Reset form and modal state
       setShowModal(false);
       setNewItem({ itemname: "", description: "", price: "", image: "" });
       setImg("");
-      setEditItemId(null); // Reset edit mode
+      setEditItemId(null);
       setWordCount(0);
     } catch (error) {
-      console.error("Error saving item", error.response.data);
+      console.error("Error saving item", error.response?.data);
     }
   };
 
@@ -145,25 +139,9 @@ const RestaurantMenu = () => {
       price: item.price,
       image: item.image,
     });
-    setImg(item.image); // Set the existing image URL for preview
-    setEditItemId(item._id); // Set the ID of the item being edited
+    setImg(item.image);
+    setEditItemId(item._id);
   };
-
-  // const handleDeleteItem = async (id) => {
-  //   try {
-  //     await axios.delete(
-  //       `${process.env.REACT_APP_API_BASE_URL}/menuitemauth/deletemenuitems/${id}`,
-  //       {
-  //         headers: {
-  //           "auth-token": localStorage.getItem("ownerToken"),
-  //         },
-  //       }
-  //     );
-  //     setmenuItem(menuItem.filter((item) => item._id !== id));
-  //   } catch (error) {
-  //     console.error("Error deleting item:", error);
-  //   }
-  // };
 
   const removeImage = () => {
     setImg("");
@@ -171,107 +149,113 @@ const RestaurantMenu = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-4 mt-16">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-2xl font-bold text-gray-800 text-center">
-          {restoName}'s Menu
-        </h1>
+    <div className="mx-auto max-w-7xl px-4 pb-16 pt-4 sm:px-6 lg:px-8">
+      <div className="flex flex-col gap-4 border-b border-ink-100 pb-8 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <p className="text-sm font-semibold uppercase tracking-wider text-brand-600">
+            Dashboard
+          </p>
+          <h1 className="mt-1 font-display text-3xl font-bold text-ink-900">
+            {restoName || "Your restaurant"}
+            <span className="text-ink-400">&apos;s menu</span>
+          </h1>
+          <p className="mt-2 text-sm text-ink-500">
+            Add dishes, upload photos, and keep prices up to date.
+          </p>
+        </div>
         <button
+          type="button"
           onClick={() => setShowModal(true)}
-          className="px-4 py-2 bg-red-500 text-white rounded-lg shadow-md hover:bg-red-600 transition text-sm font-bold"
+          className="btn-primary shrink-0 self-start sm:self-auto"
         >
-          + Add New Item
+          + Add item
         </button>
       </div>
 
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-6 rounded-xl shadow-lg w-full max-w-md transform transition-all mt-6">
-            <h2 className="text-2xl font-bold text-gray-800 mb-2 text-center">
-              {editItemId ? "Edit Item" : "Add New Item"}
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-ink-900/50 p-4 backdrop-blur-sm">
+          <div className="surface-card max-h-[90vh] w-full max-w-lg overflow-y-auto p-6 shadow-card-hover sm:p-8">
+            <h2 className="font-display text-xl font-bold text-ink-900">
+              {editItemId ? "Edit item" : "New menu item"}
             </h2>
-            <form onSubmit={handleAddOrEditItem}>
-              <div className="space-y-1">
-                <div>
-                  <label className="block text-gray-700 font-semibold">
-                    Item Name
-                  </label>
-                  <input
-                    type="text"
-                    name="itemname"
-                    value={newItem.itemname}
-                    onChange={handleInputChange}
-                    className="w-full p-1 mt-1 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400"
-                    placeholder="Enter item name"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-gray-700 font-semibold flex justify-between">
-                    <span>Description</span>
-                    <span className="text-gray-500 text-[12px] top-0">
-                      {wordCount}/300 words
-                    </span>
-                  </label>
-                  <textarea
-                    name="description"
-                    value={newItem.description}
-                    onChange={handleInputChange}
-                    className="w-full p-1 mt-1 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400"
-                    placeholder="Enter item description (min: 100 words)"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-gray-700 font-semibold">
-                    Price
-                  </label>
-                  <input
-                    type="number"
-                    name="price"
-                    value={newItem.price}
-                    onChange={handleInputChange}
-                    className="w-full p-1 mt-1 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400"
-                    placeholder="Enter item price"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-gray-700 font-semibold">
-                    Image
-                  </label>
-                  {/* If editing, show current image preview */}
-
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={uploadImage}
-                    className="w-full p-1 mt-1 text-sm border rounded-lg"
-                  />
-                  <div className="mb-2">
-                    {img ? (
-                      <div className=" flex">
-                        <img
-                          src={img}
-                          alt="Current Item"
-                          className="w-10 h-10 object-cover rounded-lg mt-2"
-                        />
-                        <button
-                          type="button"
-                          onClick={removeImage}
-                          className=" h-4 w-4 bg-red-500 text-white rounded-full hover:bg-red-600 transition flex items-center justify-center mt-2 z-1"
-                        >
-                          &times;
-                        </button>
-                      </div>
-                    ) : (
-                      <p className="text-gray-400">No image selected</p>
-                    )}
-                  </div>
+            <form onSubmit={handleAddOrEditItem} className="mt-6 space-y-4">
+              <div>
+                <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-ink-500">
+                  Name
+                </label>
+                <input
+                  type="text"
+                  name="itemname"
+                  value={newItem.itemname}
+                  onChange={handleInputChange}
+                  className="input-field"
+                  placeholder="e.g. Margherita pizza"
+                  required
+                />
+              </div>
+              <div>
+                <label className="mb-1 flex justify-between text-xs font-semibold uppercase tracking-wide text-ink-500">
+                  <span>Description</span>
+                  <span className="font-normal normal-case text-ink-400">
+                    {wordCount}/300 chars
+                  </span>
+                </label>
+                <textarea
+                  name="description"
+                  value={newItem.description}
+                  onChange={handleInputChange}
+                  className="input-field min-h-[120px] resize-y"
+                  placeholder="100–300 characters"
+                  required
+                />
+              </div>
+              <div>
+                <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-ink-500">
+                  Price (₹)
+                </label>
+                <input
+                  type="number"
+                  name="price"
+                  value={newItem.price}
+                  onChange={handleInputChange}
+                  className="input-field"
+                  placeholder="299"
+                  required
+                />
+              </div>
+              <div>
+                <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-ink-500">
+                  Image
+                </label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={uploadImage}
+                  className="input-field py-2 file:mr-3 file:rounded-lg file:border-0 file:bg-brand-50 file:px-3 file:py-1.5 file:text-sm file:font-semibold file:text-brand-800"
+                />
+                <div className="mt-3">
+                  {img ? (
+                    <div className="flex items-start gap-3">
+                      <img
+                        src={img}
+                        alt="Preview"
+                        className="h-16 w-16 rounded-xl object-cover ring-1 ring-ink-100"
+                      />
+                      <button
+                        type="button"
+                        onClick={removeImage}
+                        className="rounded-lg border border-ink-200 px-3 py-1.5 text-xs font-semibold text-ink-700 hover:bg-ink-50"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  ) : (
+                    <p className="text-sm text-ink-400">No image yet</p>
+                  )}
                 </div>
               </div>
 
-              <div className="mt-2 flex justify-end space-x-4">
+              <div className="flex flex-col-reverse gap-2 pt-2 sm:flex-row sm:justify-end sm:gap-3">
                 <button
                   type="button"
                   onClick={() => {
@@ -285,15 +269,12 @@ const RestaurantMenu = () => {
                     setImg("");
                     setEditItemId(null);
                   }}
-                  className="px-2 py-2 bg-gray-500 text-white text-sm rounded-lg hover:bg-gray-600 transition"
+                  className="btn-secondary w-full sm:w-auto"
                 >
                   Cancel
                 </button>
-                <button
-                  type="submit"
-                  className="px-2 py-2 bg-red-500 text-white text-sm rounded-lg hover:bg-red-600 transition"
-                >
-                  {editItemId ? "Update Item" : "Add Item"}
+                <button type="submit" className="btn-primary w-full sm:w-auto">
+                  {editItemId ? "Save changes" : "Add item"}
                 </button>
               </div>
             </form>
@@ -301,51 +282,43 @@ const RestaurantMenu = () => {
         </div>
       )}
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-8">
+      <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {menuItem.length > 0 ? (
           menuItem.map((item) => (
-            <div key={item?._id} className="bg-white p-4 rounded-lg shadow-md">
-              <img
-                src={item?.image}
-                alt={item?.itemname}
-                className="w-full h-44 cover rounded-lg"
-              />
-              <h3 className="text-xl font-bold mt-2">{item?.itemname}</h3>
-              <p className="text-gray-600">{item?.description}</p>
-              <p className="text-gray-800 font-bold">&#8377; {item?.price}</p>
-              <div className="flex justify-between mt-4">
+            <div key={item?._id} className="surface-card flex flex-col overflow-hidden">
+              <div className="aspect-[4/3] overflow-hidden bg-ink-100">
+                <img
+                  src={item?.image}
+                  alt={item?.itemname}
+                  className="h-full w-full object-cover"
+                />
+              </div>
+              <div className="flex flex-1 flex-col p-5">
+                <h3 className="font-display text-lg font-semibold text-ink-900">
+                  {item?.itemname}
+                </h3>
+                <p className="mt-2 line-clamp-4 flex-1 text-sm text-ink-600">
+                  {item?.description}
+                </p>
+                <p className="mt-4 text-lg font-bold text-brand-700">₹{item?.price}</p>
                 <button
+                  type="button"
                   onClick={() => handleEditClick(item)}
-                  className="px-4 py-1 bg-blue-500 text-sm text-white rounded-lg hover:bg-blue-600 transition"
+                  className="btn-secondary mt-4 w-full !py-2 !text-sm"
                 >
                   Edit
                 </button>
-                {/* <button
-                  onClick={() => {
-                    setDeleteId(item?._id);
-                    setIsModalOpen(true);
-                  }}
-                  className="px-4 py-1 bg-red-500 text-sm text-white rounded-lg hover:bg-red-600 transition"
-                >
-                  Delete
-                </button> */}
               </div>
             </div>
           ))
         ) : (
-          <p>No menu items found. Please add some.</p>
+          <div className="surface-card col-span-full p-12 text-center text-ink-600">
+            No items yet. Add your first dish to get started.
+          </div>
         )}
       </div>
 
-      {/* <ConfirmationModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        title="Delete Confirmation"
-        message="Are you sure you want to Delete this item?"
-        onConfirm={() => handleDeleteItem(deleteId)}
-        onCancel={() => setIsModalOpen(false)}
-      /> */}
-      <ToastContainer hideProgressBar={true} position="top-center" />
+      <ToastContainer hideProgressBar={true} position="top-center" theme="light" />
     </div>
   );
 };

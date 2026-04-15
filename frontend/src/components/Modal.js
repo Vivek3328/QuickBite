@@ -51,14 +51,14 @@ const Modal = ({ showModal, onClose, onSubmit }) => {
 
     const newErrors = {};
     if (!/^\d{10}$/.test(mobile)) {
-      newErrors.mobile = "Mobile number must contain digits only.";
+      newErrors.mobile = "Enter a valid 10-digit mobile number.";
     }
     if (!/^\d{6}$/.test(pincode)) {
-      newErrors.pincode = "Pincode must contain digits only.";
+      newErrors.pincode = "Pincode must be 6 digits.";
     }
-    if (!state) newErrors.state = "State is required.";
-    if (!city) newErrors.city = "City is required.";
-    if (!paymode) newErrors.paymode = "Payment mode is required.";
+    if (!state) newErrors.state = "Select a state.";
+    if (!city) newErrors.city = "Select a city.";
+    if (!paymode) newErrors.paymode = "Choose a payment mode.";
 
     setErrors(newErrors);
 
@@ -78,107 +78,121 @@ const Modal = ({ showModal, onClose, onSubmit }) => {
     return null;
   }
 
+  const fieldError = (key) => errors[key];
+
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-      <div className="bg-white w-full max-w-md rounded-lg shadow-lg p-6">
-        <h2 className="text-xl font-bold mb-4 text-center">
-          Enter Your Address
-        </h2>
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-ink-900/50 p-4 backdrop-blur-sm">
+      <div className="surface-card max-h-[90vh] w-full max-w-md overflow-y-auto p-6 shadow-card-hover">
+        <h2 className="font-display text-xl font-bold text-ink-900">Delivery details</h2>
+        <p className="mt-1 text-sm text-ink-500">We need this to complete your order.</p>
 
-        <div className="space-y-2">
-          <input
-            type="text"
-            placeholder="Phone Number"
-            value={mobile}
-            maxLength={10}
-            onChange={(e) => setMobile(e.target.value)}
-            className={`border rounded text-sm w-full p-2 focus:outline-none focus:ring-2 ${
-              errors.mobile ? "border-red-500" : "focus:ring-red-500"
-            }`}
-          />
-          {errors.mobile && (
-            <p className="text-red-500 text-sm">{errors.mobile}</p>
-          )}
+        <div className="mt-6 space-y-4">
+          <div>
+            <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-ink-500">
+              Phone
+            </label>
+            <input
+              type="text"
+              inputMode="numeric"
+              placeholder="10-digit mobile"
+              value={mobile}
+              maxLength={10}
+              onChange={(e) => setMobile(e.target.value)}
+              className={`input-field ${fieldError("mobile") ? "border-red-400 ring-red-200" : ""}`}
+            />
+            {fieldError("mobile") && (
+              <p className="mt-1 text-xs text-red-600">{fieldError("mobile")}</p>
+            )}
+          </div>
 
-          <select
-            value={state}
-            onChange={(e) => setState(e.target.value)}
-            className={`border rounded w-full p-1 text-sm focus:outline-none focus:ring-2 ${
-              errors.state ? "border-red-500" : "focus:ring-red-500"
-            }`}
-          >
-            <option value="">Select State</option>
-            {states.map((state, index) => (
-              <option key={index} value={state.name}>
-                {state.name}
-              </option>
-            ))}
-          </select>
-          {errors.state && (
-            <p className="text-red-500 text-sm">{errors.state}</p>
-          )}
+          <div>
+            <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-ink-500">
+              State
+            </label>
+            <select
+              value={state}
+              onChange={(e) => setState(e.target.value)}
+              className={`input-field ${fieldError("state") ? "border-red-400" : ""}`}
+            >
+              <option value="">Select state</option>
+              {states.map((s, index) => (
+                <option key={index} value={s.name}>
+                  {s.name}
+                </option>
+              ))}
+            </select>
+            {fieldError("state") && (
+              <p className="mt-1 text-xs text-red-600">{fieldError("state")}</p>
+            )}
+          </div>
 
-          <select
-            value={city}
-            onChange={(e) => setCity(e.target.value)}
-            className={`border rounded w-full p-1 focus:outline-none focus:ring-2 ${
-              errors.city ? "border-red-500" : "focus:ring-red-500"
-            }`}
-            disabled={!state}
-          >
-            <option value="">Select City</option>
-            {cities.map((city, index) => (
-              <option key={index} value={city}>
-                {city}
-              </option>
-            ))}
-          </select>
-          {errors.city && <p className="text-red-500 text-sm">{errors.city}</p>}
+          <div>
+            <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-ink-500">
+              City
+            </label>
+            <select
+              value={city}
+              onChange={(e) => setCity(e.target.value)}
+              className={`input-field ${fieldError("city") ? "border-red-400" : ""}`}
+              disabled={!state}
+            >
+              <option value="">Select city</option>
+              {cities.map((c, index) => (
+                <option key={index} value={c}>
+                  {c}
+                </option>
+              ))}
+            </select>
+            {fieldError("city") && (
+              <p className="mt-1 text-xs text-red-600">{fieldError("city")}</p>
+            )}
+          </div>
 
-          <input
-            type="text"
-            placeholder="Pincode"
-            value={pincode}
-            maxLength={6}
-            onChange={(e) => setPincode(e.target.value)}
-            className={`border rounded text-sm w-full p-1 focus:outline-none focus:ring-2 ${
-              errors.pincode ? "border-red-500" : "focus:ring-red-500"
-            }`}
-          />
-          {errors.pincode && (
-            <p className="text-red-500 text-sm">{errors.pincode}</p>
-          )}
+          <div>
+            <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-ink-500">
+              Pincode
+            </label>
+            <input
+              type="text"
+              inputMode="numeric"
+              placeholder="6-digit pincode"
+              value={pincode}
+              maxLength={6}
+              onChange={(e) => setPincode(e.target.value)}
+              className={`input-field ${fieldError("pincode") ? "border-red-400" : ""}`}
+            />
+            {fieldError("pincode") && (
+              <p className="mt-1 text-xs text-red-600">{fieldError("pincode")}</p>
+            )}
+          </div>
 
-          <select
-            value={paymode}
-            onChange={(e) => setPaymentMode(e.target.value)}
-            className={`border rounded w-full p-1 text-sm focus:outline-none focus:ring-2 ${
-              errors.paymode ? "border-red-500" : "focus:ring-red-500"
-            }`}
-          >
-            <option value="">Select Payment Mode</option>
-            <option value="Credit Card">Credit Card</option>
-            <option value="Debit Card">Debit Card</option>
-            <option value="Net Banking">Net Banking</option>
-            <option value="Cash on Delivery">Cash on Delivery</option>
-          </select>
-          {errors.paymode && (
-            <p className="text-red-500 text-sm">{errors.paymode}</p>
-          )}
+          <div>
+            <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-ink-500">
+              Payment
+            </label>
+            <select
+              value={paymode}
+              onChange={(e) => setPaymentMode(e.target.value)}
+              className={`input-field ${fieldError("paymode") ? "border-red-400" : ""}`}
+            >
+              <option value="">Select mode</option>
+              <option value="Credit Card">Credit card</option>
+              <option value="Debit Card">Debit card</option>
+              <option value="Net Banking">Net banking</option>
+              <option value="Cash on Delivery">Cash on delivery</option>
+            </select>
+            {fieldError("paymode") && (
+              <p className="mt-1 text-xs text-red-600">{fieldError("paymode")}</p>
+            )}
+          </div>
         </div>
 
-        <div className="mt-6 flex justify-end">
-          <button
-            onClick={handleSubmit}
-            className="bg-green-500 text-white text-sm px-4 py-1 rounded hover:bg-green-700 transition duration-200"
-          >
-            Proceed
-          </button>
-          <button
-            onClick={handleClose}
-            className="ml-4 bg-red-500 text-white text-sm px-4 py-1 rounded hover:bg-red-700 transition duration-200"
-          >
+        <div className="mt-8 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end sm:gap-3">
+          <button type="button" onClick={handleClose} className="btn-secondary w-full sm:w-auto">
             Cancel
+          </button>
+          <button type="button" onClick={handleSubmit} className="btn-primary w-full sm:w-auto">
+            Continue to pay
           </button>
         </div>
       </div>

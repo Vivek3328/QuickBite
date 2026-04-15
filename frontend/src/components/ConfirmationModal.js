@@ -11,28 +11,37 @@ const ConfirmationModal = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
-        <h2 className="text-xl font-bold text-gray-800 mb-4">{title}</h2>
-        <p className="mb-6 text-sm">{message}</p>
-        <div className="flex justify-end space-x-2">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-ink-900/50 p-4 backdrop-blur-sm">
+      <div
+        className="surface-card w-full max-w-md p-6 shadow-card-hover"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="confirm-title"
+      >
+        <h2 id="confirm-title" className="font-display text-xl font-bold text-ink-900">
+          {title}
+        </h2>
+        <p className="mt-2 text-sm leading-relaxed text-ink-600">{message}</p>
+        <div className="mt-6 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end sm:gap-3">
           <button
+            type="button"
             onClick={() => {
-              onConfirm(); // Execute the confirm action
-              onClose(); // Close modal
+              onCancel();
+              onClose();
             }}
-            className="px-4 py-2 bg-red-500 text-sm text-white rounded-lg hover:bg-red-600"
-          >
-            Confirm
-          </button>
-          <button
-            onClick={() => {
-              onCancel(); // Execute the cancel action
-              onClose(); // Close modal
-            }}
-            className="px-4 py-2 bg-gray-300 text-sm text-gray-800 rounded-lg hover:bg-gray-400"
+            className="btn-secondary w-full sm:w-auto"
           >
             Cancel
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              onConfirm();
+              onClose();
+            }}
+            className="w-full rounded-xl bg-ink-900 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-ink-800 sm:w-auto"
+          >
+            Confirm
           </button>
         </div>
       </div>

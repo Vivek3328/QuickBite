@@ -3,37 +3,35 @@ import { Link } from "react-router-dom";
 
 const RestaurantCard = (props) => {
   return (
-    <div className="max-w-xs w-full h-80 bg-white rounded-lg shadow-lg overflow-hidden sm:h-96 md:h-auto">
-      <div className="relative w-full h-40 sm:h-48 md:h-60">
+    <article className="group surface-card overflow-hidden transition hover:-translate-y-1 hover:shadow-card-hover">
+      <div className="relative aspect-[4/3] w-full overflow-hidden">
         <img
           src={props.image}
           alt={props.name}
-          className="w-full h-full object-cover transition-opacity duration-300 hover:opacity-90"
+          className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
         />
-        <div className="absolute top-2 right-2 bg-black bg-opacity-50 text-white text-xs font-semibold px-2 py-1 rounded">
-          {props.rating || "4.5 ★"}
+        <div className="absolute right-3 top-3 rounded-full bg-white/95 px-2.5 py-1 text-xs font-semibold text-ink-800 shadow-sm backdrop-blur">
+          {props.rating || "4.5"} ★
         </div>
       </div>
-      <div className="p-4">
-        <h3 className="text-lg md:text-xl font-semibold text-gray-800 hover:text-red-500 transition-colors duration-200">
+      <div className="p-5">
+        <h3 className="font-display text-xl font-semibold text-ink-900 transition group-hover:text-brand-700">
           {props.name}
         </h3>
-        <p className="text-gray-600 text-xs md:text-sm mt-1">
-          {props.foodtype}
-        </p>
-        <div className="flex items-center justify-between mt-4">
+        <p className="mt-1 text-sm text-ink-500">{props.foodtype}</p>
+        <div className="mt-5 flex items-end justify-between gap-3">
           <Link
             to={`/restaurant/${props.id}`}
-            className="bg-red-500 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-red-600 transition duration-200 ease-in-out transform hover:scale-105"
+            className="btn-primary !py-2.5 !text-sm"
           >
-            Order Now
+            View menu
           </Link>
-          <p className="text-gray-700 font-medium text-sm">
-            &#8377; {props.avgPrice || "15"} / meal
+          <p className="text-right text-sm font-medium text-ink-600">
+            From ₹{props.avgPrice || "—"}
           </p>
         </div>
       </div>
-    </div>
+    </article>
   );
 };
 

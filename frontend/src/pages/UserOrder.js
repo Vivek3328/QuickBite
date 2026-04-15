@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { FiEye, FiX } from "react-icons/fi";
 import Skelleton from "../components/Skelleton";
 
 const UserOrder = () => {
@@ -40,144 +41,144 @@ const UserOrder = () => {
   const openModal = (order) => {
     setSelectedOrder(order);
     setIsModalOpen(true);
-    document.body.style.overflow = "hidden"; // Disable body scrolling
+    document.body.style.overflow = "hidden";
   };
 
   const closeModal = () => {
     setIsModalOpen(false);
     setSelectedOrder(null);
-    document.body.style.overflow = "auto"; // Enable body scrolling
+    document.body.style.overflow = "auto";
   };
 
   if (error) {
-    return <div>{error}</div>;
+    return (
+      <div className="mx-auto max-w-lg px-4 py-16 text-center">
+        <div className="surface-card border-red-100 bg-red-50 p-8 text-red-800">{error}</div>
+      </div>
+    );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-16 pb-8">
-      <div className="container mx-auto px-4 mt-5">
-        <h1 className="text-3xl md:text-4xl font-bold mb-8 text-center text-red-600">
-          My Orders
-        </h1>
-        {/* Grid Layout for Order Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {loading ? (
-            Array.from({ length: 6 }).map((_, index) => (
-              <Skelleton key={index} />
-            ))
-          ) : orders.length === 0 ? (
-            <p className="text-center text-gray-500 col-span-full">
-              No orders found.
-            </p>
-          ) : (
-            orders.map((order) => (
-              <div
-                key={order._id}
-                className="bg-white rounded-lg shadow-lg p-4 md:p-6 border border-gray-200 flex flex-col justify-between min-h-[350px] transition-all hover:scale-105 transform hover:shadow-xl"
-              >
-                {/* Order ID, Restaurant Name and Status */}
-                <div className="mb-4 flex justify-between items-center">
-                  <div>
-                    <h2 className="text-md md:text-lg font-bold text-black">
-                      Order ID:{" "}
-                      <span className="text-red-600">{order._id}</span>
-                    </h2>
-                    <h3 className="text-sm md:text-md font-semibold text-black">
-                      Restaurant:{" "}
-                      <span className="text-green-600">{order.owner.name}</span>
-                    </h3>
-                  </div>
-                  <span
-                    className={`text-xs md:text-sm font-semibold px-2 py-1 rounded ${getStatusStyle(
-                      order.status
-                    )}`}
-                  >
-                    {order.status}
-                  </span>
+    <div className="mx-auto max-w-7xl px-4 pb-16 pt-4 sm:px-6 lg:px-8">
+      <div className="text-center">
+        <p className="text-sm font-semibold uppercase tracking-wider text-brand-600">
+          History
+        </p>
+        <h1 className="mt-2 font-display text-3xl font-bold text-ink-900">My orders</h1>
+        <p className="mt-2 text-sm text-ink-500">
+          Track status and open any order to see line items.
+        </p>
+      </div>
+
+      <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {loading ? (
+          Array.from({ length: 6 }).map((_, index) => <Skelleton key={index} />)
+        ) : orders.length === 0 ? (
+          <p className="col-span-full text-center text-ink-500">No orders yet.</p>
+        ) : (
+          orders.map((order) => (
+            <article
+              key={order._id}
+              className="surface-card flex min-h-[320px] flex-col p-6 transition hover:-translate-y-0.5 hover:shadow-card-hover"
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <p className="text-xs font-medium text-ink-400">Order ID</p>
+                  <p className="break-all font-mono text-xs text-ink-800">{order._id}</p>
+                  <p className="mt-3 text-sm font-semibold text-ink-900">
+                    {order.owner.name}
+                  </p>
                 </div>
-
-                {/* Improved View Items Button */}
-                <button
-                  onClick={() => openModal(order)}
-                  className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-full transition duration-300 hover:bg-blue-700 hover:scale-105 transform"
+                <span
+                  className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-bold ${getStatusStyle(
+                    order.status
+                  )}`}
                 >
-                  <i className="fas fa-eye mr-2"></i> View Order Items
-                </button>
+                  {order.status}
+                </span>
+              </div>
 
-                {/* Total Price and Shipping Info */}
-                <div className="border-t pt-4 mt-4">
-                  <div className="flex justify-between items-center">
-                    <div className="text-sm text-gray-600">
-                      <p className="font-semibold text-gray-800">
-                        Shipping Details
-                      </p>
-                      <p>
-                        {order.shipping.city}, {order.shipping.state}
-                      </p>
-                      <p>Mobile: {order.shipping.mobile}</p>
-                      <p>Payment Mode: {order.shipping.paymode}</p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-lg font-bold text-gray-900">
-                        Total: ₹{order.totalprice}
-                      </p>
-                    </div>
+              <button
+                type="button"
+                onClick={() => openModal(order)}
+                className="btn-secondary mt-6 flex w-full items-center justify-center gap-2 !py-2.5 !text-sm"
+              >
+                <FiEye className="h-4 w-4" />
+                View items
+              </button>
+
+              <div className="mt-auto border-t border-ink-100 pt-4">
+                <div className="flex justify-between gap-4 text-sm">
+                  <div className="text-ink-600">
+                    <p className="font-semibold text-ink-800">Ship to</p>
+                    <p>
+                      {order.shipping.city}, {order.shipping.state}
+                    </p>
+                    <p className="mt-1">{order.shipping.mobile}</p>
+                    <p className="text-xs text-ink-400">{order.shipping.paymode}</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-xs text-ink-400">Total</p>
+                    <p className="text-lg font-bold text-brand-700 tabular-nums">
+                      ₹{order.totalprice}
+                    </p>
                   </div>
                 </div>
               </div>
-            ))
-          )}
-        </div>
+            </article>
+          ))
+        )}
       </div>
 
-      {/* Modal for displaying order items */}
       {isModalOpen && selectedOrder && (
-        <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50 overflow-auto transition-opacity duration-300 opacity-100">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-11/12 md:w-1/2 max-h-[80vh] overflow-y-auto transition-all transform relative">
-            {/* Close Icon (X) */}
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-ink-900/50 p-4 backdrop-blur-sm">
+          <div
+            className="surface-card relative max-h-[85vh] w-full max-w-lg overflow-y-auto p-6 shadow-card-hover sm:p-8"
+            role="dialog"
+            aria-modal="true"
+          >
             <button
+              type="button"
               onClick={closeModal}
-              className="absolute top-4 right-4 text-2xl text-gray-600 hover:text-gray-900"
+              className="absolute right-4 top-4 rounded-lg p-2 text-ink-500 transition hover:bg-ink-100 hover:text-ink-900"
+              aria-label="Close"
             >
-              &times;
+              <FiX className="h-5 w-5" />
             </button>
 
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">
-              Order Details
-            </h2>
+            <h2 className="font-display pr-10 text-xl font-bold text-ink-900">Order details</h2>
+            <p className="mt-1 break-all font-mono text-xs text-ink-500">{selectedOrder._id}</p>
+            <p className="mt-4 text-sm text-ink-600">
+              <span className="font-semibold text-ink-900">{selectedOrder.owner.name}</span>
+              {" · "}
+              <span
+                className={`inline-flex rounded-full px-2 py-0.5 text-xs font-bold ${getStatusStyle(
+                  selectedOrder.status
+                )}`}
+              >
+                {selectedOrder.status}
+              </span>
+            </p>
 
-            <div className="mb-4">
-              <h3 className="text-xl font-semibold">
-                Order ID: {selectedOrder._id}
-              </h3>
-              <p className="text-gray-700">
-                Restaurant: {selectedOrder.owner.name}
-              </p>
-              <p className="text-gray-700">Status: {selectedOrder.status}</p>
-            </div>
-
-            <div className="space-y-4">
+            <ul className="mt-6 space-y-4">
               {selectedOrder.item.map((item, index) => (
-                <div key={index} className="flex items-center">
+                <li
+                  key={index}
+                  className="flex gap-4 rounded-xl border border-ink-100 bg-ink-50/50 p-3"
+                >
                   <img
                     src={item.menuitem.image}
                     alt={item.menuitem.itemname}
-                    className="w-16 h-16 md:w-20 md:h-20 rounded-lg object-cover border-2 border-red-500 mr-4 shadow"
+                    className="h-16 w-16 shrink-0 rounded-xl object-cover ring-1 ring-ink-100"
                   />
-                  <div className="flex-grow">
-                    <h3 className="text-lg font-semibold text-gray-900">
-                      {item.menuitem.itemname}
-                    </h3>
-                    <p className="text-sm text-gray-600">
-                      Quantity: {item.quantity}
-                    </p>
-                    <p className="text-lg text-red-500">
-                      ₹{item.menuitem.price}
-                    </p>
+                  <div className="min-w-0 flex-1">
+                    <h3 className="font-semibold text-ink-900">{item.menuitem.itemname}</h3>
+                    <p className="text-sm text-ink-500">Qty {item.quantity}</p>
+                    <p className="mt-1 font-bold text-brand-700">₹{item.menuitem.price}</p>
                   </div>
-                </div>
+                </li>
               ))}
-            </div>
+            </ul>
           </div>
         </div>
       )}
@@ -188,13 +189,17 @@ const UserOrder = () => {
 const getStatusStyle = (status) => {
   switch (status) {
     case "Pending":
-      return "bg-yellow-200 text-yellow-600";
-    case "Completed":
-      return "bg-green-200 text-green-600";
+      return "bg-amber-100 text-amber-800";
+    case "Being Baked":
+      return "bg-orange-100 text-orange-800";
+    case "Out for Delivery":
+      return "bg-sky-100 text-sky-800";
+    case "Delivered":
+      return "bg-emerald-100 text-emerald-800";
     case "Cancelled":
-      return "bg-red-200 text-red-600";
+      return "bg-red-100 text-red-800";
     default:
-      return "bg-gray-200 text-gray-600";
+      return "bg-ink-100 text-ink-700";
   }
 };
 

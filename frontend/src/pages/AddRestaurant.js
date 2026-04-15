@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const AddRestaurant = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -80,14 +80,10 @@ const AddRestaurant = () => {
         navigate("/restaurant-menu");
         window.location.reload();
       } else {
-        console.log("before register");
-        console.log(formData);
-
         const res = await axios.post(
           `${process.env.REACT_APP_API_BASE_URL}/ownerauth/registerowner`,
           { ...formData }
         );
-        console.log(formData);
         setIsLogin(true);
         console.log("Registration Successful:", res.data);
       }
@@ -99,122 +95,31 @@ const AddRestaurant = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 pt-16">
-      <div className="bg-white p-4 rounded-lg shadow-lg w-full max-w-4xl">
-        <h2 className="text-2xl font-extrabold text-center mb-4 text-[rgb(239,79,95)]">
-          {isLogin ? "Restaurant Owner Login" : "Register Your Restaurant"}
-        </h2>
+    <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6 lg:px-8">
+      <div className="surface-card overflow-hidden p-6 sm:p-10">
+        <div className="text-center">
+          <h2 className="font-display text-2xl font-bold text-ink-900 sm:text-3xl">
+            {isLogin ? "Restaurant sign in" : "Register your restaurant"}
+          </h2>
+          <p className="mt-2 text-sm text-ink-500">
+            Manage your menu and incoming orders from one place.
+          </p>
+        </div>
 
         {error && (
-          <div className="bg-red-100 text-red-700 p-3 rounded mb-3 text-center">
+          <div className="mt-6 rounded-xl border border-red-100 bg-red-50 px-4 py-3 text-center text-sm text-red-800">
             {error}
           </div>
         )}
 
         <form
           onSubmit={handleSubmit}
-          className={`grid gap-4 ${isLogin ? "grid-cols-1" : "grid-cols-1 md:grid-cols-3"
-            }`}
+          className={`mt-8 grid gap-5 ${isLogin ? "mx-auto max-w-md" : "sm:grid-cols-2 lg:grid-cols-3"}`}
         >
           {isLogin ? (
             <>
-              <div className="mb-3 grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-gray-700 font-semibold mb-1">
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    className="w-full px-2 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[rgb(239,79,95)] transition duration-300 ease-in-out"
-                    placeholder="Enter your email"
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-gray-700 font-semibold mb-1">
-                    Password
-                  </label>
-                  <input
-                    type="password"
-                    name="password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    className="w-full px-2 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[rgb(239,79,95)] transition duration-300 ease-in-out"
-                    placeholder="Enter your password"
-                    required
-                  />
-                </div>
-              </div>
-            </>
-          ) : (
-            <>
-              {/* Registration fields */}
-              <div className="mb-3">
-                <label className="block text-gray-700 font-semibold mb-1">
-                  Restaurant Name
-                </label>
-                <input
-                  type="text"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  className="w-full px-2 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[rgb(239,79,95)] transition duration-300 ease-in-out"
-                  placeholder="Enter your restaurant name"
-                  required
-                />
-              </div>
-
-              <div className="mb-3">
-                <label className="block text-gray-700 font-semibold mb-1">
-                  Address
-                </label>
-                <input
-                  type="text"
-                  name="address"
-                  value={formData.address}
-                  onChange={handleChange}
-                  className="w-full px-2 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[rgb(239,79,95)] transition duration-300 ease-in-out"
-                  placeholder="Enter your address"
-                  required
-                />
-              </div>
-
-              <div className="mb-3">
-                <label className="block text-gray-700 font-semibold mb-1">
-                  Pincode
-                </label>
-                <input
-                  type="text"
-                  name="pincode"
-                  value={formData.pincode}
-                  onChange={handleChange}
-                  className="w-full px-2 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[rgb(239,79,95)] transition duration-300 ease-in-out"
-                  placeholder="Enter your pincode"
-                  required
-                />
-              </div>
-
-              <div className="mb-3">
-                <label className="block text-gray-700 font-semibold mb-1">
-                  Phone Number
-                </label>
-                <input
-                  type="text"
-                  name="mobile"
-                  value={formData.mobile}
-                  onChange={handleChange}
-                  className="w-full px-2 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[rgb(239,79,95)] transition duration-300 ease-in-out"
-                  placeholder="Enter your phone number"
-                  required
-                />
-              </div>
-
-              <div className="mb-3">
-                <label className="block text-gray-700 font-semibold mb-1">
+              <div>
+                <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-ink-500">
                   Email
                 </label>
                 <input
@@ -222,14 +127,14 @@ const AddRestaurant = () => {
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  className="w-full px-2 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[rgb(239,79,95)] transition duration-300 ease-in-out"
-                  placeholder="Enter your email"
+                  className="input-field"
+                  placeholder="owner@restaurant.com"
                   required
                 />
               </div>
 
-              <div className="mb-3">
-                <label className="block text-gray-700 font-semibold mb-1">
+              <div>
+                <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-ink-500">
                   Password
                 </label>
                 <input
@@ -237,81 +142,178 @@ const AddRestaurant = () => {
                   name="password"
                   value={formData.password}
                   onChange={handleChange}
-                  className="w-full px-2 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[rgb(239,79,95)] transition duration-300 ease-in-out"
-                  placeholder="Enter your password"
+                  className="input-field"
+                  placeholder="••••••••"
+                  required
+                />
+              </div>
+            </>
+          ) : (
+            <>
+              <div>
+                <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-ink-500">
+                  Restaurant name
+                </label>
+                <input
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  className="input-field"
+                  placeholder="The Spice House"
                   required
                 />
               </div>
 
-              <div className="mb-3">
-                <label className="block text-gray-700 font-semibold mb-1">
-                  Cuisine Type
+              <div className="sm:col-span-2">
+                <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-ink-500">
+                  Address
+                </label>
+                <input
+                  type="text"
+                  name="address"
+                  value={formData.address}
+                  onChange={handleChange}
+                  className="input-field"
+                  placeholder="Street, area"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-ink-500">
+                  Pincode
+                </label>
+                <input
+                  type="text"
+                  name="pincode"
+                  value={formData.pincode}
+                  onChange={handleChange}
+                  className="input-field"
+                  placeholder="560001"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-ink-500">
+                  Phone
+                </label>
+                <input
+                  type="text"
+                  name="mobile"
+                  value={formData.mobile}
+                  onChange={handleChange}
+                  className="input-field"
+                  placeholder="10-digit number"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-ink-500">
+                  Email
+                </label>
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  className="input-field"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-ink-500">
+                  Password
+                </label>
+                <input
+                  type="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  className="input-field"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-ink-500">
+                  Cuisine
                 </label>
                 <input
                   type="text"
                   name="foodtype"
                   value={formData.foodtype}
                   onChange={handleChange}
-                  className="w-full px-2 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[rgb(239,79,95)] transition duration-300 ease-in-out"
-                  placeholder="Italian, Spanish, etc."
+                  className="input-field"
+                  placeholder="North Indian, Italian…"
                   required
                 />
               </div>
 
-              <div className="mb-3">
-                <label className="block text-gray-700 font-semibold mb-1">
-                  Type of Restaurant
+              <div>
+                <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-ink-500">
+                  Type
                 </label>
                 <select
                   name="restaurantType"
                   value={formData.restaurantType}
                   onChange={handleChange}
-                  className="w-full px-2 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[rgb(239,79,95)] transition duration-300 ease-in-out"
+                  className="input-field"
                   required
                 >
-                  <option value="">Select Type</option>
-                  <option value="veg">Veg</option>
-                  <option value="non-veg">Non-Veg</option>
+                  <option value="">Select</option>
+                  <option value="veg">Vegetarian</option>
+                  <option value="non-veg">Non-vegetarian</option>
                 </select>
               </div>
 
-              <div className="mb-3">
-                <label className="block text-gray-700 font-semibold mb-1">
-                  Restaurant Image
+              <div className="sm:col-span-2">
+                <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-ink-500">
+                  Cover image
                 </label>
                 <input
                   type="file"
                   accept="image/*"
                   name="image"
                   onChange={handleFileChange}
-                  className="w-full px-2 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[rgb(239,79,95)] transition duration-300 ease-in-out"
+                  className="input-field py-2 file:mr-3 file:rounded-lg file:border-0 file:bg-brand-50 file:px-3 file:py-1.5 file:text-sm file:font-semibold file:text-brand-800"
                   required
                 />
               </div>
             </>
           )}
 
-          <button
-            type="submit"
-            className="bg-[rgb(239,79,95)] text-white font-semibold py-1 rounded-lg transition duration-300 ease-in-out hover:bg-[rgb(239,79,95,0.8)]"
-            disabled={loading}
-          >
-            {loading ? "Loading..." : isLogin ? "Login" : "Register"}
-          </button>
+          <div className={isLogin ? "" : "sm:col-span-2 lg:col-span-3"}>
+            <button
+              type="submit"
+              disabled={loading}
+              className="btn-primary w-full !py-3 disabled:opacity-50"
+            >
+              {loading ? "Please wait…" : isLogin ? "Sign in" : "Register"}
+            </button>
+          </div>
         </form>
 
-        <div className="text-center mt-2">
-          <p className="text-gray-600">
-            {isLogin ? "Don't have an account? " : "Already have an account? "}
-            <button
-              type="button"
-              onClick={toggleForm}
-              className="text-[rgb(239,79,95)] font-semibold hover:underline"
-            >
-              {isLogin ? "Register" : "Login"}
-            </button>
-          </p>
-        </div>
+        <p className="mt-8 text-center text-sm text-ink-600">
+          {isLogin ? "New partner? " : "Already registered? "}
+          <button
+            type="button"
+            onClick={toggleForm}
+            className="font-semibold text-brand-700 hover:text-brand-800"
+          >
+            {isLogin ? "Create an account" : "Sign in"}
+          </button>
+        </p>
+
+        <p className="mt-4 text-center text-xs text-ink-400">
+          Ordering food?{" "}
+          <Link to="/login" className="font-medium text-brand-700 hover:underline">
+            Customer sign in
+          </Link>
+        </p>
       </div>
     </div>
   );

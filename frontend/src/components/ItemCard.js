@@ -23,23 +23,23 @@ const ItemCard = ({ image, name, price, description, item, ownerId }) => {
     if (cart.length === 0) {
       cart.push({ ...newItem, owner: ownerId });
       dispatch(setTotalItems(totalItems + 1));
-      toast.success("Item Added to Cart");
+      toast.success("Added to cart");
     } else {
       const existingOwnerId = cart[0].owner;
 
       if (existingOwnerId !== ownerId) {
         cart = [{ ...newItem, owner: ownerId }];
         dispatch(setTotalItems(1));
-        toast.success("Item Added to Cart");
+        toast.success("Cart updated for this restaurant");
       } else {
         const isItemInCart = checkIdInArray(cart, newItem._id);
 
         if (isItemInCart) {
-          // alert("Item Already in cart");
-          toast.error("Item Already in cart");
+          toast.error("Already in cart");
         } else {
           cart.push({ ...newItem, owner: ownerId });
           dispatch(setTotalItems(totalItems + 1));
+          toast.success("Added to cart");
         }
       }
     }
@@ -47,30 +47,27 @@ const ItemCard = ({ image, name, price, description, item, ownerId }) => {
   };
 
   return (
-    <div className="max-w-xs mx-auto bg-white rounded-lg shadow-lg overflow-hidden transition-transform transform hover:scale-105">
-      <div className="h-64 relative overflow-hidden">
-        {" "}
-        {/* Increased height to h-64 */}
-        <img
-          src={image}
-          alt={name}
-          className="w-full h-full object-cover" // Ensuring full coverage without hiding
-        />
+    <article className="surface-card flex h-full flex-col overflow-hidden transition hover:-translate-y-0.5 hover:shadow-card-hover">
+      <div className="relative aspect-[4/3] w-full overflow-hidden bg-ink-100">
+        <img src={image} alt={name} className="h-full w-full object-cover" />
       </div>
-      <div className="p-4">
-        <h3 className="text-xl font-bold text-gray-800">{name}</h3>
-        <p className="text-gray-600 mt-1">{description}</p>
-        <p className="text-lg font-semibold text-gray-800 mt-2">
-          &#8377; {price}
+      <div className="flex flex-1 flex-col p-5">
+        <h3 className="font-display text-lg font-semibold text-ink-900">{name}</h3>
+        <p className="mt-2 line-clamp-3 flex-1 text-sm leading-relaxed text-ink-600">
+          {description}
         </p>
-        <button
-          onClick={() => addToCart(item, ownerId)}
-          className="mt-4 w-full bg-red-500 text-white font-semibold py-2 rounded hover:bg-red-600 transition duration-300"
-        >
-          Add to Cart
-        </button>
+        <div className="mt-4 flex items-center justify-between border-t border-ink-100 pt-4">
+          <p className="text-lg font-bold text-brand-700">₹{price}</p>
+          <button
+            type="button"
+            onClick={() => addToCart(item, ownerId)}
+            className="btn-primary !px-4 !py-2 !text-sm"
+          >
+            Add
+          </button>
+        </div>
       </div>
-    </div>
+    </article>
   );
 };
 

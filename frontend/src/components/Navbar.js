@@ -22,46 +22,40 @@ const Navbar = () => {
     window.location.reload();
   };
 
+  const linkClass =
+    "rounded-lg px-3 py-2 text-sm font-medium text-ink-700 transition hover:bg-brand-50 hover:text-brand-800";
+  const linkActiveMobile = "block w-full text-center rounded-xl py-3 text-sm font-medium";
+
   return (
-    <nav className="bg-[rgb(239,79,95)] p-3 fixed top-0 w-full z-10 shadow-lg">
-      <div className="container mx-auto flex items-center justify-between px-4">
-        {/* Logo */}
+    <nav className="fixed top-0 z-50 w-full border-b border-ink-100/80 bg-white/90 shadow-nav backdrop-blur-md">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
         <Link
           to="/"
-          className="text-white text-lg md:text-xl font-bold tracking-wider"
+          className="font-display text-xl font-bold tracking-tight text-ink-900"
         >
-          QuickBite
+          <span className="text-brand-600">Quick</span>Bite
         </Link>
 
-        {/* Menu Icon for Mobile */}
         <button
-          className="text-white md:hidden focus:outline-none"
+          type="button"
+          className="rounded-lg p-2 text-ink-700 hover:bg-brand-50 md:hidden"
           onClick={() => setIsMenuOpen(!isMenuOpen)}
+          aria-label="Toggle menu"
         >
-          {isMenuOpen ? <FiX className="w-6 h-6" /> : <FiMenu className="w-6 h-6" />}
+          {isMenuOpen ? <FiX className="h-6 w-6" /> : <FiMenu className="h-6 w-6" />}
         </button>
 
-        {/* Links for Desktop */}
-        <div className="hidden md:flex items-center space-x-6">
+        <div className="hidden items-center gap-1 md:flex">
           {isLoggedIn ? (
             isRestaurantOwner ? (
               <>
-                <Link
-                  to="/restaurant-menu"
-                  className="text-white hover:bg-[rgb(219,59,75)] py-2 px-4 rounded-lg transition duration-300"
-                >
+                <Link to="/restaurant-menu" className={linkClass}>
                   Dashboard
                 </Link>
-                <Link
-                  to="/Restaurant-orders"
-                  className="text-white hover:bg-[rgb(219,59,75)] py-2 px-4 rounded-lg transition duration-300"
-                >
+                <Link to="/Restaurant-orders" className={linkClass}>
                   Orders
                 </Link>
-                <button
-                  onClick={() => setIsModalOpen(true)}
-                  className="text-white hover:bg-[rgb(219,59,75)] py-2 px-4 rounded-lg transition duration-300"
-                >
+                <button type="button" onClick={() => setIsModalOpen(true)} className={linkClass}>
                   Logout
                 </button>
               </>
@@ -69,148 +63,132 @@ const Navbar = () => {
               <>
                 <Link
                   to="/cart"
-                  className="relative text-white py-2 px-4 rounded-lg transition duration-300"
+                  className={`relative inline-flex items-center rounded-lg px-3 py-2 text-ink-700 transition hover:bg-brand-50`}
                 >
-                  <FiShoppingCart className="inline-block size-6" />
+                  <FiShoppingCart className="h-6 w-6" />
                   {totalItems > 0 && (
-                    <span className="absolute top-0 right-1 bg-gray-500 text-white text-xs font-bold rounded-full w-4 h-4 flex items-center justify-center">
+                    <span className="absolute -right-0.5 -top-0.5 flex h-5 min-w-[1.25rem] items-center justify-center rounded-full bg-brand-600 px-1 text-[10px] font-bold text-white">
                       {totalItems}
                     </span>
                   )}
                 </Link>
-                <Link
-                  to="/user-orders"
-                  className="text-white py-2 px-4 rounded-lg transition duration-300"
-                >
-                  My Orders
+                <Link to="/user-orders" className={linkClass}>
+                  My orders
                 </Link>
-                <button
-                  onClick={() => setIsModalOpen(true)}
-                  className="text-white  py-2 px-4 rounded-lg transition duration-300"
-                >
+                <button type="button" onClick={() => setIsModalOpen(true)} className={linkClass}>
                   Logout
                 </button>
               </>
             )
           ) : (
             <>
-              <Link
-                to="/login"
-                className="text-white hover:text-pink-200 transition duration-300"
-              >
-                Login
+              <Link to="/login" className={linkClass}>
+                Sign in
               </Link>
-              <Link
-                to="/add-restaurant"
-                className="bg-white hover:bg-pink-200 text-[rgb(239,79,95)] font-semibold text-sm py-2 px-4 rounded-full transition duration-300"
-              >
-                Add Restaurant
+              <Link to="/add-restaurant" className="btn-primary !py-2 !text-sm">
+                List your restaurant
               </Link>
             </>
           )}
-          <ConfirmationModal
-            isOpen={isModalOpen}
-            onClose={() => setIsModalOpen(false)}
-            title="Logout Confirmation"
-            message="Are you sure you want to log out?"
-            onConfirm={handleLogout}
-            onCancel={() => setIsModalOpen(false)}
-          />
         </div>
       </div>
 
-      {/* Mobile Menu */}
       {isMenuOpen && (
-        <div className="md:hidden bg-[rgb(239,79,95)] p-4 space-y-4 text-center shadow-lg z-20">
-          {isLoggedIn ? (
-            isRestaurantOwner ? (
-              <>
-                <Link
-                  to="/restaurant-menu"
-                  className="block text-white hover:bg-[rgb(219,59,75)] py-2 rounded-lg transition duration-300"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Dashboard
-                </Link>
-                <Link
-                  to="/Restaurant-orders"
-                  className="block text-white hover:bg-[rgb(219,59,75)] py-2 rounded-lg transition duration-300"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Orders
-                </Link>
-                <button
-                  onClick={() => {
-                    setIsModalOpen(true)
-                    setIsMenuOpen(false)
-                  }}
-                  className="block text-white hover:bg-[rgb(219,59,75)] py-2 rounded-lg transition duration-300"
-                >
-                  Logout
-                </button>
-              </>
+        <div className="border-t border-ink-100 bg-white px-4 py-4 shadow-lg md:hidden">
+          <div className="flex flex-col gap-1">
+            {isLoggedIn ? (
+              isRestaurantOwner ? (
+                <>
+                  <Link
+                    to="/restaurant-menu"
+                    className={`${linkActiveMobile} text-ink-800 hover:bg-brand-50`}
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Dashboard
+                  </Link>
+                  <Link
+                    to="/Restaurant-orders"
+                    className={`${linkActiveMobile} text-ink-800 hover:bg-brand-50`}
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Orders
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsModalOpen(true);
+                      setIsMenuOpen(false);
+                    }}
+                    className={`${linkActiveMobile} text-ink-800 hover:bg-brand-50`}
+                  >
+                    Logout
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link
+                    to="/cart"
+                    className={`relative flex items-center justify-center gap-2 ${linkActiveMobile} text-ink-800 hover:bg-brand-50`}
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <FiShoppingCart className="h-5 w-5" />
+                    Cart
+                    {totalItems > 0 && (
+                      <span className="rounded-full bg-brand-600 px-2 py-0.5 text-xs font-bold text-white">
+                        {totalItems}
+                      </span>
+                    )}
+                  </Link>
+                  <Link
+                    to="/user-orders"
+                    className={`${linkActiveMobile} text-ink-800 hover:bg-brand-50`}
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    My orders
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsModalOpen(true);
+                      setIsMenuOpen(false);
+                    }}
+                    className={`${linkActiveMobile} text-ink-800 hover:bg-brand-50`}
+                  >
+                    Logout
+                  </button>
+                </>
+              )
             ) : (
               <>
                 <Link
-                  to="/cart"
-                  className="block text-white hover:bg-[rgb(219,59,75)] py-2 rounded-lg transition duration-300"
+                  to="/login"
+                  className={`${linkActiveMobile} text-ink-800 hover:bg-brand-50`}
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  <FiShoppingCart className="inline-block" />
-                  {totalItems > 0 && (
-                    <span className="absolute top-0 right-0 bg-gray-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
-                      {totalItems}
-                    </span>
-                  )}
+                  Sign in
                 </Link>
                 <Link
-                  to="/user-orders"
-                  className="block text-white hover:bg-[rgb(219,59,75)] py-2 rounded-lg transition duration-300"
+                  to="/add-restaurant"
+                  className={`${linkActiveMobile} bg-brand-600 text-white hover:bg-brand-700`}
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  My Orders
+                  List your restaurant
                 </Link>
-                <button
-                  onClick={() => {
-                    setIsModalOpen(true)
-                    // setIsMenuOpen(false)
-                  }}
-                  className="block text-white hover:bg-[rgb(219,59,75)] py-2 rounded-lg transition duration-300"
-                >
-                  Logout
-                </button>
               </>
-            )
-          ) : (
-            <>
-              <Link
-                to="/login"
-                className="block text-white hover:text-pink-200 transition duration-300"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Login
-              </Link>
-              <Link
-                to="/add-restaurant"
-                className="block bg-white hover:bg-pink-200 text-[rgb(239,79,95)] font-semibold py-2 rounded-lg transition duration-300"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Add Restaurant
-              </Link>
-            </>
-          )}
-          <ConfirmationModal
-            isOpen={isModalOpen}
-            onClose={() => setIsModalOpen(false)}
-            title="Logout Confirmation"
-            message="Are you sure you want to log out?"
-            onConfirm={handleLogout}
-            onCancel={() => setIsModalOpen(false)}
-          />
+            )}
+          </div>
         </div>
-      )
-      }
-    </nav >
+      )}
+
+      <ConfirmationModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        title="Sign out?"
+        message="You will need to sign in again to order or manage your restaurant."
+        onConfirm={handleLogout}
+        onCancel={() => setIsModalOpen(false)}
+      />
+    </nav>
   );
 };
 

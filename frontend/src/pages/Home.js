@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import axios from "axios";
 import backgroundImage from "../assets/home.jpg";
 import RestaurantCard from "../components/RestaurantCard";
@@ -34,72 +35,77 @@ const Home = () => {
 
   if (error) {
     return (
-      <div className="text-center text-red-500">
-        Error fetching restaurants: {error}
+      <div className="mx-auto max-w-lg px-4 py-20 text-center">
+        <div className="surface-card border-red-100 bg-red-50 p-8 text-red-800">
+          <p className="font-semibold">Could not load restaurants</p>
+          <p className="mt-2 text-sm text-red-700">{error}</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-r">
-      <div className="flex-1">
-        {isLoggedIn ? (
-          <div className="p-4 mt-12">
-            <h1 className="text-2xl md:text-3xl font-bold text-gray-800 text-center mb-2">
-              Explore Our Restaurants
-            </h1>
-            <p className="text-sm text-gray-700 text-center mb-4">
-              Discover a variety of dining options available in your area.
+    <div className="flex min-h-[calc(100vh-4.25rem)] flex-col">
+      {isLoggedIn ? (
+        <section id="restaurants" className="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+          <div className="animate-fade-up text-center">
+            <p className="text-sm font-semibold uppercase tracking-wider text-brand-600">
+              Hungry? Let&apos;s go
             </p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mx-8 mt-10">
-              {loading
-                ? Array.from({ length: 6 }).map((_, index) => (
-                    <div
-                      key={index}
-                      className="transform transition-transform hover:scale-105 mb-4"
-                    >
-                      <Skelleton />
-                    </div>
-                  ))
-                : restaurants.map((restaurant) => (
-                    <div
-                      key={restaurant._id}
-                      className="transform transition-transform hover:scale-105 mb-4"
-                    >
-                      <RestaurantCard
-                        id={restaurant._id}
-                        image={restaurant.image}
-                        name={restaurant.name}
-                        foodtype={restaurant.foodtype}
-                      />
-                    </div>
-                  ))}
-            </div>
+            <h1 className="mt-2 font-display text-3xl font-bold tracking-tight text-ink-900 sm:text-4xl">
+              Restaurants near you
+            </h1>
+            <p className="mx-auto mt-3 max-w-xl text-ink-600">
+              Pick a place, browse the menu, and checkout when you are ready.
+            </p>
           </div>
-        ) : (
+
+          <div className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            {loading
+              ? Array.from({ length: 6 }).map((_, index) => (
+                  <Skelleton key={index} />
+                ))
+              : restaurants.map((restaurant) => (
+                  <RestaurantCard
+                    key={restaurant._id}
+                    id={restaurant._id}
+                    image={restaurant.image}
+                    name={restaurant.name}
+                    foodtype={restaurant.foodtype}
+                  />
+                ))}
+          </div>
+        </section>
+      ) : (
+        <div className="relative flex flex-1 flex-col overflow-hidden">
           <div
-            className="flex-1 flex items-center justify-center w-full min-h-screen bg-fixed bg-cover bg-center"
-            style={{
-              backgroundImage: `url(${backgroundImage})`,
-            }}
-          >
-            <div className="bg-black bg-opacity-60 p-8 rounded-xl shadow-lg text-center">
-              <h1 className="text-white text-3xl font-extrabold mb-4 text-shadow-lg">
-                Welcome to QuickBite - Discover Deliciousness!
-              </h1>
-              <p className="text-white text-lg font-medium mt-2 text-shadow-md">
-                Join us today and explore an amazing selection of restaurants
-                just for you!
-              </p>
-              <div className="mt-6">
-                <button className="bg-red-500 text-white px-6 py-2 rounded-lg text-lg font-semibold hover:bg-red-600 transition-all duration-300">
-                  Get Started
-                </button>
-              </div>
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+            style={{ backgroundImage: `url(${backgroundImage})` }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-br from-ink-900/85 via-ink-900/70 to-brand-900/60" />
+
+          <div className="relative z-10 flex flex-1 flex-col items-center justify-center px-4 py-20 text-center sm:px-6">
+            <p className="animate-fade-up text-sm font-semibold uppercase tracking-[0.2em] text-brand-200">
+              Food delivery, simplified
+            </p>
+            <h1 className="animate-fade-up mt-4 max-w-3xl font-display text-4xl font-bold leading-tight text-white sm:text-5xl md:text-6xl">
+              Order from great restaurants in a few taps
+            </h1>
+            <p className="animate-fade-up mt-6 max-w-xl text-lg text-ink-200">
+              Sign in to explore menus, build your cart, and pay securely. Restaurant
+              partners can list a kitchen in minutes.
+            </p>
+            <div className="animate-fade-up mt-10 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
+              <Link to="/login" className="btn-primary min-w-[200px] px-8 py-3 text-base shadow-lg shadow-brand-900/30">
+                Sign in to order
+              </Link>
+              <Link to="/add-restaurant" className="btn-secondary min-w-[200px] border-white/30 bg-white/10 px-8 py-3 text-base text-white backdrop-blur hover:bg-white/20">
+                Restaurant login
+              </Link>
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 };

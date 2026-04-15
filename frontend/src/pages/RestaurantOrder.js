@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const RestaurantOrder = () => {
   const [orders, setOrders] = useState([]);
@@ -73,7 +73,7 @@ const RestaurantOrder = () => {
             order._id === orderId ? { ...order, status: newStatus } : order
           )
         );
-        toast.success('Status Updated')
+        toast.success("Status updated");
       }
     } catch (error) {
       console.error("Error updating status:", error);
@@ -123,34 +123,52 @@ const RestaurantOrder = () => {
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="mx-auto max-w-3xl px-4 py-16 sm:px-6">
+        <div className="space-y-4">
+          <div className="h-10 w-48 animate-pulse rounded-xl bg-ink-200" />
+          <div className="surface-card h-64 animate-pulse bg-ink-100" />
+          <div className="surface-card h-64 animate-pulse bg-ink-100" />
+        </div>
+      </div>
+    );
   }
 
   if (error) {
-    return <div>{error}</div>;
+    return (
+      <div className="mx-auto max-w-lg px-4 py-16 text-center">
+        <div className="surface-card border-red-100 bg-red-50 p-8 text-red-800">{error}</div>
+      </div>
+    );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 mt-16">
-      <div className="container mx-auto max-w-4xl px-2 md:px-4">
-        <h1 className="text-2xl md:text-3xl font-bold mb-6 text-center text-red-600">
-          Restaurant Orders
-        </h1>
+    <div className="mx-auto max-w-3xl px-4 pb-16 pt-4 sm:px-6 lg:px-8">
+      <div className="text-center">
+        <p className="text-sm font-semibold uppercase tracking-wider text-brand-600">
+          Kitchen
+        </p>
+        <h1 className="mt-2 font-display text-3xl font-bold text-ink-900">Orders</h1>
+        <p className="mt-2 text-sm text-ink-500">
+          Track progress and update status as you prepare each order.
+        </p>
+      </div>
 
+      <div className="mt-10 space-y-6">
         {orders.length === 0 ? (
-          <p className="text-center text-gray-500">No orders found.</p>
+          <div className="surface-card p-12 text-center text-ink-600">No orders yet.</div>
         ) : (
           orders.map((order) => (
-            <div
-              key={order._id}
-              className="bg-white rounded-lg shadow-md p-4 md:p-6 mb-4 border border-gray-200 text-sm md:text-base"
-            >
-              <div className="mb-2 flex justify-between items-center">
-                <h2 className="text-lg md:text-xl font-semibold text-gray-800">
-                  Order ID: <span className="text-red-600">{order._id}</span>
-                </h2>
+            <article key={order._id} className="surface-card overflow-hidden p-6 sm:p-8">
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <p className="text-xs font-medium uppercase tracking-wide text-ink-400">
+                    Order
+                  </p>
+                  <p className="mt-1 break-all font-mono text-sm text-ink-800">{order._id}</p>
+                </div>
                 <span
-                  className={`text-xs md:text-sm font-semibold px-2 py-1 rounded ${getStatusStyle(
+                  className={`inline-flex shrink-0 rounded-full px-3 py-1 text-xs font-bold ${getStatusStyle(
                     order.status
                   )}`}
                 >
@@ -158,87 +176,85 @@ const RestaurantOrder = () => {
                 </span>
               </div>
 
-              <div className="w-full bg-gray-200 rounded-full h-1.5 mb-4">
+              <div className="mt-4 h-2 overflow-hidden rounded-full bg-ink-100">
                 <div
-                  className="bg-blue-500 h-1.5 rounded-full"
+                  className="h-full rounded-full bg-gradient-to-r from-brand-500 to-brand-600 transition-all"
                   style={{
                     width: `${getProgressPercentage(order.status)}%`,
                   }}
                 />
               </div>
 
-              <div className="mb-2 md:mb-4 p-3 md:p-4 border border-gray-300 rounded">
-                <h3 className="text-sm font-semibold text-gray-800">
-                  Customer Details
-                </h3>
-                <p className="text-gray-600 text-sm">Name: {order.user.name}</p>
-                <p className="text-gray-600 text-sm">Email: {order.user.email}</p>
-                <p className="text-gray-600 text-sm">Mobile: {order.shipping.mobile}</p>
-                <p className="text-gray-600 text-sm">
-                  Address: {order.shipping.city}, {order.shipping.state},{" "}
-                  {order.shipping.pincode}
-                </p>
-                <p className="text-gray-600 text-sm">
-                  Payment Mode: {order.shipping.paymode}
-                </p>
+              <div className="mt-6 rounded-2xl border border-ink-100 bg-ink-50/50 p-4">
+                <h3 className="text-sm font-semibold text-ink-900">Customer</h3>
+                <dl className="mt-3 space-y-1 text-sm text-ink-600">
+                  <div>
+                    <span className="text-ink-400">Name:</span> {order.user.name}
+                  </div>
+                  <div>
+                    <span className="text-ink-400">Email:</span> {order.user.email}
+                  </div>
+                  <div>
+                    <span className="text-ink-400">Mobile:</span> {order.shipping.mobile}
+                  </div>
+                  <div>
+                    <span className="text-ink-400">Address:</span> {order.shipping.city},{" "}
+                    {order.shipping.state} {order.shipping.pincode}
+                  </div>
+                  <div>
+                    <span className="text-ink-400">Payment:</span> {order.shipping.paymode}
+                  </div>
+                </dl>
               </div>
 
-              <div className="mb-2 md:mb-4">
-                <h3 className="text-md font-semibold text-gray-800 mb-1">
-                  Ordered Items
-                </h3>
-                <ul className="space-y-1 md:space-y-2">
+              <div className="mt-6">
+                <h3 className="text-sm font-semibold text-ink-900">Items</h3>
+                <ul className="mt-3 divide-y divide-ink-100">
                   {order.item.map((item, index) => (
                     <li
                       key={index}
-                      className="flex justify-between items-center md:p-2 border-b border-gray-300"
+                      className="flex justify-between gap-4 py-3 text-sm first:pt-0"
                     >
-                      <span className="text-gray-700 text-sm">
-                        {item.menuitem.itemname}
-                      </span>
-                      <span className="text-gray-600 text-sm">
-                        Quantity: {item.quantity}
+                      <span className="text-ink-800">{item.menuitem.itemname}</span>
+                      <span className="shrink-0 tabular-nums text-ink-500">
+                        ×{item.quantity}
                       </span>
                     </li>
                   ))}
                 </ul>
               </div>
 
-              <div className="border-t pt-3 mt-3">
-                <div className="flex justify-between items-center gap-10 md:gap-20">
-                  <div className="flex items-center gap-2 text-xs md:text-sm text-gray-600 ml-2">
-                    <p className="font-semibold text-gray-800">Total:</p>
-                    <p className="text-base font-bold text-gray-900">
-                      ₹{order.totalprice}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex space-x-1 md:space-x-2 mt-2 md:mt-4">
-                  {order.status !== "Delivered" &&
-                    order.status !== "Cancelled" && (
-                      <button
-                        onClick={() => updateStatus(order._id, order.status)}
-                        className="bg-blue-500 text-white text-sm md:text-sm px-3 py-1 md:px-4 md:py-2 rounded hover:bg-blue-600 transition duration-200"
-                      >
-                        Update Status
-                      </button>
-                    )}
+              <div className="mt-6 flex flex-wrap items-center justify-between gap-4 border-t border-ink-100 pt-6">
+                <p className="text-lg font-bold text-ink-900">
+                  Total{" "}
+                  <span className="text-brand-700 tabular-nums">₹{order.totalprice}</span>
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {order.status !== "Delivered" && order.status !== "Cancelled" && (
+                    <button
+                      type="button"
+                      onClick={() => updateStatus(order._id, order.status)}
+                      className="btn-primary !py-2 !text-sm"
+                    >
+                      Advance status
+                    </button>
+                  )}
                   {order.status !== "Delivered" && (
                     <button
+                      type="button"
                       onClick={() => cancelOrder(order._id)}
-                      className="bg-red-500 text-white text-xs md:text-sm px-3 py-1 md:px-4 md:py-2 rounded hover:bg-red-600 transition duration-200"
+                      className="rounded-xl border border-red-200 bg-red-50 px-4 py-2 text-sm font-semibold text-red-800 transition hover:bg-red-100"
                     >
                       Cancel
                     </button>
                   )}
                 </div>
               </div>
-            </div>
+            </article>
           ))
         )}
       </div>
-      <ToastContainer hideProgressBar={true} position="top-center" />
+      <ToastContainer hideProgressBar={true} position="top-center" theme="light" />
     </div>
   );
 };
@@ -246,17 +262,17 @@ const RestaurantOrder = () => {
 const getStatusStyle = (status) => {
   switch (status) {
     case "Pending":
-      return "bg-yellow-200 text-yellow-600";
+      return "bg-amber-100 text-amber-800";
     case "Being Baked":
-      return "bg-orange-200 text-orange-600";
+      return "bg-orange-100 text-orange-800";
     case "Out for Delivery":
-      return "bg-blue-200 text-blue-600";
+      return "bg-sky-100 text-sky-800";
     case "Delivered":
-      return "bg-green-200 text-green-600";
+      return "bg-emerald-100 text-emerald-800";
     case "Cancelled":
-      return "bg-red-200 text-red-600";
+      return "bg-red-100 text-red-800";
     default:
-      return "bg-gray-200 text-gray-600";
+      return "bg-ink-100 text-ink-700";
   }
 };
 
