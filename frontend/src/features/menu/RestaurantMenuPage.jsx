@@ -7,7 +7,7 @@ import {
   FiSearch,
   FiSliders,
 } from "react-icons/fi";
-import { fetchAllOwners } from "@/api/ownerAuth";
+import { getRestaurant } from "@/api/restaurants";
 import { fetchRestoMenu } from "@/api/menu";
 import { ItemCard } from "@/components/cards/ItemCard";
 import {
@@ -31,14 +31,13 @@ export default function RestaurantMenuPage() {
 
     const load = async () => {
       try {
-        const [menuData, owners] = await Promise.all([
+        const [menuData, detail] = await Promise.all([
           fetchRestoMenu(id),
-          fetchAllOwners(),
+          getRestaurant(id),
         ]);
         if (cancelled) return;
         setMenuItems(menuData);
-        const restaurantOwner = owners.find((o) => o._id === id);
-        setOwner(restaurantOwner);
+        setOwner(detail.restaurant ?? null);
       } catch (err) {
         if (!cancelled) setError(err.message);
       } finally {

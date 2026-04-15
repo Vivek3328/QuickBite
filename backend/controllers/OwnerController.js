@@ -1,4 +1,3 @@
-const { validationResult } = require("express-validator");
 const Owner = require("../models/OwnerModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -6,12 +5,6 @@ const JWT_SECRET = process.env.JWT_SECRET_KEY;
 
 const registerOwner = async (req, res) => {
   let success = false;
-
-  const errors = validationResult(req);
-
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ success, errors: errors.array() });
-  }
   try {
     let owner = await Owner.findOne({ email: req.body.email });
 

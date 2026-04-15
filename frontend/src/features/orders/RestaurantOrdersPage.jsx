@@ -64,6 +64,7 @@ function formatWhen(dateStr) {
 function nextActionLabel(status) {
   switch (status) {
     case ORDER_STATUS.pending:
+    case ORDER_STATUS.paid:
       return "Start preparing";
     case ORDER_STATUS.beingBaked:
       return "Out for delivery";
@@ -81,7 +82,9 @@ function matchesFilter(order, filterId) {
         order.status !== ORDER_STATUS.delivered && order.status !== ORDER_STATUS.cancelled
       );
     case "pending":
-      return order.status === ORDER_STATUS.pending;
+      return (
+        order.status === ORDER_STATUS.pending || order.status === ORDER_STATUS.paid
+      );
     case "beingBaked":
       return order.status === ORDER_STATUS.beingBaked;
     case "outForDelivery":
@@ -104,6 +107,7 @@ const STEPS = [
 
 function statusStepIndex(status) {
   if (status === ORDER_STATUS.cancelled) return -1;
+  if (status === ORDER_STATUS.paid) return 0;
   const i = STEPS.findIndex((s) => s.status === status);
   return i >= 0 ? i : 0;
 }
@@ -171,6 +175,7 @@ export default function RestaurantOrdersPage() {
     let newStatus;
     switch (currentStatus) {
       case ORDER_STATUS.pending:
+      case ORDER_STATUS.paid:
         newStatus = ORDER_STATUS.beingBaked;
         break;
       case ORDER_STATUS.beingBaked:

@@ -1,31 +1,25 @@
 const express = require("express");
 const router = express.Router();
-const { body } = require("express-validator");
-// const fetchUser = require("../middlewares/fetchUser.js");
+// const { fetchUser } = require("../middleware/auth");
 const {
   registerUser,
   loginUser,
   getUser,
 } = require("../controllers/UserController");
-
-
+const validateRequest = require("../middleware/validateRequest");
+const { registerUserRules, loginUserRules } = require("../validators/userAuth");
 
 router.post(
   "/registeruser",
-  [
-    body("email", "Enter a valid Email").isEmail(),
-    body("name", "Enter a valid name").isLength({ min: 5 }),
-    body("password", "Enter a valid password").isLength({ min: 4 }),
-  ],
+  registerUserRules,
+  validateRequest,
   registerUser
 );
 
 router.post(
   "/loginuser",
-  [
-    body("email", "Enter a valid Email").isEmail(),
-    body("password", "Enter a valid password").isLength({ min: 4 }),
-  ],
+  loginUserRules,
+  validateRequest,
   loginUser
 );
 

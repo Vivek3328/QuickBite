@@ -1,5 +1,4 @@
 const express = require("express");
-const { body } = require("express-validator");
 
 const router = express.Router();
 
@@ -8,14 +7,13 @@ const {
   loginOwner,
   fetchAllOwner,
 } = require("../controllers/OwnerController.js");
+const validateRequest = require("../middleware/validateRequest");
+const { registerOwnerRules } = require("../validators/ownerAuth");
 
 router.post(
   "/registerowner",
-  [
-    body("email", "Enter a valid Email").isEmail(),
-    body("name", "Enter a valid name").isLength({ min: 5 }),
-    body("password", "Enter a valid password").isLength({ min: 4 }),
-  ],
+  registerOwnerRules,
+  validateRequest,
   registerOwner
 );
 

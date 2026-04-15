@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
+const { ORDER_STATUSES } = require("../constants/orderStatuses");
 
 // Subschema for shipping details
 const ShippingSchema = new Schema({
@@ -67,13 +68,7 @@ const OrderSchema = new Schema({
   },
   status: {
     type: String,
-    enum: [
-      "Pending",
-      "Being Baked",
-      "Out for Delivery",
-      "Delivered",
-      "Cancelled",
-    ],
+    enum: ORDER_STATUSES,
     default: "Pending",
   },
   razorpayOrderId: {

@@ -1,14 +1,9 @@
-const { validationResult } = require("express-validator");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require("../models/UserModel");
 const JWT_SECRET = process.env.JWT_SECRET_KEY;
 
 const registerUser = async (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
   try {
     // Check whether user with this email exist already
     let user = await User.findOne({ email: req.body.email });
@@ -40,11 +35,6 @@ const registerUser = async (req, res) => {
 };
 
 const loginUser = async (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
-
   try {
     // Check whether user with this email exist already
     let user = await User.findOne({ email: req.body.email });
@@ -78,7 +68,7 @@ const loginUser = async (req, res) => {
 
 const getUser = async (req, res) => {
   try {
-    userId = req.user.id;
+    const userId = req.user.id;
     const user = await User.findById(userId).select("-password");
     return res.send(user);
   } catch (error) {

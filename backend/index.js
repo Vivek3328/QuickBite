@@ -1,31 +1,20 @@
-const express = require("express");
-const cors = require("cors");
-const bodyParser = require("body-parser");
-const connectTOMongoDB = require("./db");
-const app = express();
 require("dotenv").config();
+
+const app = require("./app");
+const { connectDatabase } = require("./config/database");
 
 const port = process.env.PORT || 8000;
 
-connectTOMongoDB();
-app.use(cors());
-app.use(express.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+async function start() {
+  try {
+    await connectDatabase();
+    app.listen(port, () => {
+      console.log(`App is listening on port ${port}`);
+    });
+  } catch (err) {
+    console.error("Failed to start server:", err.message);
+    process.exit(1);
+  }
+}
 
-app.get("/", (req, res) => {
-  res.send("Hello backend");
-});
-
-app.get("/getkey", (req, res) =>
-  res.status(200).json({ key: process.env.RAZORPAY_KEY_ID })
-);
-
-app.use("/ownerauth", require("./routes/OwnerAuth.js"));
-app.use("/userauth", require("./routes/UserAuth.js"));
-app.use("/menuitemauth", require("./routes/MenuItemAuth.js"));
-app.use("/orders", require("./routes/OrderAuth.js"));
-
-app.listen(port, () => {
-  console.log(`App is Listening on Port ${port}`);
-});
+start();

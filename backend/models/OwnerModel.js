@@ -40,7 +40,31 @@ const ownerSchema = new Schema({
     type: String,
     // required:true
   },
-});
+  avgRating: {
+    type: Number,
+    default: 0,
+    min: 0,
+    max: 5,
+  },
+  reviewCount: {
+    type: Number,
+    default: 0,
+    min: 0,
+  },
+  deliveryEtaMin: {
+    type: Number,
+    default: 30,
+    min: 10,
+    max: 120,
+  },
+  costForTwo: {
+    type: Number,
+    default: 299,
+    min: 0,
+  },
+},
+  { timestamps: true }
+);
 
 const Owner = mongoose.model("owner", ownerSchema);
 module.exports = Owner;

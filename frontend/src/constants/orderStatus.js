@@ -1,5 +1,6 @@
 export const ORDER_STATUS = {
   pending: "Pending",
+  paid: "Paid",
   beingBaked: "Being Baked",
   outForDelivery: "Out for Delivery",
   delivered: "Delivered",
@@ -9,6 +10,7 @@ export const ORDER_STATUS = {
 export function getOrderStatusClasses(status) {
   switch (status) {
     case ORDER_STATUS.pending:
+    case ORDER_STATUS.paid:
       return "bg-amber-100 text-amber-800";
     case ORDER_STATUS.beingBaked:
       return "bg-orange-100 text-orange-800";
@@ -26,6 +28,7 @@ export function getOrderStatusClasses(status) {
 export function getOrderProgressPercent(status) {
   switch (status) {
     case ORDER_STATUS.pending:
+    case ORDER_STATUS.paid:
       return 25;
     case ORDER_STATUS.beingBaked:
       return 50;

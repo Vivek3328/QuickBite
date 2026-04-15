@@ -1,15 +1,13 @@
-const { validationResult } = require("express-validator");
 const Order = require("../models/OrderModel");
+const Review = require("../models/ReviewModel");
 const crypto = require("crypto");
 const razorpayInstance = require("../utils/razorpay");
+const {
+  ORDER_STATUS_PENDING,
+  ORDER_STATUS_PAID,
+} = require("../constants/orderStatuses");
 
-// Checkout API
 const checkout = async (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ success: false, errors: errors.array() });
-  }
-
   try {
     // Map items to correct structure
     const Item = req.body.item.map((item) => ({
@@ -39,7 +37,7 @@ const checkout = async (req, res) => {
       item: Item,
       shipping: shipping,
       totalprice: req.body.totalprice,
-      status: "Pending",
+      status: ORDER_STATUS_PENDING,
       razorpayOrderId: razorpayOrder.id,
     });
 
@@ -69,10 +67,9 @@ const verifyPayment = async (req, res) => {
         .json({ success: false, error: "Payment verification failed" });
     }
 
-    // Update the order status to "Paid" in your database
     const order = await Order.findOneAndUpdate(
-      { razorpay_order_id },
-      { $set: { status: "Paid" } },
+      { razorpayOrderId: razorpay_order_id },
+      { $set: { status: ORDER_STATUS_PAID } },
       { new: true }
     );
 
@@ -108,8 +105,24 @@ const userOrders = async (req, res) => {
     const orders = await Order.find({ user: req.user.id })
       .populate("item.menuitem")
       .populate("owner")
-      .sort({ dateOrdered: -1 });
-    return res.status(200).json(orders);
+      .sort({ dateOrdered: -1 })
+      .lean();
+
+    const orderIds = orders.map((o) => o._id);
+    const existingReviews = await Review.find({
+      user: req.user.id,
+      order: { $in: orderIds },
+    })
+      .select("order")
+      .lean();
+    const reviewedIds = new Set(existingReviews.map((r) => String(r.order)));
+
+    const enriched = orders.map((o) => ({
+      ...o,
+      hasReview: reviewedIds.has(String(o._id)),
+    }));
+
+    return res.status(200).json(enriched);
   } catch (error) {
     console.error(error.message);
     return res
@@ -118,21 +131,8 @@ const userOrders = async (req, res) => {
   }
 };
 
-// Update order status
 const updateStatus = async (req, res) => {
   const { status } = req.body;
-
-  // Check if the status is valid
-  const validStatuses = [
-    "Pending",
-    "Being Baked",
-    "Out for Delivery",
-    "Delivered",
-    "Cancelled",
-  ];
-  if (!validStatuses.includes(status)) {
-    return res.status(400).json({ success: false, error: "Invalid status" });
-  }
 
   try {
     let order = await Order.findById(req.params.id);
@@ -141,7 +141,10 @@ const updateStatus = async (req, res) => {
       return res.status(404).json({ success: false, error: "Order not found" });
     }
 
-    // Update the order status
+    if (order.owner.toString() !== req.owner.id) {
+      return res.status(403).json({ success: false, error: "Not authorized" });
+    }
+
     order = await Order.findByIdAndUpdate(
       req.params.id,
       { $set: { status } },

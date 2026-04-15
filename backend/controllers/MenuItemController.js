@@ -1,14 +1,9 @@
-const { body, validationResult } = require("express-validator");
 const MenuItem = require("../models/MenuItemModel");
 const OwnerModel = require("../models/OwnerModel");
 
 const addItem = async (req, res) => {
   let success = false;
   try {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ success, errors: errors.array() });
-    }
     const item = new MenuItem({
       owner: req.owner.id,
       itemname: req.body.itemname,

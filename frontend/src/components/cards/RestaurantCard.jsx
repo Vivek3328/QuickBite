@@ -1,7 +1,11 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { FiClock, FiMapPin } from "react-icons/fi";
+import { IoHeart, IoHeartOutline } from "react-icons/io5";
+import { toast } from "react-toastify";
 import { ROUTES } from "@/constants/routes";
+import { useAuth } from "@/context/AuthContext";
+import { addFavorite, checkFavorite, removeFavorite } from "@/api/favorites";
 import {
   distanceKm,
   etaRange,
@@ -15,21 +19,107 @@ const vegBadge = {
   "non-veg": { label: "Non-veg", className: "bg-rose-600" },
 };
 
-export function RestaurantCard({ id, image, name, foodtype, restaurantType }) {
+export function RestaurantCard({
+  id,
+  image,
+  name,
+  foodtype,
+  restaurantType,
+  avgRating,
+  reviewCount,
+  deliveryEtaMin,
+  costForTwo,
+}) {
   const [imgOk, setImgOk] = useState(true);
-  const rating = stableRating(id);
-  const eta = etaRange(id);
+  const rating =
+    reviewCount > 0 && avgRating != null
+      ? Number(avgRating).toFixed(1)
+      : stableRating(id);
+  const eta =
+    deliveryEtaMin != null
+      ? {
+          label: `${deliveryEtaMin}–${deliveryEtaMin + 8} min`,
+          start: deliveryEtaMin,
+        }
+      : etaRange(id);
   const km = distanceKm(id);
-  const price = priceHint(id);
+  const price =
+    costForTwo != null ? `₹${costForTwo} for two` : priceHint(id);
   const promo = showPromo(id);
   const typeKey = restaurantType === "veg" ? "veg" : "non-veg";
   const badge = vegBadge[typeKey] ?? vegBadge["non-veg"];
 
+  const { userToken } = useAuth();
+  const [favorite, setFavorite] = useState(false);
+  const [favoriteLoading, setFavoriteLoading] = useState(false);
+
+  useEffect(() => {
+    if (!userToken || !id) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const { isFavorite } = await checkFavorite(userToken, id);
+        if (!cancelled) setFavorite(Boolean(isFavorite));
+      } catch {
+        if (!cancelled) setFavorite(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [userToken, id]);
+
+  const toggleFavorite = useCallback(
+    async (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (!userToken) {
+        toast.info("Sign in to save restaurants");
+        return;
+      }
+      if (favoriteLoading) return;
+      setFavoriteLoading(true);
+      try {
+        if (favorite) {
+          await removeFavorite(userToken, id);
+          setFavorite(false);
+          toast.success("Removed from saved");
+        } else {
+          await addFavorite(userToken, id);
+          setFavorite(true);
+          toast.success("Saved to your list");
+        }
+      } catch (err) {
+        toast.error(err?.response?.data?.error || "Could not update saved list");
+      } finally {
+        setFavoriteLoading(false);
+      }
+    },
+    [userToken, id, favorite, favoriteLoading]
+  );
+
   return (
-    <Link
-      to={ROUTES.restaurant(id)}
-      className="group surface-card flex overflow-hidden transition hover:-translate-y-0.5 hover:shadow-card-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2"
-    >
+    <div className="group surface-card relative flex overflow-hidden transition hover:-translate-y-0.5 hover:shadow-card-hover">
+      {userToken ? (
+        <button
+          type="button"
+          onClick={toggleFavorite}
+          disabled={favoriteLoading}
+          className="absolute left-2 top-2 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-white/95 text-ink-700 shadow-md ring-1 ring-ink-100/80 transition hover:bg-white hover:text-red-600 disabled:opacity-60"
+          aria-label={favorite ? "Remove from saved" : "Save restaurant"}
+        >
+          {favorite ? (
+            <IoHeart className="h-5 w-5 text-red-500" aria-hidden />
+          ) : (
+            <IoHeartOutline className="h-5 w-5" aria-hidden />
+          )}
+        </button>
+      ) : null}
+
+      <Link
+        to={ROUTES.restaurant(id)}
+        className="flex min-w-0 flex-1 overflow-hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2"
+      >
       <div className="relative h-36 w-32 shrink-0 overflow-hidden sm:h-40 sm:w-36">
         {imgOk && image ? (
           <img
@@ -90,5 +180,6 @@ export function RestaurantCard({ id, image, name, foodtype, restaurantType }) {
         </div>
       </div>
     </Link>
+    </div>
   );
 }
