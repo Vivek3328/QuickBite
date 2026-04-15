@@ -1,4 +1,6 @@
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { FiPlus } from "react-icons/fi";
 import { toast } from "react-toastify";
 import { setTotalItems } from "@/store/cartSlice";
 import { STORAGE_KEYS } from "@/constants/storage";
@@ -7,9 +9,15 @@ function itemInCart(cart, id) {
   return cart.some((c) => c._id === id);
 }
 
+function formatPrice(n) {
+  if (typeof n !== "number" || Number.isNaN(n)) return "—";
+  return `₹${n.toLocaleString("en-IN")}`;
+}
+
 export function ItemCard({ image, name, price, description, item, ownerId }) {
   const dispatch = useDispatch();
   const totalItems = useSelector((state) => state.cart.totalItems);
+  const [imgOk, setImgOk] = useState(true);
 
   const addToCart = (newItem, oid) => {
     let cart = JSON.parse(localStorage.getItem(STORAGE_KEYS.cartItems)) || [];
@@ -38,25 +46,50 @@ export function ItemCard({ image, name, price, description, item, ownerId }) {
   };
 
   return (
-    <article className="surface-card flex h-full flex-col overflow-hidden transition hover:-translate-y-0.5 hover:shadow-card-hover">
-      <div className="relative aspect-[4/3] w-full overflow-hidden bg-ink-100">
-        <img src={image} alt={name} className="h-full w-full object-cover" />
-      </div>
-      <div className="flex flex-1 flex-col p-5">
-        <h3 className="font-display text-lg font-semibold text-ink-900">{name}</h3>
-        <p className="mt-2 line-clamp-3 flex-1 text-sm leading-relaxed text-ink-600">
-          {description}
-        </p>
-        <div className="mt-4 flex items-center justify-between border-t border-ink-100 pt-4">
-          <p className="text-lg font-bold text-brand-700">₹{price}</p>
+    <article className="surface-card flex gap-4 overflow-hidden p-4 transition hover:border-brand-200/80 hover:shadow-md sm:gap-5 sm:p-5">
+      <div className="flex min-w-0 flex-1 flex-col justify-center">
+        <h3 className="font-display text-base font-semibold leading-snug text-ink-900 sm:text-lg">
+          {name}
+        </h3>
+        {description ? (
+          <p className="mt-1.5 line-clamp-2 text-sm leading-relaxed text-ink-500">
+            {description}
+          </p>
+        ) : null}
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
+          <p className="text-lg font-bold tabular-nums text-ink-900 sm:text-xl">
+            {formatPrice(price)}
+          </p>
           <button
             type="button"
             onClick={() => addToCart(item, ownerId)}
-            className="btn-primary !px-4 !py-2 !text-sm"
+            className="inline-flex items-center gap-1.5 rounded-full border-2 border-brand-600 bg-white px-5 py-2 text-sm font-bold text-brand-700 shadow-sm transition hover:bg-brand-600 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 active:scale-[0.98]"
+            aria-label={`Add ${name} to cart`}
           >
+            <FiPlus className="h-4 w-4" aria-hidden />
             Add
           </button>
         </div>
+      </div>
+
+      <div className="relative h-28 w-28 shrink-0 overflow-hidden rounded-2xl bg-ink-100 ring-1 ring-ink-100 sm:h-32 sm:w-32">
+        {imgOk && image ? (
+          <img
+            src={image}
+            alt={name}
+            className="h-full w-full object-cover"
+            onError={() => setImgOk(false)}
+          />
+        ) : (
+          <div
+            className="flex h-full w-full items-center justify-center bg-gradient-to-br from-brand-100 via-ink-100 to-brand-50"
+            aria-hidden
+          >
+            <span className="font-display text-3xl font-bold text-brand-700/35">
+              {name?.slice(0, 1) ?? "?"}
+            </span>
+          </div>
+        )}
       </div>
     </article>
   );

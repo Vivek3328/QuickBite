@@ -1,11 +1,21 @@
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import Skeleton from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
+import { useEffect, useMemo, useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import {
+  FiArrowLeft,
+  FiClock,
+  FiMapPin,
+  FiSearch,
+  FiSliders,
+} from "react-icons/fi";
 import { fetchAllOwners } from "@/api/ownerAuth";
 import { fetchRestoMenu } from "@/api/menu";
 import { ItemCard } from "@/components/cards/ItemCard";
-import { SkeletonCard } from "@/components/ui/Skeleton";
+import {
+  MenuItemRowSkeleton,
+  MenuPageHeroSkeleton,
+} from "@/components/ui/Skeleton";
+import { ROUTES } from "@/constants/routes";
+import { distanceKm, etaRange } from "@/utils/restaurantDisplay";
 
 export default function RestaurantMenuPage() {
   const { id } = useParams();
@@ -13,6 +23,8 @@ export default function RestaurantMenuPage() {
   const [menuItems, setMenuItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [search, setSearch] = useState("");
+  const [sort, setSort] = useState("recommended");
 
   useEffect(() => {
     let cancelled = false;
@@ -40,69 +52,183 @@ export default function RestaurantMenuPage() {
     };
   }, [id]);
 
+  const filteredItems = useMemo(() => {
+    let list = [...menuItems];
+    const q = search.trim().toLowerCase();
+    if (q) {
+      list = list.filter((i) => {
+        const name = (i.itemname || "").toLowerCase();
+        const desc = (i.description || "").toLowerCase();
+        return name.includes(q) || desc.includes(q);
+      });
+    }
+    switch (sort) {
+      case "price-asc":
+        return list.sort((a, b) => a.price - b.price);
+      case "price-desc":
+        return list.sort((a, b) => b.price - a.price);
+      case "name":
+        return list.sort((a, b) =>
+          (a.itemname || "").localeCompare(b.itemname || "", undefined, {
+            sensitivity: "base",
+          })
+        );
+      default:
+        return list;
+    }
+  }, [menuItems, search, sort]);
+
+  const eta = owner ? etaRange(owner._id) : null;
+  const km = owner ? distanceKm(owner._id) : null;
+
   if (error) {
     return (
       <div className="mx-auto max-w-lg px-4 py-16 text-center">
         <div className="surface-card border-red-100 bg-red-50 p-8 text-red-800">
           <p className="font-semibold">Could not load this menu</p>
           <p className="mt-2 text-sm">{error}</p>
+          <Link to={ROUTES.home} className="btn-primary mt-6 inline-flex">
+            Back to restaurants
+          </Link>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-brand-50/40 to-ink-50 pb-16">
-      <div className="mx-auto max-w-7xl px-4 pt-6 sm:px-6 lg:px-8">
+    <div className="relative min-h-screen pb-20">
+      <div
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_40%_at_50%_-10%,rgba(251,146,60,0.12),transparent)]"
+        aria-hidden
+      />
+
+      <div className="relative mx-auto max-w-3xl px-4 pt-4 sm:px-6 lg:max-w-4xl lg:px-8">
+        <Link
+          to={ROUTES.home}
+          className="mb-4 inline-flex items-center gap-2 text-sm font-semibold text-ink-600 transition hover:text-brand-700"
+        >
+          <FiArrowLeft className="h-4 w-4" aria-hidden />
+          All restaurants
+        </Link>
+
         {loading ? (
-          <div className="surface-card border-0 p-8">
-            <div className="text-center">
-              <Skeleton height={36} width={220} className="mb-4 !rounded-lg" />
-              <Skeleton height={24} width={160} className="mb-2 !rounded-lg" />
-              <Skeleton height={18} width={280} className="mb-2 !rounded-lg" />
-              <Skeleton height={18} width={240} className="mb-4 !rounded-lg" />
-              <Skeleton height={28} width={120} className="!rounded-full" />
-            </div>
-          </div>
+          <MenuPageHeroSkeleton />
         ) : (
-          owner && (
-            <div className="surface-card overflow-hidden border-0 bg-gradient-to-br from-white to-brand-50/30 p-8 sm:p-10">
-              <div className="text-center">
-                <h1 className="font-display text-3xl font-bold tracking-tight text-ink-900 sm:text-4xl">
-                  {owner.name}
+          <header className="overflow-hidden rounded-3xl border border-ink-100/80 bg-ink-900 shadow-card">
+            <div className="relative aspect-[21/9] min-h-[140px] sm:aspect-[3/1] sm:min-h-[180px]">
+              {owner?.image ? (
+                <img
+                  src={owner.image}
+                  alt=""
+                  className="absolute inset-0 h-full w-full object-cover"
+                />
+              ) : (
+                <div
+                  className="absolute inset-0 bg-gradient-to-br from-brand-600 via-brand-500 to-amber-600"
+                  aria-hidden
+                />
+              )}
+              <div className="absolute inset-0 bg-gradient-to-t from-ink-900/95 via-ink-900/50 to-ink-900/20" />
+              <div className="absolute bottom-0 left-0 right-0 p-5 sm:p-8">
+                <h1 className="font-display text-2xl font-bold tracking-tight text-white sm:text-3xl">
+                  {owner?.name ?? "Restaurant"}
                 </h1>
-                <p className="mt-2 text-lg text-brand-700">{owner.foodtype}</p>
-                <p className="mt-4 text-ink-600">{owner.address}</p>
-                <div className="mt-4 flex flex-wrap items-center justify-center gap-3 text-sm text-ink-600">
-                  <span>{owner.mobile}</span>
-                  <span className="hidden sm:inline">·</span>
-                  <span>{owner.email}</span>
+                {owner?.foodtype ? (
+                  <p className="mt-1 text-sm font-medium text-brand-100 sm:text-base">
+                    {owner.foodtype}
+                  </p>
+                ) : null}
+                <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-ink-200 sm:text-sm">
+                  {owner?.address ? (
+                    <span className="inline-flex max-w-full items-start gap-1.5">
+                      <FiMapPin
+                        className="mt-0.5 h-4 w-4 shrink-0 text-brand-300"
+                        aria-hidden
+                      />
+                      <span className="leading-snug">{owner.address}</span>
+                    </span>
+                  ) : null}
+                  {eta && km ? (
+                    <span className="inline-flex items-center gap-1.5">
+                      <FiClock className="h-4 w-4 text-brand-300" aria-hidden />
+                      {eta.label}
+                      <span className="text-ink-400">·</span>
+                      {km} km
+                    </span>
+                  ) : null}
                 </div>
-                <span
-                  className={`mt-6 inline-flex items-center rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-wide text-white ${
-                    owner.restaurantType === "veg" ? "bg-emerald-600" : "bg-rose-600"
-                  }`}
-                >
-                  {owner.restaurantType === "veg" ? "Vegetarian" : "Non-veg"}
-                </span>
+                {owner?.restaurantType ? (
+                  <span
+                    className={`mt-4 inline-flex rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wide text-white ${
+                      owner.restaurantType === "veg"
+                        ? "bg-emerald-600/90"
+                        : "bg-rose-600/90"
+                    }`}
+                  >
+                    {owner.restaurantType === "veg" ? "Pure veg kitchen" : "Non-veg kitchen"}
+                  </span>
+                ) : null}
               </div>
             </div>
-          )
+          </header>
         )}
 
-        <h2 className="mt-12 text-center font-display text-2xl font-bold text-ink-900 sm:text-3xl">
-          Menu
-        </h2>
-        <p className="mx-auto mt-2 max-w-md text-center text-sm text-ink-500">
-          Tap add to put items in your cart. You can adjust quantities at checkout.
-        </p>
+        <div className="sticky top-[4.25rem] z-30 -mx-4 mt-8 border-b border-ink-100/80 bg-ink-50/85 px-4 py-3 backdrop-blur-xl sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
+          <div className="mx-auto max-w-3xl lg:max-w-4xl">
+            <div className="relative">
+              <FiSearch
+                className="pointer-events-none absolute left-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-ink-400"
+                aria-hidden
+              />
+              <input
+                type="search"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Search dishes…"
+                className="input-field w-full rounded-2xl border-ink-200/80 py-3 pl-11 pr-4 text-base shadow-sm"
+                autoComplete="off"
+              />
+            </div>
+            <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
+              <p className="text-sm text-ink-600">
+                {!loading && (
+                  <>
+                    <span className="font-semibold text-ink-800">{filteredItems.length}</span>
+                    {filteredItems.length === 1 ? " dish" : " dishes"}
+                    {search.trim() ? " match" : ""}
+                  </>
+                )}
+              </p>
+              <div className="relative">
+                <FiSliders
+                  className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-400"
+                  aria-hidden
+                />
+                <label htmlFor="menu-sort" className="sr-only">
+                  Sort menu
+                </label>
+                <select
+                  id="menu-sort"
+                  value={sort}
+                  onChange={(e) => setSort(e.target.value)}
+                  className="input-field appearance-none rounded-xl py-2 pl-9 pr-8 text-sm font-medium"
+                >
+                  <option value="recommended">Recommended</option>
+                  <option value="price-asc">Price: low to high</option>
+                  <option value="price-desc">Price: high to low</option>
+                  <option value="name">Name: A–Z</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
 
-        <div className="mt-10 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mx-auto mt-6 max-w-3xl space-y-3 lg:max-w-4xl">
           {loading
             ? Array.from({ length: 6 }).map((_, index) => (
-                <SkeletonCard key={index} />
+                <MenuItemRowSkeleton key={index} />
               ))
-            : menuItems.map((item) => (
+            : filteredItems.map((item) => (
                 <ItemCard
                   key={item._id}
                   image={item.image}
@@ -114,6 +240,28 @@ export default function RestaurantMenuPage() {
                 />
               ))}
         </div>
+
+        {!loading && menuItems.length === 0 && (
+          <div className="surface-card mt-8 border-dashed border-ink-200 px-6 py-14 text-center">
+            <p className="font-display text-lg font-semibold text-ink-900">No dishes yet</p>
+            <p className="mt-2 text-sm text-ink-600">
+              This restaurant hasn&apos;t added items to the menu.
+            </p>
+            <Link to={ROUTES.home} className="btn-secondary mt-6 inline-flex">
+              Pick another place
+            </Link>
+          </div>
+        )}
+
+        {!loading && menuItems.length > 0 && filteredItems.length === 0 && (
+          <div className="surface-card mt-8 border-dashed border-ink-200 px-6 py-12 text-center">
+            <p className="font-semibold text-ink-900">No dishes match your search</p>
+            <p className="mt-2 text-sm text-ink-600">Try a different name or clear the search box.</p>
+            <button type="button" onClick={() => setSearch("")} className="btn-secondary mt-6">
+              Clear search
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
