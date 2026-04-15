@@ -2,11 +2,12 @@ import { Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { ROUTES } from "@/constants/routes";
 
-export function ProtectedUserRoute({ children }) {
-  const { userToken } = useAuth();
+/** Requires any valid session (customer or restaurant partner). */
+export function ProtectedLoggedInRoute({ children }) {
+  const { isLoggedIn } = useAuth();
   const location = useLocation();
 
-  if (!userToken) {
+  if (!isLoggedIn) {
     return <Navigate to={ROUTES.login} replace state={{ from: location.pathname }} />;
   }
 

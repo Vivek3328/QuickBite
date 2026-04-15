@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { FiSearch, FiSliders } from "react-icons/fi";
+import { FiMapPin, FiSearch, FiSliders } from "react-icons/fi";
+import { toast } from "react-toastify";
 import { getRestaurants } from "@/api/restaurants";
 import { RestaurantCard } from "@/components/cards/RestaurantCard";
 import { RestaurantCardSkeleton } from "@/components/ui/Skeleton";
 import { useAuth } from "@/context/AuthContext";
 import { ROUTES } from "@/constants/routes";
-import { stableRating } from "@/utils/restaurantDisplay";
 import backgroundImage from "@/assets/home.jpg";
 
 const DIET_FILTERS = [
@@ -23,18 +23,32 @@ function extractCuisineTags(foodtype) {
     .filter(Boolean);
 }
 
-function ratingScore(r) {
-  if (r.reviewCount > 0 && r.avgRating != null) {
-    return Number(r.avgRating);
-  }
-  return Number(stableRating(r._id));
-}
-
 function greeting() {
   const h = new Date().getHours();
   if (h < 12) return "Good morning";
   if (h < 17) return "Good afternoon";
   return "Good evening";
+}
+
+function mapSort(v) {
+  switch (v) {
+    case "recommended":
+      return "rating";
+    case "rating":
+      return "rating";
+    case "newest":
+      return "newest";
+    case "costLow":
+      return "costLow";
+    case "costHigh":
+      return "costHigh";
+    case "distance":
+      return "distance";
+    case "name":
+      return "name";
+    default:
+      return "rating";
+  }
 }
 
 export default function HomePage() {
@@ -46,6 +60,11 @@ export default function HomePage() {
   const [diet, setDiet] = useState("all");
   const [cuisine, setCuisine] = useState(null);
   const [sort, setSort] = useState("recommended");
+  const [maxCost, setMaxCost] = useState("");
+  const [minRating, setMinRating] = useState("");
+  const [userLat, setUserLat] = useState(null);
+  const [userLng, setUserLng] = useState(null);
+  const [tagSource, setTagSource] = useState([]);
 
   const isLoggedIn = Boolean(userToken);
 
@@ -53,8 +72,51 @@ export default function HomePage() {
     let cancelled = false;
     (async () => {
       try {
-        setLoading(true);
         const data = await getRestaurants({ limit: 200, sort: "rating" });
+        if (!cancelled) setTagSource(data.restaurants ?? []);
+      } catch {
+        if (!cancelled) setTagSource([]);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const cuisineOptions = useMemo(() => {
+    const set = new Set();
+    for (const r of tagSource) {
+      for (const tag of extractCuisineTags(r.foodtype)) {
+        set.add(tag);
+      }
+    }
+    return Array.from(set).sort((a, b) => a.localeCompare(b)).slice(0, 14);
+  }, [tagSource]);
+
+  const queryParams = useMemo(() => {
+    let sortKey = mapSort(sort);
+    if (sort === "distance" && (userLat == null || userLng == null)) {
+      sortKey = "rating";
+    }
+    return {
+      limit: 48,
+      sort: sortKey,
+      q: search.trim() || undefined,
+      cuisine: cuisine || undefined,
+      restaurantType: diet === "all" ? undefined : diet,
+      maxCostForTwo: maxCost ? Number(maxCost) : undefined,
+      minRating: minRating ? Number(minRating) : undefined,
+      lat: userLat ?? undefined,
+      lng: userLng ?? undefined,
+    };
+  }, [search, diet, cuisine, sort, maxCost, minRating, userLat, userLng]);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        setLoading(true);
+        const data = await getRestaurants(queryParams);
         if (!cancelled) {
           setRestaurants(data.restaurants ?? []);
           setError(null);
@@ -68,46 +130,24 @@ export default function HomePage() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [queryParams]);
 
-  const cuisineOptions = useMemo(() => {
-    const set = new Set();
-    for (const r of restaurants) {
-      for (const tag of extractCuisineTags(r.foodtype)) {
-        set.add(tag);
-      }
+  const requestLocation = () => {
+    if (!navigator.geolocation) {
+      toast.error("Location not supported in this browser");
+      return;
     }
-    return Array.from(set).sort((a, b) => a.localeCompare(b)).slice(0, 14);
-  }, [restaurants]);
-
-  const filtered = useMemo(() => {
-    const q = search.trim().toLowerCase();
-    let list = restaurants.filter((r) => {
-      if (diet === "veg" && r.restaurantType !== "veg") return false;
-      if (diet === "non-veg" && r.restaurantType !== "non-veg") return false;
-      if (cuisine) {
-        const tags = extractCuisineTags(r.foodtype).map((t) => t.toLowerCase());
-        if (!tags.some((t) => t.includes(cuisine.toLowerCase()))) return false;
-      }
-      if (!q) return true;
-      const hay = [
-        r.name,
-        r.foodtype,
-        r.address,
-        String(r.pincode ?? ""),
-      ]
-        .filter(Boolean)
-        .join(" ")
-        .toLowerCase();
-      return hay.includes(q);
-    });
-
-    if (sort === "rating") {
-      list = [...list].sort((a, b) => ratingScore(b) - ratingScore(a));
-    }
-
-    return list;
-  }, [restaurants, search, diet, cuisine, sort]);
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        setUserLat(pos.coords.latitude);
+        setUserLng(pos.coords.longitude);
+        setSort("distance");
+        toast.success("Location set — sorting by distance");
+      },
+      () => toast.error("Could not read location"),
+      { enableHighAccuracy: true, timeout: 10000 }
+    );
+  };
 
   if (error) {
     return (
@@ -176,7 +216,8 @@ export default function HomePage() {
               Restaurants
             </h1>
             <p className="mt-2 max-w-xl text-ink-600">
-              Search by name or cuisine, filter by diet, and open a menu in one tap.
+              Search and filter on the server — price, rating, diet, and distance when you share
+              location.
             </p>
           </header>
 
@@ -214,7 +255,16 @@ export default function HomePage() {
                 ))}
               </div>
 
-              <div className="ml-auto flex items-center gap-2">
+              <button
+                type="button"
+                onClick={requestLocation}
+                className="inline-flex items-center gap-1.5 rounded-full bg-white px-3.5 py-1.5 text-sm font-semibold text-brand-800 ring-1 ring-brand-200 hover:bg-brand-50"
+              >
+                <FiMapPin className="h-4 w-4" aria-hidden />
+                Near me
+              </button>
+
+              <div className="ml-auto flex flex-wrap items-center gap-2">
                 <label className="sr-only" htmlFor="sort-restaurants">
                   Sort order
                 </label>
@@ -231,8 +281,46 @@ export default function HomePage() {
                   >
                     <option value="recommended">Recommended</option>
                     <option value="rating">Rating: high to low</option>
+                    <option value="newest">Newest</option>
+                    <option value="costLow">Price: low to high</option>
+                    <option value="costHigh">Price: high to low</option>
+                    <option value="name">Name: A–Z</option>
+                    <option value="distance">Distance (needs location)</option>
                   </select>
                 </div>
+              </div>
+            </div>
+
+            <div className="mt-3 flex flex-wrap items-end gap-3">
+              <div>
+                <label htmlFor="max-cost" className="block text-xs font-semibold text-ink-500">
+                  Max ₹ for two
+                </label>
+                <input
+                  id="max-cost"
+                  type="number"
+                  min={0}
+                  placeholder="e.g. 500"
+                  value={maxCost}
+                  onChange={(e) => setMaxCost(e.target.value)}
+                  className="input-field mt-1 w-32 rounded-xl py-2 text-sm"
+                />
+              </div>
+              <div>
+                <label htmlFor="min-rating" className="block text-xs font-semibold text-ink-500">
+                  Min rating
+                </label>
+                <input
+                  id="min-rating"
+                  type="number"
+                  min={0}
+                  max={5}
+                  step={0.1}
+                  placeholder="e.g. 4"
+                  value={minRating}
+                  onChange={(e) => setMinRating(e.target.value)}
+                  className="input-field mt-1 w-28 rounded-xl py-2 text-sm"
+                />
               </div>
             </div>
 
@@ -270,9 +358,9 @@ export default function HomePage() {
           <p className="mt-6 text-sm text-ink-500">
             {!loading && (
               <>
-                <span className="font-semibold text-ink-800">{filtered.length}</span>
-                {filtered.length === 1 ? " place" : " places"}
-                {search.trim() || diet !== "all" || cuisine
+                <span className="font-semibold text-ink-800">{restaurants.length}</span>
+                {restaurants.length === 1 ? " place" : " places"}
+                {search.trim() || diet !== "all" || cuisine || maxCost || minRating
                   ? " match your filters"
                   : " to explore"}
               </>
@@ -284,7 +372,7 @@ export default function HomePage() {
               ? Array.from({ length: 6 }).map((_, index) => (
                   <RestaurantCardSkeleton key={index} />
                 ))
-              : filtered.map((restaurant) => (
+              : restaurants.map((restaurant) => (
                   <RestaurantCard
                     key={restaurant._id}
                     id={restaurant._id}
@@ -296,15 +384,16 @@ export default function HomePage() {
                     reviewCount={restaurant.reviewCount}
                     deliveryEtaMin={restaurant.deliveryEtaMin}
                     costForTwo={restaurant.costForTwo}
+                    distanceKm={restaurant.distanceKm}
                   />
                 ))}
           </div>
 
-          {!loading && filtered.length === 0 && (
+          {!loading && restaurants.length === 0 && (
             <div className="surface-card border-dashed border-ink-200 bg-white/80 px-6 py-14 text-center">
               <p className="font-display text-lg font-semibold text-ink-900">No restaurants match</p>
               <p className="mt-2 text-sm text-ink-600">
-                Try a different search, clear cuisine, or switch the diet filter.
+                Try a different search, clear cuisine, or relax price and rating filters.
               </p>
               <button
                 type="button"
@@ -312,6 +401,8 @@ export default function HomePage() {
                   setSearch("");
                   setDiet("all");
                   setCuisine(null);
+                  setMaxCost("");
+                  setMinRating("");
                 }}
                 className="btn-secondary mt-6"
               >

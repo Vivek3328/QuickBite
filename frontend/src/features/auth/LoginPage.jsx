@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import {
   FiMail,
   FiLock,
@@ -24,7 +24,9 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
+  const location = useLocation();
   const { loginUser: persistUserSession } = useAuth();
+  const redirectTo = location.state?.from || ROUTES.home;
 
   const toggleForm = () => {
     setIsSignup((prev) => !prev);
@@ -71,7 +73,7 @@ export default function LoginPage() {
           password: formData.password,
         });
         persistUserSession(data.authtoken);
-        navigate(ROUTES.home);
+        navigate(redirectTo, { replace: true });
       }
     } catch (err) {
       setErrors({

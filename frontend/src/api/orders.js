@@ -1,7 +1,9 @@
 import { http, authHeaders } from "./http";
 
-export async function getRazorpayKey() {
-  const { data } = await http.get("/getkey");
+export async function getRazorpayKey(userToken) {
+  const { data } = await http.get("/getkey", {
+    headers: authHeaders(userToken),
+  });
   return data;
 }
 
@@ -12,8 +14,25 @@ export async function checkoutOrder(userToken, body) {
   return data;
 }
 
-export async function fetchUserOrders(userToken) {
+export async function fetchUserOrders(userToken, params = {}) {
   const { data } = await http.get("/orders/userorders", {
+    headers: authHeaders(userToken),
+    params,
+  });
+  return data;
+}
+
+export async function cancelUserOrder(userToken, orderId) {
+  const { data } = await http.put(
+    `/orders/cancel/${orderId}`,
+    {},
+    { headers: authHeaders(userToken) }
+  );
+  return data;
+}
+
+export async function reorderFromOrder(userToken, orderId) {
+  const { data } = await http.post(`/orders/reorder/${orderId}`, {}, {
     headers: authHeaders(userToken),
   });
   return data;

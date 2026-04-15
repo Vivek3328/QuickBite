@@ -4,6 +4,7 @@ import { AuthLayout } from "@/components/layout/AuthLayout";
 import { GuestRoute } from "@/app/GuestRoute";
 import { ProtectedUserRoute } from "@/app/ProtectedUserRoute";
 import { ProtectedOwnerRoute } from "@/app/ProtectedOwnerRoute";
+import { ProtectedLoggedInRoute } from "@/app/ProtectedLoggedInRoute";
 import { ROUTES } from "@/constants/routes";
 
 import HomePage from "@/features/home/HomePage";
@@ -15,6 +16,8 @@ import CartPage from "@/features/cart/CartPage";
 import UserOrdersPage from "@/features/orders/UserOrdersPage";
 import RestaurantOrdersPage from "@/features/orders/RestaurantOrdersPage";
 import OrderSuccessPage from "@/features/orders/OrderSuccessPage";
+import ProfilePage from "@/features/account/ProfilePage";
+import OpsConsolePage from "@/features/ops/OpsConsolePage";
 
 export const router = createBrowserRouter([
   {
@@ -62,6 +65,22 @@ export const router = createBrowserRouter([
         ),
       },
       { path: ROUTES.paymentSuccess, element: <OrderSuccessPage /> },
+      {
+        path: ROUTES.profile,
+        element: (
+          <ProtectedUserRoute>
+            <ProfilePage />
+          </ProtectedUserRoute>
+        ),
+      },
+      {
+        path: ROUTES.ops,
+        element: (
+          <ProtectedLoggedInRoute>
+            <OpsConsolePage />
+          </ProtectedLoggedInRoute>
+        ),
+      },
     ],
   },
   {

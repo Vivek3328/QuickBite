@@ -29,6 +29,7 @@ export function RestaurantCard({
   reviewCount,
   deliveryEtaMin,
   costForTwo,
+  distanceKm: distanceKmProp,
 }) {
   const [imgOk, setImgOk] = useState(true);
   const rating =
@@ -42,7 +43,10 @@ export function RestaurantCard({
           start: deliveryEtaMin,
         }
       : etaRange(id);
-  const km = distanceKm(id);
+  const km =
+    distanceKmProp != null && !Number.isNaN(Number(distanceKmProp))
+      ? Number(distanceKmProp).toFixed(1)
+      : distanceKm(id);
   const price =
     costForTwo != null ? `₹${costForTwo} for two` : priceHint(id);
   const promo = showPromo(id);

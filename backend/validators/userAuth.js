@@ -11,4 +11,8 @@ const loginUserRules = [
   body("password", "Enter a valid password").isLength({ min: 4 }),
 ];
 
-module.exports = { registerUserRules, loginUserRules };
+const updateUserProfileRules = [
+  body("name", "Enter a valid name").trim().isLength({ min: 2, max: 80 }),
+];
+
+module.exports = { registerUserRules, loginUserRules, updateUserProfileRules };

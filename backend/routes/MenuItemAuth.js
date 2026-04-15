@@ -6,8 +6,9 @@ const {
   restaurantMenu,
   updateMenuItem,
   deleteMenuItem,
+  toggleMenuStock,
 } = require("../controllers/MenuItemController");
-const { fetchOwner } = require("../middleware/auth");
+const { fetchOwner, fetchUser } = require("../middleware/auth");
 const validateRequest = require("../middleware/validateRequest");
 const { addMenuItemRules } = require("../validators/menuItemAuth");
 
@@ -21,10 +22,12 @@ router.post(
 
 router.get("/fetchallmenuitems", fetchOwner, allmenuitems);
 
-router.get("/fetchrestomenu/:id", restaurantMenu);
+router.get("/fetchrestomenu/:id", fetchUser, restaurantMenu);
 
 router.put("/updatemenuitem/:id", fetchOwner, updateMenuItem);
 
 router.delete("/deletemenuitems/:id", fetchOwner, deleteMenuItem);
+
+router.patch("/stock/:id", fetchOwner, toggleMenuStock);
 
 module.exports = router;

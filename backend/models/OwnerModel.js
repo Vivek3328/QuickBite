@@ -62,6 +62,16 @@ const ownerSchema = new Schema({
     default: 299,
     min: 0,
   },
+  /** Optional map pin for distance-based discovery (near you). */
+  location: {
+    lat: { type: Number },
+    lng: { type: Number },
+  },
+  /** Admin moderation: hidden restaurants do not appear in public listings. */
+  isActive: {
+    type: Boolean,
+    default: true,
+  },
 },
   { timestamps: true }
 );

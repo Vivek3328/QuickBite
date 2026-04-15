@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 import {
   FiLoader,
@@ -46,7 +46,9 @@ export default function AddRestaurantPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const location = useLocation();
   const { loginOwner: persistOwnerSession } = useAuth();
+  const partnerRedirectTo = location.state?.from || ROUTES.restaurantMenu;
 
   const switchMode = (login) => {
     setIsLogin(login);
@@ -93,7 +95,7 @@ export default function AddRestaurantPage() {
           password: formData.password,
         });
         persistOwnerSession(data.authtoken);
-        navigate(ROUTES.restaurantMenu);
+        navigate(partnerRedirectTo, { replace: true });
       } else {
         await registerOwner({ ...formData });
         toast.success("Registration sent — sign in with your email and password.");

@@ -57,6 +57,11 @@ export function AuthProvider({ children }) {
     localStorage.removeItem(STORAGE_KEYS.userToken);
     localStorage.removeItem(STORAGE_KEYS.ownerToken);
     localStorage.removeItem(STORAGE_KEYS.role);
+    try {
+      sessionStorage.removeItem("quickbite_admin_key");
+    } catch {
+      /* ignore */
+    }
     setAuth(readFromStorage());
   }, []);
 

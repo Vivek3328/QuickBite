@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const { fetchUser } = require("./middleware/auth");
 
 const ownerRoutes = require("./routes/OwnerAuth.js");
 const userRoutes = require("./routes/UserAuth.js");
@@ -16,7 +17,7 @@ app.get("/", (req, res) => {
   res.send("Hello backend");
 });
 
-app.get("/getkey", (req, res) => {
+app.get("/getkey", fetchUser, (req, res) => {
   res.status(200).json({ key: process.env.RAZORPAY_KEY_ID });
 });
 
@@ -29,5 +30,7 @@ app.use("/api/restaurants", require("./routes/restaurantsPublic"));
 app.use("/api/reviews", require("./routes/reviewsApi"));
 app.use("/api/favorites", require("./routes/favoritesApi"));
 app.use("/api/addresses", require("./routes/addressesApi"));
+app.use("/api/coupons", require("./routes/couponsApi"));
+app.use("/api/admin", require("./routes/adminApi"));
 
 module.exports = app;

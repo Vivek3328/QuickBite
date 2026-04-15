@@ -10,6 +10,9 @@ const addItem = async (req, res) => {
       description: req.body.description,
       price: req.body.price,
       image: req.body.image,
+      isVeg: req.body.isVeg !== false,
+      isOutOfStock: Boolean(req.body.isOutOfStock),
+      prepTimeMin: req.body.prepTimeMin != null ? Number(req.body.prepTimeMin) : undefined,
     });
     const saveditem = await item.save();
     success = true;
@@ -26,7 +29,12 @@ const allmenuitems = async (req, res) => {
     // console.log(ownerdata)
     const items = await MenuItem.find({ owner: req.owner.id });
     // console.log(req.owner)
-    return res.json({ items, name: ownerdata.name });
+    return res.json({
+      items,
+      name: ownerdata.name,
+      deliveryEtaMin: ownerdata.deliveryEtaMin,
+      location: ownerdata.location,
+    });
   } catch (error) {
     console.error(error.message);
     return res.status(500).send("Internal server error occured");
@@ -66,6 +74,12 @@ const updateMenuItem = async (req, res) => {
       price: req.body.price || item.price,
       image: req.body.image || item.image,
     };
+    if (typeof req.body.isVeg === "boolean") updatedFields.isVeg = req.body.isVeg;
+    if (typeof req.body.isOutOfStock === "boolean") updatedFields.isOutOfStock = req.body.isOutOfStock;
+    if (req.body.prepTimeMin != null && req.body.prepTimeMin !== "") {
+      const p = Number(req.body.prepTimeMin);
+      if (Number.isFinite(p)) updatedFields.prepTimeMin = p;
+    }
 
     // Update the item in the database
     item = await MenuItem.findByIdAndUpdate(
@@ -95,10 +109,33 @@ const deleteMenuItem = async (req, res) => {
   return res.json({ Success: "Menu Items Deleted Successfully" });
 };
 
+const toggleMenuStock = async (req, res) => {
+  try {
+    const item = await MenuItem.findById(req.params.id);
+    if (!item) {
+      return res.status(404).json({ success: false, error: "Menu item not found" });
+    }
+    if (item.owner.toString() !== req.owner.id) {
+      return res.status(401).json({ success: false, error: "Not authorized" });
+    }
+    const next = typeof req.body.isOutOfStock === "boolean" ? req.body.isOutOfStock : !item.isOutOfStock;
+    const updated = await MenuItem.findByIdAndUpdate(
+      req.params.id,
+      { $set: { isOutOfStock: next } },
+      { new: true }
+    );
+    return res.json({ success: true, item: updated });
+  } catch (error) {
+    console.error(error.message);
+    return res.status(500).json({ success: false, error: "Internal server error occurred" });
+  }
+};
+
 module.exports = {
   addItem,
   allmenuitems,
   restaurantMenu,
   updateMenuItem,
   deleteMenuItem,
+  toggleMenuStock,
 };

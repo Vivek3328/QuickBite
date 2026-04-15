@@ -1,15 +1,37 @@
-import { useEffect, useState } from "react";
-import { FiEye, FiStar, FiX } from "react-icons/fi";
+import { useEffect, useMemo, useState } from "react";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { FiEye, FiRefreshCw, FiStar, FiX } from "react-icons/fi";
 import { FaRegStar, FaStar } from "react-icons/fa";
 import { toast } from "react-toastify";
-import { fetchUserOrders } from "@/api/orders";
+import {
+  cancelUserOrder,
+  fetchUserOrders,
+  reorderFromOrder,
+} from "@/api/orders";
 import { createReview } from "@/api/reviews";
 import { useAuth } from "@/context/AuthContext";
 import { SkeletonCard } from "@/components/ui/Skeleton";
 import { getOrderStatusClasses, ORDER_STATUS } from "@/constants/orderStatus";
+import { OrderStatusTimeline } from "@/components/orders/OrderStatusTimeline";
+import { ROUTES } from "@/constants/routes";
+import { STORAGE_KEYS } from "@/constants/storage";
+import { setTotalItems } from "@/store/cartSlice";
+
+const CANCELLABLE = [ORDER_STATUS.pending, ORDER_STATUS.paid];
+
+const STATUS_FILTER_OPTIONS = [
+  { value: "", label: "All statuses" },
+  { value: "Pending,Paid", label: "Active (pending / paid)" },
+  { value: "Being Baked,Out for Delivery", label: "In progress" },
+  { value: "Delivered", label: "Delivered" },
+  { value: "Cancelled", label: "Cancelled" },
+];
 
 export default function UserOrdersPage() {
   const { userToken } = useAuth();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -19,13 +41,24 @@ export default function UserOrdersPage() {
   const [reviewRating, setReviewRating] = useState(0);
   const [reviewComment, setReviewComment] = useState("");
   const [reviewSubmitting, setReviewSubmitting] = useState(false);
+  const [statusFilter, setStatusFilter] = useState("");
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
+
+  const queryParams = useMemo(() => {
+    const p = {};
+    if (statusFilter) p.status = statusFilter;
+    if (fromDate) p.from = new Date(fromDate).toISOString();
+    if (toDate) p.to = new Date(toDate).toISOString();
+    return p;
+  }, [statusFilter, fromDate, toDate]);
 
   useEffect(() => {
     let cancelled = false;
 
     const fetchOrders = async () => {
       try {
-        const data = await fetchUserOrders(userToken);
+        const data = await fetchUserOrders(userToken, queryParams);
         if (!cancelled) setOrders(data);
       } catch (err) {
         if (!cancelled) setError("An error occurred while fetching orders.");
@@ -34,11 +67,11 @@ export default function UserOrdersPage() {
       }
     };
 
-    fetchOrders();
+    if (userToken) fetchOrders();
     return () => {
       cancelled = true;
     };
-  }, [userToken]);
+  }, [userToken, queryParams]);
 
   const openModal = (order) => {
     setSelectedOrder(order);
@@ -81,9 +114,7 @@ export default function UserOrdersPage() {
         comment: reviewComment.trim(),
       });
       setOrders((prev) =>
-        prev.map((o) =>
-          o._id === reviewOrder._id ? { ...o, hasReview: true } : o
-        )
+        prev.map((o) => (o._id === reviewOrder._id ? { ...o, hasReview: true } : o))
       );
       if (selectedOrder?._id === reviewOrder._id) {
         setSelectedOrder((o) => (o ? { ...o, hasReview: true } : null));
@@ -101,6 +132,44 @@ export default function UserOrdersPage() {
     }
   };
 
+  const handleCancel = async (order) => {
+    if (!userToken) return;
+    try {
+      const { order: updated } = await cancelUserOrder(userToken, order._id);
+      setOrders((prev) => prev.map((o) => (o._id === updated._id ? updated : o)));
+      if (selectedOrder?._id === updated._id) setSelectedOrder(updated);
+      toast.success("Order cancelled");
+    } catch (err) {
+      toast.error(err?.response?.data?.error || "Could not cancel");
+    }
+  };
+
+  const handleReorder = async (order) => {
+    if (!userToken) return;
+    try {
+      const { items, skippedOutOfStock } = await reorderFromOrder(userToken, order._id);
+      if (!items?.length) {
+        toast.error("No items available to reorder");
+        return;
+      }
+      const cartItems = items.map((it) => {
+        const q = Math.max(1, it.reorderQty || 1);
+        const { reorderQty: _r, ...rest } = it;
+        return { ...rest, quantity: q };
+      });
+      localStorage.setItem(STORAGE_KEYS.cartItems, JSON.stringify(cartItems));
+      dispatch(setTotalItems(cartItems.length));
+      toast.success(
+        skippedOutOfStock
+          ? `Cart updated (${skippedOutOfStock} item(s) skipped — out of stock)`
+          : "Items added to cart"
+      );
+      navigate(ROUTES.cart);
+    } catch (err) {
+      toast.error(err?.response?.data?.error || "Could not reorder");
+    }
+  };
+
   if (error) {
     return (
       <div className="mx-auto max-w-lg px-4 py-16 text-center">
@@ -112,13 +181,55 @@ export default function UserOrdersPage() {
   return (
     <div className="mx-auto max-w-7xl px-4 pb-16 pt-4 sm:px-6 lg:px-8">
       <div className="text-center">
-        <p className="text-sm font-semibold uppercase tracking-wider text-brand-600">
-          History
-        </p>
+        <p className="text-sm font-semibold uppercase tracking-wider text-brand-600">History</p>
         <h1 className="mt-2 font-display text-3xl font-bold text-ink-900">My orders</h1>
         <p className="mt-2 text-sm text-ink-500">
-          Track status, view items, and rate orders after delivery.
+          Track status, filter by date, cancel early orders, or reorder in one tap.
         </p>
+      </div>
+
+      <div className="mx-auto mt-8 flex max-w-3xl flex-col gap-3 rounded-2xl border border-ink-100 bg-white/80 p-4 sm:flex-row sm:flex-wrap sm:items-end">
+        <div className="min-w-[160px] flex-1">
+          <label className="text-xs font-semibold text-ink-500" htmlFor="order-status-filter">
+            Status
+          </label>
+          <select
+            id="order-status-filter"
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="input-field mt-1 w-full text-sm"
+          >
+            {STATUS_FILTER_OPTIONS.map((o) => (
+              <option key={o.value || "all"} value={o.value}>
+                {o.label}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label className="text-xs font-semibold text-ink-500" htmlFor="order-from">
+            From
+          </label>
+          <input
+            id="order-from"
+            type="date"
+            value={fromDate}
+            onChange={(e) => setFromDate(e.target.value)}
+            className="input-field mt-1 text-sm"
+          />
+        </div>
+        <div>
+          <label className="text-xs font-semibold text-ink-500" htmlFor="order-to">
+            To
+          </label>
+          <input
+            id="order-to"
+            type="date"
+            value={toDate}
+            onChange={(e) => setToDate(e.target.value)}
+            className="input-field mt-1 text-sm"
+          />
+        </div>
       </div>
 
       <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -128,8 +239,8 @@ export default function UserOrdersPage() {
           <p className="col-span-full text-center text-ink-500">No orders yet.</p>
         ) : (
           orders.map((order) => {
-            const canReview =
-              order.status === ORDER_STATUS.delivered && !order.hasReview;
+            const canReview = order.status === ORDER_STATUS.delivered && !order.hasReview;
+            const canCancel = CANCELLABLE.includes(order.status);
             return (
               <article
                 key={order._id}
@@ -139,9 +250,7 @@ export default function UserOrdersPage() {
                   <div className="min-w-0">
                     <p className="text-xs font-medium text-ink-400">Order ID</p>
                     <p className="break-all font-mono text-xs text-ink-800">{order._id}</p>
-                    <p className="mt-3 text-sm font-semibold text-ink-900">
-                      {order.owner.name}
-                    </p>
+                    <p className="mt-3 text-sm font-semibold text-ink-900">{order.owner.name}</p>
                   </div>
                   <span
                     className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-bold ${getOrderStatusClasses(
@@ -160,6 +269,26 @@ export default function UserOrdersPage() {
                   <FiEye className="h-4 w-4" />
                   View items
                 </button>
+
+                <div className="mt-2 grid grid-cols-1 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => handleReorder(order)}
+                    className="btn-secondary flex w-full items-center justify-center gap-2 !py-2.5 !text-sm"
+                  >
+                    <FiRefreshCw className="h-4 w-4" />
+                    Reorder
+                  </button>
+                  {canCancel ? (
+                    <button
+                      type="button"
+                      onClick={() => handleCancel(order)}
+                      className="rounded-xl border border-red-200 bg-red-50 py-2.5 text-sm font-semibold text-red-800 hover:bg-red-100"
+                    >
+                      Cancel order
+                    </button>
+                  ) : null}
+                </div>
 
                 {canReview ? (
                   <button
@@ -229,6 +358,13 @@ export default function UserOrdersPage() {
                 {selectedOrder.status}
               </span>
             </p>
+
+            <div className="mt-6">
+              <p className="text-sm font-semibold text-ink-800">Status timeline</p>
+              <div className="mt-3">
+                <OrderStatusTimeline order={selectedOrder} />
+              </div>
+            </div>
 
             <ul className="mt-6 space-y-4">
               {selectedOrder.item.map((line, index) => (

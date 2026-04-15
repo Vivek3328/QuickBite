@@ -73,6 +73,9 @@ export function Navbar() {
                     </span>
                   )}
                 </Link>
+                <Link to={ROUTES.profile} className={linkClass}>
+                  Account
+                </Link>
                 <Link to={ROUTES.userOrders} className={linkClass}>
                   My orders
                 </Link>
@@ -143,6 +146,13 @@ export function Navbar() {
                         {totalItems}
                       </span>
                     )}
+                  </Link>
+                  <Link
+                    to={ROUTES.profile}
+                    className={`${linkActiveMobile} text-ink-800 hover:bg-brand-50`}
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Account
                   </Link>
                   <Link
                     to={ROUTES.userOrders}

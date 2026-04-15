@@ -10,9 +10,11 @@ import {
   FiSliders,
   FiX,
   FiClipboard,
+  FiPackage,
 } from "react-icons/fi";
 import { useAuth } from "@/context/AuthContext";
-import { fetchOwnerMenuItems, addMenuItem, updateMenuItem } from "@/api/menu";
+import { fetchOwnerMenuItems, addMenuItem, updateMenuItem, toggleMenuItemStock } from "@/api/menu";
+import { fetchOwnerSalesSummary, updateRestaurantSettings } from "@/api/ownerSettings";
 import { uploadImage } from "@/api/cloudinary";
 import { ROUTES } from "@/constants/routes";
 import { PartnerMenuRowSkeleton } from "@/components/ui/Skeleton";
@@ -38,8 +40,15 @@ export default function OwnerMenuPage() {
     description: "",
     price: "",
     image: "",
+    isVeg: true,
+    prepTimeMin: "",
   });
   const [wordCount, setWordCount] = useState(0);
+  const [summary, setSummary] = useState(null);
+  const [deliveryEtaMin, setDeliveryEtaMin] = useState(30);
+  const [locLat, setLocLat] = useState("");
+  const [locLng, setLocLng] = useState("");
+  const [settingsSaving, setSettingsSaving] = useState(false);
 
   const loadMenuItems = async () => {
     if (!ownerToken) {
@@ -51,6 +60,9 @@ export default function OwnerMenuPage() {
       const response = await fetchOwnerMenuItems(ownerToken);
       setmenuItem(response.items);
       setRestoName(response.name);
+      setDeliveryEtaMin(response.deliveryEtaMin ?? 30);
+      setLocLat(response.location?.lat ?? "");
+      setLocLng(response.location?.lng ?? "");
     } catch (error) {
       console.error("Error fetching menu items:", error);
       toast.error("Could not load your menu.");
@@ -62,6 +74,48 @@ export default function OwnerMenuPage() {
   useEffect(() => {
     loadMenuItems();
   }, [ownerToken]);
+
+  useEffect(() => {
+    if (!ownerToken) return;
+    let cancelled = false;
+    fetchOwnerSalesSummary(ownerToken)
+      .then((data) => {
+        if (!cancelled) setSummary(data);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, [ownerToken]);
+
+  const saveRestaurantSettings = async () => {
+    if (!ownerToken) return;
+    setSettingsSaving(true);
+    try {
+      await updateRestaurantSettings(ownerToken, {
+        deliveryEtaMin: Number(deliveryEtaMin),
+        lat: locLat === "" ? undefined : Number(locLat),
+        lng: locLng === "" ? undefined : Number(locLng),
+      });
+      toast.success("Settings saved");
+      await loadMenuItems();
+    } catch {
+      toast.error("Could not save settings");
+    } finally {
+      setSettingsSaving(false);
+    }
+  };
+
+  const handleToggleStock = async (item, nextOut) => {
+    if (!ownerToken) return;
+    try {
+      await toggleMenuItemStock(ownerToken, item._id, nextOut);
+      toast.success(nextOut ? "Marked out of stock" : "Back in stock");
+      await loadMenuItems();
+    } catch {
+      toast.error("Could not update stock");
+    }
+  };
 
   const filteredItems = useMemo(() => {
     let list = [...menuItem];
@@ -92,7 +146,14 @@ export default function OwnerMenuPage() {
 
   const closeModal = () => {
     setShowModal(false);
-    setNewItem({ itemname: "", description: "", price: "", image: "" });
+    setNewItem({
+      itemname: "",
+      description: "",
+      price: "",
+      image: "",
+      isVeg: true,
+      prepTimeMin: "",
+    });
     setImg("");
     setEditItemId(null);
     setWordCount(0);
@@ -100,7 +161,14 @@ export default function OwnerMenuPage() {
 
   const openNewModal = () => {
     setEditItemId(null);
-    setNewItem({ itemname: "", description: "", price: "", image: "" });
+    setNewItem({
+      itemname: "",
+      description: "",
+      price: "",
+      image: "",
+      isVeg: true,
+      prepTimeMin: "",
+    });
     setImg("");
     setWordCount(0);
     setShowModal(true);
@@ -147,6 +215,9 @@ export default function OwnerMenuPage() {
       description: newItem.description,
       price: Number(newItem.price),
       image: img || newItem.image,
+      isVeg: newItem.isVeg !== false,
+      prepTimeMin:
+        newItem.prepTimeMin === "" ? undefined : Math.min(180, Math.max(5, Number(newItem.prepTimeMin))),
     };
 
     if (!itemData.image) {
@@ -181,6 +252,8 @@ export default function OwnerMenuPage() {
       description: item.description,
       price: String(item.price),
       image: item.image,
+      isVeg: item.isVeg !== false,
+      prepTimeMin: item.prepTimeMin != null ? String(item.prepTimeMin) : "",
     });
     setImg(item.image);
     setEditItemId(item._id);
@@ -228,7 +301,7 @@ export default function OwnerMenuPage() {
           </div>
         </div>
 
-        <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3">
+        <div className="mt-8 grid grid-cols-2 gap-3 lg:grid-cols-5">
           <div className="surface-card border-brand-100/80 bg-white p-4">
             <p className="text-xs font-semibold uppercase tracking-wide text-ink-500">On menu</p>
             <p className="mt-1 font-display text-2xl font-bold text-ink-900">
@@ -243,12 +316,90 @@ export default function OwnerMenuPage() {
             </p>
             <p className="mt-0.5 text-xs text-ink-500">After search</p>
           </div>
-          <div className="surface-card col-span-2 border-brand-100/80 bg-gradient-to-br from-brand-50/80 to-white p-4 sm:col-span-1">
+          <div className="surface-card border-brand-100/80 bg-white p-4">
+            <p className="text-xs font-semibold uppercase tracking-wide text-ink-500">30-day revenue</p>
+            <p className="mt-1 font-display text-xl font-bold text-ink-900 tabular-nums">
+              {summary ? `₹${Math.round(summary.last30Days?.revenue ?? 0)}` : "—"}
+            </p>
+            <p className="mt-0.5 text-xs text-ink-500">
+              {summary ? `${summary.last30Days?.orderCount ?? 0} orders` : "Paid orders"}
+            </p>
+          </div>
+          <div className="surface-card border-brand-100/80 bg-white p-4">
+            <p className="text-xs font-semibold uppercase tracking-wide text-ink-500">All-time revenue</p>
+            <p className="mt-1 font-display text-xl font-bold text-ink-900 tabular-nums">
+              {summary ? `₹${Math.round(summary.allTime?.revenue ?? 0)}` : "—"}
+            </p>
+            <p className="mt-0.5 text-xs text-ink-500">
+              {summary ? `${summary.allTime?.orderCount ?? 0} orders` : "Paid orders"}
+            </p>
+          </div>
+          <div className="surface-card col-span-2 border-brand-100/80 bg-gradient-to-br from-brand-50/80 to-white p-4 lg:col-span-1">
             <p className="text-xs font-semibold uppercase tracking-wide text-ink-500">Tip</p>
             <p className="mt-1 text-sm font-medium leading-snug text-ink-700">
               Clear photos and 100–300 character descriptions convert better on the customer menu.
             </p>
           </div>
+        </div>
+
+        <div className="surface-card mt-6 border-brand-100/80 p-5">
+          <h2 className="font-display text-lg font-bold text-ink-900">Prep time & map pin</h2>
+          <p className="mt-1 text-sm text-ink-600">
+            Estimated delivery minutes shown on your listing. Optional lat/lng powers “near me”
+            sorting when customers share location.
+          </p>
+          <div className="mt-4 grid gap-4 sm:grid-cols-3">
+            <div>
+              <label className="text-sm font-semibold text-ink-700" htmlFor="eta-min">
+                Est. delivery (min)
+              </label>
+              <input
+                id="eta-min"
+                type="number"
+                min={10}
+                max={120}
+                className="input-field mt-1"
+                value={deliveryEtaMin}
+                onChange={(e) => setDeliveryEtaMin(e.target.value)}
+              />
+            </div>
+            <div>
+              <label className="text-sm font-semibold text-ink-700" htmlFor="lat">
+                Latitude
+              </label>
+              <input
+                id="lat"
+                type="text"
+                inputMode="decimal"
+                placeholder="e.g. 12.97"
+                className="input-field mt-1"
+                value={locLat}
+                onChange={(e) => setLocLat(e.target.value)}
+              />
+            </div>
+            <div>
+              <label className="text-sm font-semibold text-ink-700" htmlFor="lng">
+                Longitude
+              </label>
+              <input
+                id="lng"
+                type="text"
+                inputMode="decimal"
+                placeholder="e.g. 77.59"
+                className="input-field mt-1"
+                value={locLng}
+                onChange={(e) => setLocLng(e.target.value)}
+              />
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={saveRestaurantSettings}
+            disabled={settingsSaving}
+            className="btn-primary mt-4"
+          >
+            {settingsSaving ? "Saving…" : "Save delivery settings"}
+          </button>
         </div>
 
         <div className="sticky top-[4.25rem] z-30 -mx-4 mt-8 border-b border-ink-100/80 bg-ink-50/85 px-4 py-3 backdrop-blur-xl sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
@@ -328,6 +479,20 @@ export default function OwnerMenuPage() {
                     </p>
                   </div>
                   <div className="flex shrink-0 flex-col items-stretch justify-center gap-2 sm:items-end">
+                    <button
+                      type="button"
+                      onClick={() => handleToggleStock(item, !item.isOutOfStock)}
+                      className={`inline-flex items-center justify-center gap-1.5 rounded-xl border px-3 py-2 text-sm font-semibold shadow-sm transition ${
+                        item.isOutOfStock
+                          ? "border-amber-200 bg-amber-50 text-amber-900 hover:bg-amber-100"
+                          : "border-ink-200 bg-white text-ink-800 hover:border-brand-300 hover:bg-brand-50"
+                      }`}
+                    >
+                      <FiPackage className="h-4 w-4" aria-hidden />
+                      <span className="hidden sm:inline">
+                        {item.isOutOfStock ? "Mark in stock" : "Out of stock"}
+                      </span>
+                    </button>
                     <button
                       type="button"
                       onClick={() => handleEditClick(item)}
@@ -448,6 +613,37 @@ export default function OwnerMenuPage() {
                     className="input-field"
                     placeholder="299"
                     required
+                  />
+                </div>
+                <label className="flex cursor-pointer items-center gap-2 text-sm font-semibold text-ink-700">
+                  <input
+                    type="checkbox"
+                    checked={newItem.isVeg !== false}
+                    onChange={(e) =>
+                      setNewItem((n) => ({
+                        ...n,
+                        isVeg: e.target.checked,
+                      }))
+                    }
+                    className="h-4 w-4 rounded border-ink-300 text-brand-600 focus:ring-brand-500"
+                  />
+                  Vegetarian dish
+                </label>
+                <div>
+                  <label className="mb-1.5 block text-sm font-semibold text-ink-700" htmlFor="prep-min">
+                    Prep time (minutes, optional)
+                  </label>
+                  <input
+                    id="prep-min"
+                    type="number"
+                    min={5}
+                    max={180}
+                    value={newItem.prepTimeMin}
+                    onChange={(e) =>
+                      setNewItem((n) => ({ ...n, prepTimeMin: e.target.value }))
+                    }
+                    className="input-field"
+                    placeholder="e.g. 15"
                   />
                 </div>
                 <div>

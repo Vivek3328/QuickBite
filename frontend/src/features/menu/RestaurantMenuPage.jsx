@@ -9,6 +9,7 @@ import {
 } from "react-icons/fi";
 import { getRestaurant } from "@/api/restaurants";
 import { fetchRestoMenu } from "@/api/menu";
+import { useAuth } from "@/context/AuthContext";
 import { ItemCard } from "@/components/cards/ItemCard";
 import {
   MenuItemRowSkeleton,
@@ -19,12 +20,14 @@ import { distanceKm, etaRange } from "@/utils/restaurantDisplay";
 
 export default function RestaurantMenuPage() {
   const { id } = useParams();
+  const { userToken } = useAuth();
   const [owner, setOwner] = useState(null);
   const [menuItems, setMenuItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("recommended");
+  const [menuDiet, setMenuDiet] = useState("all");
 
   useEffect(() => {
     let cancelled = false;
@@ -32,7 +35,7 @@ export default function RestaurantMenuPage() {
     const load = async () => {
       try {
         const [menuData, detail] = await Promise.all([
-          fetchRestoMenu(id),
+          fetchRestoMenu(id, userToken),
           getRestaurant(id),
         ]);
         if (cancelled) return;
@@ -49,10 +52,13 @@ export default function RestaurantMenuPage() {
     return () => {
       cancelled = true;
     };
-  }, [id]);
+  }, [id, userToken]);
 
   const filteredItems = useMemo(() => {
     let list = [...menuItems];
+    if (menuDiet === "veg") {
+      list = list.filter((i) => i.isVeg !== false);
+    }
     const q = search.trim().toLowerCase();
     if (q) {
       list = list.filter((i) => {
@@ -75,7 +81,7 @@ export default function RestaurantMenuPage() {
       default:
         return list;
     }
-  }, [menuItems, search, sort]);
+  }, [menuItems, search, sort, menuDiet]);
 
   const eta = owner ? etaRange(owner._id) : null;
   const km = owner ? distanceKm(owner._id) : null;
@@ -188,6 +194,27 @@ export default function RestaurantMenuPage() {
                 autoComplete="off"
               />
             </div>
+            <div className="mt-3 flex flex-wrap items-center gap-2">
+              <div className="flex flex-wrap gap-2" role="group" aria-label="Dish type">
+                {[
+                  { id: "all", label: "All dishes" },
+                  { id: "veg", label: "Veg only" },
+                ].map((f) => (
+                  <button
+                    key={f.id}
+                    type="button"
+                    onClick={() => setMenuDiet(f.id)}
+                    className={`rounded-full px-3.5 py-1.5 text-sm font-semibold transition ${
+                      menuDiet === f.id
+                        ? "bg-ink-900 text-white shadow-sm"
+                        : "bg-white text-ink-700 ring-1 ring-ink-200 hover:bg-brand-50"
+                    }`}
+                  >
+                    {f.label}
+                  </button>
+                ))}
+              </div>
+            </div>
             <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
               <p className="text-sm text-ink-600">
                 {!loading && (
@@ -236,6 +263,9 @@ export default function RestaurantMenuPage() {
                   description={item.description}
                   item={item}
                   ownerId={id}
+                  isOutOfStock={Boolean(item.isOutOfStock)}
+                  isVeg={item.isVeg !== false}
+                  prepTimeMin={item.prepTimeMin}
                 />
               ))}
         </div>

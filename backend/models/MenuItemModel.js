@@ -22,6 +22,19 @@ const MenuItemSchema = new Schema({
     type: String,
     required: true,
   },
+  isVeg: {
+    type: Boolean,
+    default: true,
+  },
+  isOutOfStock: {
+    type: Boolean,
+    default: false,
+  },
+  prepTimeMin: {
+    type: Number,
+    min: 5,
+    max: 180,
+  },
 });
 
 module.exports = mongoose.model("menuitem", MenuItemSchema);

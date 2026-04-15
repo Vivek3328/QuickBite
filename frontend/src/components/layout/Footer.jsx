@@ -1,7 +1,10 @@
 import { Link } from "react-router-dom";
 import { ROUTES } from "@/constants/routes";
+import { useAuth } from "@/context/AuthContext";
 
 export function Footer() {
+  const { isLoggedIn } = useAuth();
+
   return (
     <footer className="mt-auto border-t border-ink-100 bg-ink-900 text-ink-200">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
@@ -46,18 +49,38 @@ export function Footer() {
             <h3 className="text-sm font-semibold uppercase tracking-wider text-white">
               Account
             </h3>
-            <ul className="mt-4 space-y-2 text-sm">
-              <li>
-                <Link to={ROUTES.userOrders} className="transition hover:text-brand-400">
-                  My orders
-                </Link>
-              </li>
-              <li>
-                <Link to={ROUTES.cart} className="transition hover:text-brand-400">
-                  Cart
-                </Link>
-              </li>
-            </ul>
+            {isLoggedIn ? (
+              <ul className="mt-4 space-y-2 text-sm">
+                <li>
+                  <Link to={ROUTES.profile} className="transition hover:text-brand-400">
+                    Account
+                  </Link>
+                </li>
+                <li>
+                  <Link to={ROUTES.userOrders} className="transition hover:text-brand-400">
+                    My orders
+                  </Link>
+                </li>
+                <li>
+                  <Link to={ROUTES.cart} className="transition hover:text-brand-400">
+                    Cart
+                  </Link>
+                </li>
+                <li>
+                  <Link to={ROUTES.ops} className="transition hover:text-brand-400">
+                    Ops console
+                  </Link>
+                </li>
+              </ul>
+            ) : (
+              <ul className="mt-4 space-y-2 text-sm">
+                <li>
+                  <Link to={ROUTES.login} className="transition hover:text-brand-400">
+                    Sign in to order
+                  </Link>
+                </li>
+              </ul>
+            )}
           </div>
 
           <div>

@@ -7,6 +7,15 @@ export const ORDER_STATUS = {
   cancelled: "Cancelled",
 };
 
+/** Normal happy-path timeline (exclude Cancelled). */
+export const ORDER_TIMELINE_STEPS = [
+  ORDER_STATUS.pending,
+  ORDER_STATUS.paid,
+  ORDER_STATUS.beingBaked,
+  ORDER_STATUS.outForDelivery,
+  ORDER_STATUS.delivered,
+];
+
 export function getOrderStatusClasses(status) {
   switch (status) {
     case ORDER_STATUS.pending:

@@ -11,6 +11,11 @@ function fetchOwner(req, res, next) {
   }
   try {
     const data = jwt.verify(token, JWT_SECRET);
+    if (!data.owner?.id) {
+      return res
+        .status(401)
+        .json({ error: "Please authenticate using a valid token" });
+    }
     req.owner = data.owner;
     next();
   } catch {
@@ -29,6 +34,11 @@ function fetchUser(req, res, next) {
   }
   try {
     const data = jwt.verify(token, JWT_SECRET);
+    if (!data.user?.id) {
+      return res
+        .status(401)
+        .json({ error: "Please authenticate using valid token" });
+    }
     req.user = data.user;
     next();
   } catch {

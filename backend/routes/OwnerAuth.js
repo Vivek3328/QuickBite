@@ -7,6 +7,8 @@ const {
   loginOwner,
   fetchAllOwner,
 } = require("../controllers/OwnerController.js");
+const { updateRestaurantSettings } = require("../controllers/OwnerSettingsController");
+const { fetchOwner } = require("../middleware/auth");
 const validateRequest = require("../middleware/validateRequest");
 const { registerOwnerRules } = require("../validators/ownerAuth");
 
@@ -20,5 +22,7 @@ router.post(
 router.post("/loginowner", loginOwner);
 
 router.get("/fetchallowner", fetchAllOwner);
+
+router.put("/restaurant-settings", fetchOwner, updateRestaurantSettings);
 
 module.exports = router;

@@ -77,4 +77,22 @@ const getUser = async (req, res) => {
   }
 };
 
-module.exports = { registerUser, loginUser, getUser };
+const updateUserProfile = async (req, res) => {
+  try {
+    const name = String(req.body.name || "").trim();
+    const user = await User.findByIdAndUpdate(
+      req.user.id,
+      { $set: { name } },
+      { new: true }
+    ).select("-password");
+    if (!user) {
+      return res.status(404).json({ success: false, error: "User not found" });
+    }
+    return res.json({ success: true, user });
+  } catch (error) {
+    console.error(error.message);
+    return res.status(500).json({ success: false, error: "Could not update profile" });
+  }
+};
+
+module.exports = { registerUser, loginUser, getUser, updateUserProfile };

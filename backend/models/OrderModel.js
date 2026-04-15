@@ -71,6 +71,24 @@ const OrderSchema = new Schema({
     enum: ORDER_STATUSES,
     default: "Pending",
   },
+  statusHistory: {
+    type: [
+      {
+        status: { type: String, required: true },
+        at: { type: Date, default: Date.now },
+      },
+    ],
+    default: [],
+  },
+  discountAmount: {
+    type: Number,
+    default: 0,
+    min: 0,
+  },
+  couponCode: {
+    type: String,
+    default: "",
+  },
   razorpayOrderId: {
     type: String,
     required: true,

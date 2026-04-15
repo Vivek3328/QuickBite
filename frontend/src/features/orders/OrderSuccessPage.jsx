@@ -1,9 +1,19 @@
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { setTotalItems } from "@/store/cartSlice";
 import { ROUTES } from "@/constants/routes";
+import { STORAGE_KEYS } from "@/constants/storage";
 import successImg from "@/assets/success.png";
 
 export default function OrderSuccessPage() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    localStorage.removeItem(STORAGE_KEYS.cartItems);
+    dispatch(setTotalItems(0));
+  }, [dispatch]);
 
   return (
     <div className="flex min-h-[calc(100vh-4.25rem)] flex-col items-center justify-center bg-gradient-to-b from-emerald-50/80 to-ink-50 px-4 py-16">

@@ -15,10 +15,14 @@ const ORDER_STATUS_PENDING = "Pending";
 const ORDER_STATUS_PAID = "Paid";
 const ORDER_STATUS_DELIVERED = "Delivered";
 
+/** Statuses a customer may cancel before the kitchen starts (payment ok but not cooking yet). */
+const USER_CANCELLABLE_STATUSES = ["Pending", "Paid"];
+
 module.exports = {
   ORDER_STATUSES,
   OWNER_SETTABLE_ORDER_STATUSES,
   ORDER_STATUS_PENDING,
   ORDER_STATUS_PAID,
   ORDER_STATUS_DELIVERED,
+  USER_CANCELLABLE_STATUSES,
 };

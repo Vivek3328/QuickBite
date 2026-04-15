@@ -1,18 +1,15 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import { setTotalItems } from "@/store/cartSlice";
 import { useAuth } from "@/context/AuthContext";
 import { checkoutOrder, getRazorpayKey } from "@/api/orders";
+import { validateCouponApi } from "@/api/coupons";
 import { CheckoutAddressModal } from "@/components/ui/CheckoutAddressModal";
 import { ROUTES } from "@/constants/routes";
 import { STORAGE_KEYS } from "@/constants/storage";
-
-const COUPONS = {
-  "50OFF": { type: "percentage", value: 50, minAmount: 1000 },
-  "10OFF": { type: "percentage", value: 10 },
-};
+import { computeGrandTotal } from "@/utils/pricing";
 
 export default function CartPage() {
   const { userToken } = useAuth();
@@ -25,18 +22,10 @@ export default function CartPage() {
   const dispatch = useDispatch();
   const [showModal, setShowModal] = useState(false);
 
-  const subtotal = totalPrice;
-  const gst = Number((subtotal * 0.18).toFixed(2));
-  const restaurantCharges = 5;
-  const deliveryFee = 3;
-  const platformFee = 2;
-  const totalAfterDiscount = subtotal - discount;
-  const grandTotal =
-    totalAfterDiscount +
-    gst +
-    restaurantCharges +
-    deliveryFee +
-    platformFee;
+  const pricing = useMemo(
+    () => computeGrandTotal(totalPrice, discount),
+    [totalPrice, discount]
+  );
 
   const handleSubmit = async (shippingDetails) => {
     const items = cartItems.map((item) => ({
@@ -45,24 +34,28 @@ export default function CartPage() {
     }));
 
     try {
-      const { key } = await getRazorpayKey();
+      const { key } = await getRazorpayKey(userToken);
 
       const response = await checkoutOrder(userToken, {
         item: items,
         owner: cartItems[0].owner,
         shipping: shippingDetails,
-        totalprice: grandTotal,
-        status: "Pending",
+        couponCode: appliedCoupon?.code || undefined,
       });
+
+      if (!response.success || !response.razorpayOrder) {
+        toast.error("Failed to place order.");
+        return;
+      }
 
       const options = {
         key,
-        amount: grandTotal,
+        amount: response.razorpayOrder.amount,
         currency: "INR",
         name: "QuickBite",
-        description: "Test Transaction",
+        description: "Order payment",
         image: "https://example.com/your_logo",
-        order_id: response.order.razorpayOrderId,
+        order_id: response.razorpayOrder.id,
         callback_url: `${import.meta.env.VITE_API_BASE_URL}/orders/verify-payment`,
         prefill: {
           name: "Gaurav Kumar",
@@ -79,18 +72,9 @@ export default function CartPage() {
 
       const rzp = new window.Razorpay(options);
       rzp.open();
-
-      if (response.success) {
-        toast.success("Order placed successfully");
-        setShowModal(false);
-        setCartItems([]);
-        localStorage.removeItem(STORAGE_KEYS.cartItems);
-        dispatch(setTotalItems(0));
-      } else {
-        toast.error("Failed to place order.");
-      }
+      setShowModal(false);
     } catch (error) {
-      toast.error("An error occurred during checkout.");
+      toast.error(error?.response?.data?.error || "An error occurred during checkout.");
     }
   };
 
@@ -100,7 +84,7 @@ export default function CartPage() {
 
     const initialQuantities = {};
     items.forEach((item) => {
-      initialQuantities[item._id] = 1;
+      initialQuantities[item._id] = item.quantity ?? 1;
     });
     setQuantities(initialQuantities);
     dispatch(setTotalItems(items.length));
@@ -113,6 +97,8 @@ export default function CartPage() {
   };
 
   const changeQuantity = (itemId, change) => {
+    setDiscount(0);
+    setAppliedCoupon(null);
     const newQuantities = { ...quantities };
     newQuantities[itemId] = Math.max(newQuantities[itemId] + change, 0);
 
@@ -131,20 +117,24 @@ export default function CartPage() {
     calculateTotalPrice(cartItems, newQuantities);
   };
 
-  const applyCoupon = () => {
-    const coupon = COUPONS[couponCode];
-    if (coupon) {
-      if (coupon.minAmount && totalPrice < coupon.minAmount) {
-        toast.info(`Coupon requires a minimum cart value of ₹${coupon.minAmount}.`);
-      } else {
-        const discountValue =
-          coupon.type === "percentage" ? (totalPrice * coupon.value) / 100 : coupon.value;
-        setDiscount(discountValue);
-        setAppliedCoupon({ code: couponCode, value: coupon.value });
+  const applyCoupon = async () => {
+    const code = couponCode.trim();
+    if (!code) {
+      toast.info("Enter a coupon code");
+      return;
+    }
+    try {
+      const res = await validateCouponApi({ code, subtotal: totalPrice });
+      if (res.success && res.discount != null) {
+        const d = Math.min(Number(res.discount), totalPrice);
+        setDiscount(d);
+        setAppliedCoupon({ code: res.code || code });
         setCouponCode("");
+        toast.success("Coupon applied");
       }
-    } else {
-      toast.error("Invalid coupon code.");
+    } catch (err) {
+      const msg = err?.response?.data?.error || "Invalid coupon";
+      toast.error(msg);
     }
   };
 
@@ -230,36 +220,36 @@ export default function CartPage() {
                 <div className="flex justify-between gap-4">
                   <dt className="text-ink-600">Item total</dt>
                   <dd className="font-semibold tabular-nums text-ink-900">
-                    ₹{subtotal.toFixed(2)}
+                    ₹{pricing.subtotal.toFixed(2)}
                   </dd>
                 </div>
                 <div className="flex justify-between gap-4">
                   <dt className="text-ink-600">GST (18%)</dt>
-                  <dd className="font-semibold tabular-nums text-ink-900">₹{gst}</dd>
+                  <dd className="font-semibold tabular-nums text-ink-900">₹{pricing.gst}</dd>
                 </div>
                 <div className="flex justify-between gap-4">
                   <dt className="text-ink-600">Restaurant</dt>
                   <dd className="font-semibold tabular-nums text-ink-900">
-                    ₹{restaurantCharges}
+                    ₹{pricing.restaurantCharges}
                   </dd>
                 </div>
                 <div className="flex justify-between gap-4">
                   <dt className="text-ink-600">Delivery</dt>
                   <dd className="font-semibold tabular-nums text-ink-900">
-                    ₹{deliveryFee}
+                    ₹{pricing.deliveryFee}
                   </dd>
                 </div>
                 <div className="flex justify-between gap-4">
                   <dt className="text-ink-600">Platform</dt>
                   <dd className="font-semibold tabular-nums text-ink-900">
-                    ₹{platformFee}
+                    ₹{pricing.platformFee}
                   </dd>
                 </div>
                 {appliedCoupon && (
                   <div className="flex justify-between gap-4 text-emerald-700">
                     <dt>Discount ({appliedCoupon.code})</dt>
                     <dd className="font-semibold tabular-nums">
-                      −₹{discount.toFixed(2)}
+                      −₹{pricing.discountAmount.toFixed(2)}
                     </dd>
                   </div>
                 )}
@@ -267,7 +257,7 @@ export default function CartPage() {
               <div className="mt-4 flex justify-between border-t border-ink-100 pt-4 text-base font-bold text-ink-900">
                 <span>Grand total</span>
                 <span className="text-brand-700 tabular-nums">
-                  ₹{grandTotal.toFixed(2)}
+                  ₹{pricing.grandTotal.toFixed(2)}
                 </span>
               </div>
 
